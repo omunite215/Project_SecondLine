@@ -16,8 +16,8 @@
 4. **Labels:** create `ai-review`.
 5. **AI first-pass review** (optional; it uses Om's Claude usage):
    - In Claude Code, run `/install-github-app` to install the Claude GitHub App on the repo.
-   - Add the repo secret `CLAUDE_CODE_OAUTH_TOKEN`, made with `claude setup-token` (Pro/Max), in your own terminal: `gh secret set CLAUDE_CODE_OAUTH_TOKEN`.
-   - The workflow uses `pull_request_target`, so it runs from protected `main` and a PR can't edit it to reach the secret (environment required-reviewers would need GitHub Enterprise on a private repo). It only takes effect once it's on `main`. Never add `ref:` to its checkout.
+   - Environment `claude-review` (Settings → Environments) with a deployment-branch policy allowing only `main`. Put the token there, never in repo secrets: a repo secret is readable by any workflow on a same-repo PR. In your own terminal: `gh secret set CLAUDE_CODE_OAUTH_TOKEN --env claude-review` (value from `claude setup-token`, Pro/Max).
+   - The workflow uses `pull_request_target` (runs from protected `main`, so a PR can't edit it) and only runs when **you** add the label. Required reviewers would need GitHub Enterprise on a private repo; the branch policy doesn't. It takes effect once it's on `main`. Never add `ref:` to its checkout.
    - To use an API key instead, add `ANTHROPIC_API_KEY` and switch the workflow input to `anthropic_api_key`.
    - Label a PR `ai-review` to run `.github/workflows/claude-review.yml`.
 6. **gh CLI:** run `gh auth login` in your own terminal. Claude can read PRs through `gh` but can't read your token (deny-listed).

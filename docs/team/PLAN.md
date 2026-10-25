@@ -97,5 +97,5 @@ MCS = cards tagged `mcs` (`mcs=Xd` = reduced scope); totals in §3. Cut in this 
 | Weekly sync slot | ______ |
 | M-0 … M-5 target dates | ______ |
 | Kunal's Mac chip / unified memory | ______ |
-| Kunal's GitHub handle | ______ |
+| Kunal's GitHub handle | @kunalgupta06 (Write, added 2026-10-24) |
 | Kunal's Explorer account status | requested ☐ approved ☐ |

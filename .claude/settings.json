@@ -82,7 +82,13 @@
       "Bash(scp *)",
       "Bash(docker compose down -v *)",
       "Bash(rm -rf *)",
-      "Read(/experiments/runs/**)"
+      "Read(/experiments/runs/**)",
+      "Edit(/.claude/settings.json)",
+      "Edit(/.claude/hooks/**)",
+      "Edit(/tooling/claude-skills.json)",
+      "Edit(/.claude/settings.local.json)",
+      "Edit(/tooling/skills.lock.json)",
+      "Edit(/scripts/**)"
     ]
   },
   "hooks": {
@@ -105,7 +111,7 @@
     ],
     "PreToolUse": [
       {
-        "matcher": "Edit|Write",
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
         "hooks": [
           {
             "type": "command",

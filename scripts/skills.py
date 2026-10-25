@@ -25,6 +25,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import shutil
 import subprocess
 import sys
@@ -41,11 +42,24 @@ LOCK = ROOT / "tooling/skills.lock.json"
 STAMP = ROOT / ".claude/.skills-ok.json"
 # Setup files stay editable while the gate is RED so Claude can help fix the setup itself.
 EDIT_ALLOW = ("tooling/", ".claude/", "docs/setup/", "docs/team/SKILLS.md", "CLAUDE.local.md", "START_HERE.md")
+# ...except the guardrails themselves: Claude must not loosen hooks, permissions or the manifest while RED.
+EDIT_DENY = (".claude/settings.json", ".claude/settings.local.json", ".claude/hooks/",
+             "tooling/claude-skills.json", "tooling/skills.lock.json")
 ID_RE = re.compile(r"(OM|KG|SH)-\d{2}")
-BASH_OK = re.compile(r"^\s*(make\s+(skills-\S*|kit-check|board-\S*|spec-check|ctx|help|hpc-check)\b|python3\s+\S*scripts/(skills|board|ctx)\.py\b"
-                     r"|claude\s+(plugin|--version|update)\b|(npm|pnpm)\s+(install|i)\s+-g\b|uv\s+tool\s+install\b|brew\s+install\b"
-                     r"|sudo\s+apt(-get)?\s+install\b|gh\s+auth\s+(status|login)\b|git\s+(status|log|diff|branch|show|fetch|pull)\b"
-                     r"|(ls|cat|head|tail|wc|which|pwd|echo|rg|grep|command\s+-v)\b)")
+# Each `&&`/`||`/`;`/`|` segment must match whole-word. Refused outright: substitution, expansion ($ other than
+# $CLAUDE_PROJECT_DIR, braces, backslashes), redirects other than 2>&1, background `&` and newlines.
+SHELL_META = re.compile(r"[\n\r`<>\\${}]|(?<!&)&(?!&)")
+PROJECT_DIR = re.compile(r"\$\{?CLAUDE_PROJECT_DIR\}?")
+RISKY_FLAGS = {"--pre", "--hostname-bin"}  # rg options that run programs
+# git accepts abbreviated long options (--out = --output), so git gets an allowlist instead of a denylist.
+GIT_LONG = {"--oneline", "--stat", "--short", "--name-only", "--name-status", "--cached", "--staged", "--porcelain",
+            "--graph", "--all", "--decorate", "--pretty", "--format", "--branch", "--list", "--show-current",
+            "--patch", "--max-count", "--since", "--until", "--author", "--reverse", "--abbrev-commit"}
+BASH_OK = re.compile(r"^\s*(make\s+(skills-[a-z-]+|kit-check|board-[a-z-]+|spec-check|ctx|help|hpc-check)(\s+(CARD=(OM|KG|SH)-\d{2}|BIN=1))*\s*$"
+                     r'|python3\s+"?(\$\{?CLAUDE_PROJECT_DIR\}?/|' + re.escape(str(ROOT)) + r'/|\./)?scripts/(skills|board|ctx)\.py"?'
+                     r"|claude\s+(plugin|--version|update)|(npm|pnpm)\s+(install|i)\s+-g|uv\s+tool\s+install|brew\s+install"
+                     r"|sudo\s+apt(-get)?\s+install|gh\s+auth\s+(status|login)|git\s+(status|log|diff|branch|show)"
+                     r"|(ls|cat|head|tail|wc|which|pwd|echo|rg|grep|command\s+-v))(?=\s|$)")
 JDTLS = ('set -e; d="$HOME/.local/share/jdtls"; mkdir -p "$d" "$HOME/.local/bin"; '
          'curl -fsSL https://download.eclipse.org/jdtls/snapshots/jdt-language-server-latest.tar.gz | tar -xz -C "$d"; '
          'ln -sf "$d/bin/jdtls" "$HOME/.local/bin/jdtls"; echo "jdtls -> $HOME/.local/bin (keep it on PATH)"')
@@ -316,7 +330,8 @@ def gate_edit() -> int:
         data = json.load(sys.stdin)
     except Exception:
         data = {}
-    raw = str((data.get("tool_input") or {}).get("file_path") or "").replace("\\", "/")
+    ti = data.get("tool_input") or {}
+    raw = str(ti.get("file_path") or ti.get("notebook_path") or "").replace("\\", "/")
     if not raw:
         return 0
     p = Path(raw)
@@ -329,7 +344,7 @@ def gate_edit() -> int:
     if rel == ".claude/.skills-ok.json":
         print("Blocked: the skills stamp is written only by `make skills-check`.", file=sys.stderr)
         return 2
-    if rel.startswith(EDIT_ALLOW):
+    if rel.startswith(EDIT_ALLOW) and not rel.startswith(EDIT_DENY):
         return 0
     owner = board.detect_owner()
     if not owner:
@@ -344,14 +359,26 @@ def gate_edit() -> int:
     return 2
 
 
+def risky_args(segment: str) -> bool:
+    try:
+        toks = shlex.split(segment)
+    except ValueError:  # unbalanced quotes: refuse rather than guess
+        return True
+    if toks[:1] == ["git"]:
+        return any(t.startswith("--") and t.split("=", 1)[0] not in GIT_LONG for t in toks[2:])
+    return any(t.split("=", 1)[0] in RISKY_FLAGS for t in toks)
+
+
 def gate_bash() -> int:
     try:
         data = json.load(sys.stdin)
     except Exception:
         return 0
     cmd = str((data.get("tool_input") or {}).get("command") or "")
+    cmd = cmd.replace("2>&1", "")
     parts = [x for x in re.split(r"&&|\|\||;|\|", cmd) if x.strip()]
-    if parts and all(BASH_OK.match(x) for x in parts):
+    if (parts and not SHELL_META.search(PROJECT_DIR.sub("", cmd)) and not any(map(risky_args, parts))
+            and all(BASH_OK.match(x) for x in parts)):
         return 0
     owner = board.detect_owner()
     ok, reason = stamp_status(owner) if owner else (False, "owner unknown — copy your CLAUDE.local.md example first")

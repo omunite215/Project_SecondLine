@@ -10,7 +10,7 @@ define todo
 endef
 
 .DEFAULT_GOAL := help
-.PHONY: help board-next board-check trace spec-check spec-split ctx kit-check hpc-help \
+.PHONY: help board-next board-check trace spec-check spec-split ctx kit-test kit-check hpc-help \
  bootstrap up down ps logs reset db-shell lint test codegen codegen-java codegen-py contracts-check \
  test-ledger test-gateway test-mcp test-policy test-py test-agent test-factory test-eval test-supervisor test-console \
  test-int test-sec test-redteam test-chaos test-load leakage-check refdata-verify \
@@ -32,7 +32,10 @@ spec-split: ## Regenerate spec shards (only after an approved spec change)
 	@$(PY) scripts/split_spec.py
 ctx: ## Always-loaded Claude context budget
 	@$(PY) scripts/ctx_budget.py --max 3500
-kit-check: spec-check board-check skills-lint ctx ## All kit checks (same as CI)
+KIT_TESTS ?= tests/security
+kit-test: ## Kit guardrail tests: hpc.sh, hooks, skills gate (OM-26)
+	@out=$$($(PY) -m unittest discover -s $(KIT_TESTS) -p 'test_om_26_*.py' 2>&1) || { echo "$$out"; exit 1; }; echo "$$out" | tail -1
+kit-check: spec-check board-check skills-lint ctx kit-test ## All kit checks (same as CI)
 hpc-help: ## Explorer vLLM runbook pointer
 	@@sed -n '1,25p' docs/setup/EXPLORER-HPC.md
 

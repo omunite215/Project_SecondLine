@@ -106,9 +106,15 @@ class CiParity(unittest.TestCase):
         self.assertIn("trace-check", deps)
         self.assertRegex(mk, r"(?m)^trace-check:")
 
-    def test_OM_26_claude_review_secret_behind_environment(self):
+    def test_OM_26_claude_review_runs_the_trusted_workflow(self):
+        """Required reviewers on environments need Enterprise for private repos, so the gate is
+        pull_request_target: workflow + label check come from protected main, never from the PR."""
         wf = (ROOT / ".github/workflows/claude-review.yml").read_text()
-        self.assertRegex(wf, r"(?m)^    environment:\s*\S+")
+        self.assertRegex(wf, r"(?m)^  pull_request_target:\n    types: \[labeled\]$")
+        self.assertNotRegex(wf, r"(?m)^  pull_request:")
+        self.assertNotIn("environment:", wf)
+        self.assertNotRegex(wf, r"(?m)^\s+ref:", "never check out the PR head before the action (secrets are in scope)")
+        self.assertIn("github.event.pull_request.head.repo.full_name == github.repository", wf)
 
 
 if __name__ == "__main__":

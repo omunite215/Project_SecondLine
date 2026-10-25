@@ -1,8 +1,10 @@
 name: claude-review
 # Optional AI first-pass review (uses Om's Claude usage). Runs only when Om adds the `ai-review` label.
 # Setup: docs/setup/GITHUB.md §5 (Claude GitHub App + secret CLAUDE_CODE_OAUTH_TOKEN).
+# pull_request_target: this file and its label check always come from protected main, so a PR can't edit
+# them to reach the secret. Never add `ref:` to the checkout below (that would run PR code with secrets).
 on:
-  pull_request:
+  pull_request_target:
     types: [labeled]
 permissions:
   contents: read
@@ -13,9 +15,6 @@ jobs:
   review:
     if: github.event.label.name == 'ai-review' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
-    # A same-repo PR can edit this file and drop the label check; the environment's required reviewer (Om)
-    # is the real gate on CLAUDE_CODE_OAUTH_TOKEN. Store the secret in the environment, not the repo.
-    environment: claude-review
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

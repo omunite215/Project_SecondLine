@@ -1,0 +1,11 @@
+# Personal + gitignored. Copy to CLAUDE.local.md and adjust.
+owner: om
+learn_mode: on   # on = for `learn` cards Claude coaches and reviews while I write the core logic; off = Claude builds it
+
+I'm Om Patel — CI/CD owner, approver and merger of every PR, Explorer HPC account holder. Default to docs/team/OM.md (/next-task). Review Kunal's PRs with /review-pr <n>; my own boundary PRs get Kunal as reviewer (/open-pr).
+Machine: ASUS Vivobook Pro 15 OLED — Ryzen 7 5800H (8C/16T), 16 GB RAM, RTX 3050 Laptop 4 GB VRAM. Windows 11 + WSL2 Ubuntu 24.04; repo at ~/code/Project_SecondLine on the WSL ext4 disk, never /mnt/c.
+Limits: WSL capped at 10 GB. Start only the compose profiles the task needs (default "core app"); never run obs + ui + events alongside Gradle test runs. JVMs -Xmx512m, Gradle workers ≤ 4. Prefer targeted `make test-…` over full builds. No git worktrees.
+Skills (gate must be GREEN): superpowers, pyright/jdtls/typescript LSP, pr-review-toolkit, security-guidance, differential-review; task: insecure-defaults, mcp-server-dev, frontend-design, document-skills.
+HPC: ssh alias `explorer` with ControlMaster. Use make hpc-* only; never ask me for passwords, Duo codes or keys.
+Local LLM: Ollama inside WSL (CUDA), ≤4B instruct model, smoke tests only — never an experiment arm.
+Style: direct and candid; push back when something is wrong; diffs over full files.

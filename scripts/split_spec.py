@@ -1,0 +1,142 @@
+#!/usr/bin/env python3
+"""Split docs/spec/MASTER_SPEC.md into per-section shards so Claude reads ~1-3k tokens instead of ~25k.
+
+Usage:
+  python3 scripts/split_spec.py           # (re)generate docs/spec/sections/* and docs/spec/INDEX.md
+  python3 scripts/split_spec.py --check   # CI: fail if shards drift from the master (exit 1)
+
+The master stays canonical (spec rule: change only with a versioned change log). Shards are derived,
+verbatim copies; never edit them by hand (Claude is deny-listed from editing both).
+Stdlib only.
+"""
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+MASTER = ROOT / "docs/spec/MASTER_SPEC.md"
+OUT = ROOT / "docs/spec/sections"
+INDEX = ROOT / "docs/spec/INDEX.md"
+HEAD_RE = re.compile(r"^## (\d+)\. (.+)$")
+
+# One-line "what to read this for" + primary owner. Hand-maintained; keep terse.
+COVERS = {
+    -1: ("Title, purpose, version, SOURCE PRECEDENCE (proposal > adopted changes > code/tests)", "both"),
+    0: ("Rules for AI assistants: claim hygiene, traceability IDs, amendments, architecture rule", "both"),
+    1: ("Identity, users U1-U3, differentiation, conservative claim, success story", "both"),
+    2: ("Truth-status labels, PoC discrepancy 1,035 vs 729, 'certify' wording", "both"),
+    3: ("Break definition, failure families F1-F10, scope in/out, novelty boundary", "both"),
+    4: ("REQ-001..016 + ops/validator/engineer workflows", "both"),
+    5: ("Causal world, lifecycle, entities, money rules, B1-B8 + hard variants, truth fields", "kunal (om: ledger)"),
+    6: ("Datasets: GLEIF, ECB, H.10, ISO 20022/T2S, AgentDojo/InjecAgent, datasheet", "kunal"),
+    7: ("Target architecture diagram, deployment, boundary ownership, tool choices", "om"),
+    8: ("9-step action protocol, invariants I1-I12, typed error codes", "om (kunal: agent side)"),
+    9: ("Data contracts (manifest, proposed action, receipt), tables, DB constraints", "om + kunal"),
+    10: ("MCP tool catalog, NOT-exposed list, LangGraph design, prompt policy, strategies A-D", "kunal (om: tools)"),
+    11: ("Threat model SEC-01..14, identity scheme, policy decisions, fail-safe defaults", "om"),
+    12: ("Outbox, event envelope, receipts, two replay modes, chaos matrix", "om (kunal: replay)"),
+    13: ("RQ1-3, pre-registered H1-H3 decision rules, objectives, exploratory E1-E8", "kunal"),
+    14: ("Experiment design, 3,000+300 runs, denominators, MET-01..12, statistics", "kunal"),
+    15: ("Adversarial families 1-8, quality bar", "om (agent attacks) + kunal (platform attacks)"),
+    16: ("Historical scripted PoC numbers: never present as LLM findings", "both"),
+    17: ("Console views, interaction patterns, 7-step demo script, demo reliability", "om"),
+    18: ("NFR-01..12 acceptance targets (bounded, no SLAs)", "both"),
+    19: ("Test matrix T-DOM/AI/SEC/SWE/EVAL/UI/DOC + CI design", "both"),
+    20: ("Module plan, milestones M-0..M-5, cut order, dependencies", "both"),
+    21: ("Ownership, ways of working, doc artifacts, repo outline, governance crosswalk", "both"),
+    22: ("Risks RSK-01..15, feasibility gate before 3,300 runs", "both"),
+    23: ("Employer-ready deliverables, interview stories, claim hygiene", "both"),
+    24: ("Source ledger, verified refs, citation rules, 34-entry bibliography (large)", "kunal"),
+    25: ("Adopted ADR-001..012, unresolved decisions U1-U13", "both"),
+    26: ("Post-course roadmap (NOT must-build)", "both"),
+    27: ("Traceability map, final definition of done, doc QA checks", "both"),
+}
+
+
+def slug(title: str) -> str:
+    s = re.sub(r"[^a-z0-9]+", "-", title.lower()).strip("-")
+    return "-".join(s.split("-")[:5])
+
+
+def split(text: str) -> list[tuple[int, str, str]]:
+    """Return [(section_no, title, body)], section -1 = preamble. Bodies are verbatim slices."""
+    lines = text.splitlines(keepends=True)
+    parts: list[tuple[int, str, list[str]]] = [(-1, "preamble", [])]
+    for line in lines:
+        m = HEAD_RE.match(line.rstrip("\n"))
+        if m:
+            parts.append((int(m.group(1)), m.group(2).strip(), [line]))
+        else:
+            parts[-1][2].append(line)
+    return [(n, t, "".join(b)) for n, t, b in parts]
+
+
+def shard_name(n: int, title: str) -> str:
+    return "_preamble.md" if n < 0 else f"{n:02d}-{slug(title)}.md"
+
+
+def build(check: bool) -> int:
+    text = MASTER.read_text(encoding="utf-8")
+    parts = split(text)
+    nums = [n for n, _, _ in parts if n >= 0]
+    if nums != list(range(28)):
+        print(f"spec structure changed: sections found {nums}", file=sys.stderr)
+        return 1
+    if "".join(b for _, _, b in parts) != text:
+        print("internal split error: concatenation != master", file=sys.stderr)
+        return 1
+
+    expected = {shard_name(n, t): b for n, t, b in parts}
+    index_lines = [
+        "# Spec index — read ONE shard, not the master",
+        "",
+        "GENERATED by `scripts/split_spec.py` from `docs/spec/MASTER_SPEC.md` (canonical). Do not edit shards.",
+        f"Master ≈ {len(text)//4:,} tokens. Shards below are verbatim slices. Tokens ≈ chars/4.",
+        "",
+        "| § | shard | ≈tokens | read it for | owner |",
+        "|---|---|---:|---|---|",
+    ]
+    for n, t, b in parts:
+        covers, owner = COVERS.get(n, ("", ""))
+        sec = "pre" if n < 0 else str(n)
+        index_lines.append(f"| {sec} | `sections/{shard_name(n, t)}` | {len(b)//4:,} | {covers} | {owner} |")
+    index_lines += [
+        "",
+        "Tip: questions spanning several shards → delegate to the `spec-scout` subagent (returns ≤15 lines).",
+        "",
+    ]
+    expected_index = "\n".join(index_lines)
+
+    if check:
+        problems = []
+        on_disk = {p.name for p in OUT.glob("*.md")} if OUT.exists() else set()
+        for name, body in expected.items():
+            p = OUT / name
+            if not p.exists() or p.read_text(encoding="utf-8") != body:
+                problems.append(f"stale/missing shard: {name}")
+        for extra in sorted(on_disk - set(expected)):
+            problems.append(f"orphan shard: {extra}")
+        if not INDEX.exists() or INDEX.read_text(encoding="utf-8") != expected_index:
+            problems.append("stale INDEX.md")
+        if problems:
+            print("\n".join(problems), file=sys.stderr)
+            print("run: python3 scripts/split_spec.py", file=sys.stderr)
+            return 1
+        print(f"spec shards OK ({len(expected)} files)")
+        return 0
+
+    OUT.mkdir(parents=True, exist_ok=True)
+    for old in OUT.glob("*.md"):
+        if old.name not in expected:
+            old.unlink()
+    for name, body in expected.items():
+        (OUT / name).write_text(body, encoding="utf-8")
+    INDEX.write_text(expected_index, encoding="utf-8")
+    print(f"wrote {len(expected)} shards + INDEX.md")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(build(check="--check" in sys.argv[1:]))

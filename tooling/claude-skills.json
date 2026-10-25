@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "about": "Required Claude Code plugins/skills per person. scripts/skills.py installs + verifies them; hooks block code edits until the gate is GREEN. Change only through a PR (both approve).",
+  "min_claude_code": "2.1.292",
+  "repo": "omunite215/Project_SecondLine",
+  "reviewer": "omunite215",
+  "stamp_max_age_hours": 48,
+  "marketplaces": {
+    "claude-plugins-official": { "source": "anthropics/claude-plugins-official", "builtin": true },
+    "anthropic-agent-skills": { "source": "anthropics/skills" },
+    "trailofbits": { "source": "trailofbits/skills" }
+  },
+  "plugins": [
+    { "name": "superpowers", "marketplace": "claude-plugins-official", "owners": ["om", "kg"], "tier": "core", "scope": "project",
+      "why": "TDD (red-green-refactor), systematic debugging, verification-before-completion, writing/executing plans, code-review discipline (obra/superpowers, MIT)" },
+    { "name": "pyright-lsp", "marketplace": "claude-plugins-official", "owners": ["om", "kg"], "tier": "core", "scope": "project",
+      "why": "Python diagnostics + go-to-definition in terminal sessions (needs pyright-langserver)" },
+    { "name": "jdtls-lsp", "marketplace": "claude-plugins-official", "owners": ["om"], "tier": "core", "scope": "local",
+      "why": "Java diagnostics for ledger + gateway (needs jdtls)" },
+    { "name": "typescript-lsp", "marketplace": "claude-plugins-official", "owners": ["om"], "tier": "core", "scope": "local",
+      "why": "TypeScript diagnostics for the console (needs typescript-language-server)" },
+    { "name": "pr-review-toolkit", "marketplace": "claude-plugins-official", "owners": ["om"], "tier": "core", "scope": "local",
+      "why": "Specialized review agents (code, silent failures, tests, types) — Om approves every PR" },
+    { "name": "security-guidance", "marketplace": "claude-plugins-official", "owners": ["om"], "tier": "core", "scope": "local",
+      "why": "Reviews Claude's own edits for vulnerabilities — Om owns the security boundary and the CI workflows" },
+    { "name": "differential-review", "marketplace": "trailofbits", "owners": ["om"], "tier": "core", "scope": "local",
+      "why": "Security-focused diff review with blast-radius estimate, used inside /review-pr (Trail of Bits)" },
+    { "name": "insecure-defaults", "marketplace": "trailofbits", "owners": ["om"], "tier": "task", "scope": "local",
+      "why": "Finds fail-open defaults, hardcoded credentials, weak auth — enforces the fail-closed rule (Trail of Bits)" },
+    { "name": "mcp-server-dev", "marketplace": "claude-plugins-official", "owners": ["om"], "tier": "task", "scope": "local",
+      "why": "MCP server patterns for the MCP adapter (OM-06)" },
+    { "name": "frontend-design", "marketplace": "claude-plugins-official", "owners": ["om"], "tier": "task", "scope": "local",
+      "why": "Distinctive, accessible UI for the review console (OM-21/22)" },
+    { "name": "document-skills", "marketplace": "anthropic-agent-skills", "owners": ["om", "kg"], "tier": "task", "scope": "local",
+      "why": "docx/pdf/pptx/xlsx for the final report and demo deck (source-available: install, never copy)" }
+  ],
+  "vendored_skills": [
+    { "name": "langgraph-fundamentals", "repo": "langchain-ai/langchain-skills", "ref": "main", "dest": "services/agent/.claude/skills",
+      "owners": ["kg"], "tier": "core",
+      "why": "Current LangGraph StateGraph / Command / streaming patterns (official LangChain skill; nested so it loads only in services/agent)" },
+    { "name": "langgraph-persistence", "repo": "langchain-ai/langchain-skills", "ref": "main", "dest": "services/agent/.claude/skills",
+      "owners": ["kg"], "tier": "core",
+      "why": "Checkpointers + interrupts: resume by run_id and approval waits (KG-08)" }
+  ],
+  "binaries": [
+    { "bin": "claude", "owners": ["om", "kg"], "hint": "curl -fsSL https://claude.ai/install.sh | bash   (the VS Code extension alone may not put `claude` on PATH)" },
+    { "bin": "git", "owners": ["om", "kg"], "hint": "WSL: sudo apt install git · macOS: xcode-select --install" },
+    { "bin": "gh", "owners": ["om", "kg"], "hint": "WSL: sudo apt install gh · macOS: brew install gh" },
+    { "bin": "pyright-langserver", "owners": ["om", "kg"], "plugin": "pyright-lsp", "hint": "npm install -g pyright   (no Node? uv tool install pyright)" },
+    { "bin": "jdtls", "owners": ["om"], "plugin": "jdtls-lsp", "hint": "make skills-install BIN=1   (Eclipse JDT LS → ~/.local/bin/jdtls; see docs/team/SKILLS.md §4)" },
+    { "bin": "typescript-language-server", "owners": ["om"], "plugin": "typescript-lsp", "hint": "npm install -g typescript-language-server typescript" },
+    { "bin": "ssh", "owners": ["om"], "hint": "sudo apt install openssh-client" }
+  ],
+  "commands": [
+    { "cmd": ["gh", "auth", "status"], "owners": ["om", "kg"], "hint": "gh auth login   (in YOUR terminal — Claude never sees the token)" }
+  ]
+}

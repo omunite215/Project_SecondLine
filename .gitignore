@@ -1,0 +1,49 @@
+# Claude Code — personal files
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/agent-memory-local/
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.ed25519
+secrets/
+# Build outputs
+build/
+out/
+target/
+.gradle/
+node_modules/
+.next/
+dist/
+coverage/
+.venv/
+__pycache__/
+*.pyc
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+# Data + raw experiment outputs (manifests and hashes are committed)
+data/generated/**
+!data/generated/**/
+!data/generated/**/MANIFEST.json
+!data/generated/README.md
+data/attacks/eval/*
+!data/attacks/eval/HASHES.txt
+experiments/runs/
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+# Skills gate + HPC local state
+.claude/.skills-ok.json
+.hpc/
+services/agent/.claude/skills/langgraph-*/
+# VS Code: share only recommendations + workspace settings
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json

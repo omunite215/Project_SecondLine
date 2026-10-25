@@ -1,0 +1,17 @@
+{
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "files.trimTrailingWhitespace": true,
+  "[python]": { "editor.defaultFormatter": "charliermarsh.ruff", "editor.formatOnSave": true },
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+  "java.jdt.ls.vmargs": "-Xmx1G -XX:+UseG1GC -XX:+UseStringDeduplication",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "files.watcherExclude": {
+    "**/build/**": true, "**/.gradle/**": true, "**/node_modules/**": true, "**/.venv/**": true,
+    "**/.next/**": true, "**/data/generated/**": true, "**/experiments/runs/**": true
+  },
+  "search.exclude": {
+    "**/build": true, "**/.gradle": true, "**/node_modules": true, "**/.venv": true, "**/.next": true,
+    "data/generated": true, "experiments/runs": true, "docs/spec/MASTER_SPEC.md": true
+  }
+}

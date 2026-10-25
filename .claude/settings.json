@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(make *)",
+      "Bash(python3 scripts/*)",
+      "Bash(uv run *)",
+      "Bash(uv sync *)",
+      "Bash(./gradlew *)",
+      "Bash(pnpm *)",
+      "Bash(docker compose *)",
+      "Bash(opa test *)",
+      "Bash(opa fmt *)",
+      "Bash(rg *)",
+      "Bash(git status *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git branch *)",
+      "Bash(git switch *)",
+      "Bash(git checkout -b *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh pr list *)",
+      "Bash(gh pr status *)",
+      "Bash(gh auth status *)"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/*.ed25519)",
+      "Read(**/secrets/**)",
+      "Read(~/.ssh/**)",
+      "Read(~/.config/gh/**)",
+      "Read(/data/generated/eval/**)",
+      "Read(/data/generated/blind/**)",
+      "Edit(/docs/spec/MASTER_SPEC.md)",
+      "Edit(/docs/spec/sections/**)",
+      "Edit(/experiments/prereg/frozen/**)",
+      "Edit(/.claude/.skills-ok.json)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(git reset --hard *)",
+      "Bash(gh auth token *)",
+      "Bash(gh secret *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(gh pr create *)",
+      "Bash(gh pr review *)",
+      "Bash(gh pr merge *)",
+      "Bash(gh pr edit *)",
+      "Bash(claude plugin *)",
+      "Bash(make skills-install *)",
+      "Bash(make skills-update *)",
+      "Bash(make hpc-up *)",
+      "Bash(make hpc-down *)",
+      "Bash(ssh *)",
+      "Bash(scp *)",
+      "Bash(docker compose down -v *)",
+      "Bash(rm -rf *)",
+      "Read(/experiments/runs/**)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/board.py\" brief",
+            "timeout": 20
+          },
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/skills.py\" gate --session",
+            "timeout": 120
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/guard_edit.py\"",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/skills.py\" gate --edit",
+            "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/scripts/skills.py\" gate --bash",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR/.claude/hooks/fmt.py\"",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "superpowers@claude-plugins-official": true,
+    "pyright-lsp@claude-plugins-official": true
+  }
+}

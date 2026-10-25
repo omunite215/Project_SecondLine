@@ -16,7 +16,8 @@
 4. **Labels:** create `ai-review`.
 5. **AI first-pass review** (optional; it uses Om's Claude usage):
    - In Claude Code, run `/install-github-app` to install the Claude GitHub App on the repo.
-   - Add the secret `CLAUDE_CODE_OAUTH_TOKEN`, made with `claude setup-token` (Pro/Max).
+   - Settings → Environments → new environment `claude-review`, with yourself as required reviewer.
+   - Add the secret `CLAUDE_CODE_OAUTH_TOKEN` (made with `claude setup-token`, Pro/Max) to that **environment**, not to the repo. A same-repo PR can edit the workflow and drop the label check, so the environment approval is the real gate.
    - To use an API key instead, add `ANTHROPIC_API_KEY` and switch the workflow input to `anthropic_api_key`.
    - Label a PR `ai-review` to run `.github/workflows/claude-review.yml`.
 6. **gh CLI:** run `gh auth login` in your own terminal. Claude can read PRs through `gh` but can't read your token (deny-listed).

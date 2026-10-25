@@ -13,6 +13,9 @@ jobs:
   review:
     if: github.event.label.name == 'ai-review' && github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    # A same-repo PR can edit this file and drop the label check; the environment's required reviewer (Om)
+    # is the real gate on CLAUDE_CODE_OAUTH_TOKEN. Store the secret in the environment, not the repo.
+    environment: claude-review
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

@@ -181,8 +181,8 @@ def list_installed():
 def plugin_state(found: dict, p: dict):
     if pid(p) in found:
         return found[pid(p)]
-    for k, v in found.items():
-        if k.split("@")[0] == p["name"]:
+    for k, v in found.items():  # name-only match only when the CLI didn't report a marketplace
+        if "@" not in k and k == p["name"]:
             return v
     return None
 
@@ -202,8 +202,17 @@ def skill_meta(path: Path) -> dict:
 def load_lock() -> dict:
     try:
         return json.loads(LOCK.read_text(encoding="utf-8")).get("skills", {})
-    except Exception:
-        return {}
+    except FileNotFoundError:
+        return {}  # a corrupt lock raises: the gate must not treat it as "nothing pinned"
+
+
+def lock_problem(name: str, commit: str | None, lock: dict) -> str | None:
+    locked = (lock.get(name) or {}).get("commit")
+    if not locked:
+        return f"vendored skill {name} is not pinned in tooling/skills.lock.json (commit it after make skills-install)"
+    if commit != locked:
+        return f"vendored skill {name} is not at the locked commit {locked[:10]}"
+    return None
 
 
 def save_lock(lock: dict) -> None:
@@ -267,9 +276,9 @@ def check(owner: str, card_ids=(), quiet: bool = False):
         if not sm["name"] or not sm["description"]:
             miss(f"vendored skill without name/description frontmatter: {v['name']}", "make skills-install")
         src = json.loads((dest / ".source.json").read_text(encoding="utf-8"))
-        locked = (lock.get(v["name"]) or {}).get("commit")
-        if locked and src.get("commit") != locked:
-            miss(f"vendored skill {v['name']} is not at the locked commit {locked[:10]}", "make skills-install")
+        why = lock_problem(v["name"], src.get("commit"), lock)
+        if why:
+            miss(why, "make skills-install")
     for c in cmds:
         if shutil.which(c["cmd"][0]) and run(c["cmd"], 30).returncode != 0:
             miss(f"check failed: {' '.join(c['cmd'])}", c.get("hint"))

@@ -36,7 +36,7 @@ Built in, no install: `/code-review`, `/doctor`, `/skill-doctor`, `/context`, `/
 
 **Om — approver toolkit.** `/review-pr <n>` chains: CI checks → card evidence → `pr-review-toolkit` agents → `differential-review` on boundary paths → `contract-guardian` / `leakage-auditor` → verdict + the `gh pr review` command you run yourself. `security-guidance` stays on while you write gateway, ledger, OPA and workflow code. Run `insecure-defaults` on the security cards before `/finish-task`. Use `mcp-server-dev` while building OM-06 and `frontend-design` for OM-21/22.
 
-**Kunal.** The LangGraph skills auto-load whenever Claude touches services/agent — use them over memory for StateGraph, Command/Send, checkpointers and interrupts (KG-08: approval waits + resume by run_id). They're pinned in `tooling/skills.lock.json`; `make skills-update` re-pins, then open a PR.
+**Kunal.** The LangGraph skills auto-load whenever Claude touches services/agent — use them over memory for StateGraph, Command/Send, checkpointers and interrupts (KG-08: approval waits + resume by run_id). They're pinned in `tooling/skills.lock.json`, which your first `make skills-install` writes: commit it (the gate stays RED for an unpinned vendored skill). `make skills-update` re-pins, then open a PR.
 
 **Both.** `document-skills` only for SH-15/16 files. `/finish-task` reminds you to disable task plugins afterwards: `claude plugin disable <name>@<marketplace> --scope local`.
 

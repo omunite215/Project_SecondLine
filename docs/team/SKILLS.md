@@ -2,7 +2,7 @@
 
 **Source of truth:** `tooling/claude-skills.json` · **Install:** `make skills-install` (in YOUR terminal — plugins run code with your privileges) · **Verify:** `make skills-check` · **Yours:** `make skills-list`
 
-While the gate is RED: the session opens with `[skills] RED`, `/next-task` stops, `board.py set <ID> doing` refuses, and PreToolUse hooks block project edits and non-setup shell commands. Only setup files stay editable (tooling/, .claude/, docs/setup/, this file, CLAUDE.local.md, START_HERE.md) so Claude can help fix the setup. The gate re-verifies every 48 h, whenever the manifest changes, and whenever a card with task skills goes `doing`.
+While the gate is RED: the session opens with `[skills] RED`, `/next-task` stops, `board.py set <ID> doing` refuses, and PreToolUse hooks block project edits and non-setup shell commands. Only setup docs stay editable (docs/setup/, this file, CLAUDE.local.md, START_HERE.md) so Claude can help fix the setup; the guardrails themselves (.claude/, tooling/) stay locked, and only setup/read-only commands run (no expansion, redirects other than `2>&1`, or flags that write files or run programs). The gate re-verifies every 48 h, whenever the manifest changes, and whenever a card with task skills goes `doing`.
 
 ## 1. The set
 | skill / plugin | who | tier | for |

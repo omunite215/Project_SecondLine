@@ -41,22 +41,21 @@ MANIFEST = ROOT / "tooling/claude-skills.json"
 LOCK = ROOT / "tooling/skills.lock.json"
 STAMP = ROOT / ".claude/.skills-ok.json"
 # Setup files stay editable while the gate is RED so Claude can help fix the setup itself.
-EDIT_ALLOW = ("tooling/", ".claude/", "docs/setup/", "docs/team/SKILLS.md", "CLAUDE.local.md", "START_HERE.md")
-# ...except the guardrails themselves: Claude must not loosen hooks, permissions or the manifest while RED.
-EDIT_DENY = (".claude/settings.json", ".claude/settings.local.json", ".claude/hooks/",
-             "tooling/claude-skills.json", "tooling/skills.lock.json")
+# Not .claude/ or tooling/: hooks, settings, skills, rules and the manifest are the guardrails themselves.
+EDIT_ALLOW = ("docs/setup/", "docs/team/SKILLS.md", "CLAUDE.local.md", "START_HERE.md")
 ID_RE = re.compile(r"(OM|KG|SH)-\d{2}")
 # Each `&&`/`||`/`;`/`|` segment must match whole-word. Refused outright: substitution, expansion ($ other than
 # $CLAUDE_PROJECT_DIR, braces, backslashes), redirects other than 2>&1, background `&` and newlines.
 SHELL_META = re.compile(r"[\n\r`<>\\${}]|(?<!&)&(?!&)")
-PROJECT_DIR = re.compile(r"\$\{?CLAUDE_PROJECT_DIR\}?")
+# The only `$` allowed: the project dir directly before /scripts/ (it's swapped for ROOT before any check).
+PROJECT_DIR = re.compile(r"\$(?:\{CLAUDE_PROJECT_DIR\}|CLAUDE_PROJECT_DIR)(?=/scripts/)")
 RISKY_FLAGS = {"--pre", "--hostname-bin"}  # rg options that run programs
 # git accepts abbreviated long options (--out = --output), so git gets an allowlist instead of a denylist.
 GIT_LONG = {"--oneline", "--stat", "--short", "--name-only", "--name-status", "--cached", "--staged", "--porcelain",
             "--graph", "--all", "--decorate", "--pretty", "--format", "--branch", "--list", "--show-current",
             "--patch", "--max-count", "--since", "--until", "--author", "--reverse", "--abbrev-commit"}
 BASH_OK = re.compile(r"^\s*(make\s+(skills-[a-z-]+|kit-check|board-[a-z-]+|spec-check|ctx|help|hpc-check)(\s+(CARD=(OM|KG|SH)-\d{2}|BIN=1))*\s*$"
-                     r'|python3\s+"?(\$\{?CLAUDE_PROJECT_DIR\}?/|' + re.escape(str(ROOT)) + r'/|\./)?scripts/(skills|board|ctx)\.py"?'
+                     r'|python3\s+"?(' + re.escape(str(ROOT)) + r'/|\./)?scripts/(skills|board|ctx)\.py"?'
                      r"|claude\s+(plugin|--version|update)|(npm|pnpm)\s+(install|i)\s+-g|uv\s+tool\s+install|brew\s+install"
                      r"|sudo\s+apt(-get)?\s+install|gh\s+auth\s+(status|login)|git\s+(status|log|diff|branch|show)"
                      r"|(ls|cat|head|tail|wc|which|pwd|echo|rg|grep|command\s+-v))(?=\s|$)")
@@ -344,7 +343,7 @@ def gate_edit() -> int:
     if rel == ".claude/.skills-ok.json":
         print("Blocked: the skills stamp is written only by `make skills-check`.", file=sys.stderr)
         return 2
-    if rel.startswith(EDIT_ALLOW) and not rel.startswith(EDIT_DENY):
+    if rel.startswith(EDIT_ALLOW):
         return 0
     owner = board.detect_owner()
     if not owner:
@@ -375,9 +374,10 @@ def gate_bash() -> int:
     except Exception:
         return 0
     cmd = str((data.get("tool_input") or {}).get("command") or "")
-    cmd = cmd.replace("2>&1", "")
+    cmd = PROJECT_DIR.sub(lambda _: str(ROOT), cmd)
+    cmd = re.sub(r"(?<!\S)2>&1(?!\S)", " ", cmd)  # only a standalone 2>&1; `x2>&1file` redirects to a file
     parts = [x for x in re.split(r"&&|\|\||;|\|", cmd) if x.strip()]
-    if (parts and not SHELL_META.search(PROJECT_DIR.sub("", cmd)) and not any(map(risky_args, parts))
+    if (parts and not SHELL_META.search(cmd) and not any(map(risky_args, parts))
             and all(BASH_OK.match(x) for x in parts)):
         return 0
     owner = board.detect_owner()

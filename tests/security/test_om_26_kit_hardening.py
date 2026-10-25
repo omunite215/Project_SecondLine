@@ -135,7 +135,8 @@ class SkillsGateWhileRed(unittest.TestCase):
         for cmd in ("make kit-check", "make skills-check CARD=OM-26", "git status", "ls -la",
                     'python3 "$CLAUDE_PROJECT_DIR/scripts/skills.py" gate --session', "rg -n foo docs | head -5",
                     "git log --pretty=oneline -3", "git log --oneline -5", "git diff --stat", "git status --short",
-                    "rg --pre-glob '*.gz' x", "make skills-check 2>&1 | tail -5"):
+                    "rg --pre-glob '*.gz' x", "make skills-check 2>&1 | tail -5",
+                    'python3 "${CLAUDE_PROJECT_DIR}/scripts/board.py" brief', "python3 $CLAUDE_PROJECT_DIR/scripts/ctx.py git"):
             self.assertEqual(self.bash(cmd), 0, cmd)
 
     def test_OM_26_gate_rejects_shell_metachars(self):
@@ -152,16 +153,19 @@ class SkillsGateWhileRed(unittest.TestCase):
                     'rg "--pre=sh" foo', "rg --p''re=sh foo", "rg '--pre' sh foo", 'git diff "--output=Makefile"',
                     "rg foo 'unterminated", "git diff --out${X}put=x", "git diff $'--output=x' HEAD",
                     "rg --pr${X}e=sh x .", "git diff --out=x", "git diff --outp=x", "git diff {--output=x,}",
-                    r"git diff --o\utput=x", "echo $HOME"):
+                    r"git diff --o\utput=x", "echo $HOME", "rg --pre$CLAUDE_PROJECT_DIRX=sh x",
+                    "rg --pre${CLAUDE_PROJECT_DIR}=sh x", "ls $CLAUDE_PROJECT_DIR", "ls x2>&1file",
+                    "ls 2>&1>x"):
             self.assertEqual(self.bash(cmd), 2, cmd)
 
     def test_OM_26_gate_blocks_guardrail_edits(self):
         for rel in (".claude/settings.json", ".claude/settings.local.json", ".claude/hooks/guard_edit.py",
-                    "tooling/claude-skills.json", "tooling/skills.lock.json"):
+                    "tooling/claude-skills.json", "tooling/skills.lock.json", ".claude/skills/next-task/SKILL.md",
+                    ".claude/agents/leakage-auditor.md", ".claude/rules/truth-isolation.md"):
             self.assertEqual(self.edit(rel), 2, rel)
 
     def test_OM_26_gate_allows_setup_edits(self):
-        for rel in ("CLAUDE.local.md", "docs/setup/GITHUB.md", ".claude/skills/next-task/SKILL.md"):
+        for rel in ("CLAUDE.local.md", "docs/setup/GITHUB.md", "START_HERE.md"):
             self.assertEqual(self.edit(rel), 0, rel)
 
     def test_OM_26_guardrail_edits_always_ask_the_human(self):

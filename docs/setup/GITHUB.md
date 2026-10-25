@@ -10,7 +10,7 @@
 3. **Ruleset** (Settings → Rules → Rulesets → new branch ruleset "main", target the default branch):
    - Restrict deletions and block force pushes.
    - Require a pull request: 1 approval, dismiss stale approvals on new commits, require review from Code Owners, require conversation resolution.
-   - Required status checks: `kit`, then add java / python / policy / console as those jobs appear.
+   - Required status checks (branch must be up to date before merging): `kit`, then add java / python / policy / console as those jobs appear.
    - Bypass list: Repository admin, for pull requests only.
    - Rulesets on a private repo need GitHub Pro, which is free with the Student Developer Pack.
 4. **Labels:** create `ai-review`.

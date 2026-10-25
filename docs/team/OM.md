@@ -20,6 +20,13 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - build: on omunite215/Project_SecondLine per docs/setup/GITHUB.md: Kunal as collaborator (Write); squash-only merges + auto-delete branches; ruleset on main (PR + 1 approval + code-owner review + conversation resolution + required checks; no force-push/deletion; admin bypass only for Om's own PRs after green CI); `ai-review` label + .github/workflows/claude-review.yml with secret CLAUDE_CODE_OAUTH_TOKEN; required checks grow as services land (java, python, policy, console, leakage, contracts drift); CI caches (Gradle, uv, pnpm); Dependabot entries per ecosystem; tag each milestone gate (m0…m5); review every PR within 24 h with /review-pr.
 - done: a test PR from Kunal cannot merge until CI is green and Om approves; Om's own PR merges only via bypass with green CI; claude-review posts on a labeled PR; GITHUB.md matches the real settings.
 
+### OM-26 · Kit hardening: hpc.sh input, leakage hook, skills gate
+- meta: P1 | M-0 | 0.5d | deps: SH-01 | status: todo
+- refs: §11 §19 §21
+- skills: insecure-defaults
+- build: from the SH-01 automated security review. (1) scripts/hpc.sh: reject non-numeric `TAIL` and job ids before they reach the remote command. (2) .claude/hooks/guard_edit.py: scan `new_string` in every `tool_input.edits[]` entry; block unrecognised edit shapes; anchor the test-path exemption to real test dirs/suffixes. (3) scripts/skills.py BASH_OK: reject newlines, `$(`, backticks, redirects and `&` (or shlex-parse against an exact allowlist). (4) scripts/skills.py EDIT_ALLOW: drop .claude/settings.json, .claude/hooks/ and tooling/claude-skills.json, and add matching `Edit(...)` deny rules in .claude/settings.json.
+- done: one failing-first test per item under tests/security/ (OM_26_*): TAIL injection rejected; multi-edit truth wiring blocked; each bypass string rejected by the RED gate; gate-RED edits to settings/hooks/manifest blocked; `make kit-check` green.
+
 ## M-1 Truthful simulator (ledger side)
 
 ### OM-02 · Java contracts library (types, schema validation, JCS, digests)

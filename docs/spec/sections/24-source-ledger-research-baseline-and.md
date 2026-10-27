@@ -1,0 +1,58 @@
+## 24. SOURCE LEDGER, RESEARCH BASELINE AND CITATION RULES
+
+**Industry background (public, not endorsements):**
+
+- JPMorgan Chase, *Securing the next generation of AI agents* (2026-03-23), https://www.jpmorganchase.com/about/technology/blog/securing-agentic-ai — emphasizes runtime governance, identity/authorization, tool action sequences, tamper-evident evidence. **Verified by public-web retrieval while preparing this spec.**
+- OCC, *Model Risk Management: Revised Guidance*, 2026-04-17, https://occ.gov/news-issuances/bulletins/2026/bulletin-2026-13.html — explicitly says generative/agentic AI excluded from scope of that guidance, other governance remains appropriate. **Verified by public-web retrieval.**
+- FINOS, *AI Governance Framework v2.0* (2025-11-12), https://www.finos.org/blog/finos-ai-governance-framework-v2.0-addressing-agentic-ai-risks-in-a-rapidly-evolving-landscape — agent-specific risk catalog and operational mitigations. **Verified by public-web retrieval.**
+- FINOS AIGF repository, https://github.com/finos/ai-governance-framework — governance controls and evolving discussions. **Verified repository existence.**
+- FINOS AIGF issue #337 on proposed independently verifiable signed receipts, https://github.com/finos/ai-governance-framework/issues/337 — **open proposal, NOT established adopted standard**; do not imply signed receipts were mandated by FINOS.
+- MCP 2026-07-28 specification release notes, https://blog.modelcontextprotocol.io/posts/2026-07-28/ — authorization changed across revisions; pin client/server/spec versions, audit security implications rather than assuming original 2024 announcement is current.
+- Original proposal also discussed Goldman Sachs/Anthropic trade-accounting agents, Smartstream's Sep 2026 agentic reconciliation, Duco, AgentDojo, InjecAgent, τ-bench, NeMo Guardrails, CaMeL, BloombergGPT, BCBS 239, NIST AI RMF/GenAI Profile, OWASP excessive agency and financial synthetic datasets. See original bibliography below. **No assertion of exclusive novelty**: generic agent evaluation/guardrails already exist; Second-Line differentiates by causal financial truth, preventative ledger semantics, action replay, and independent receipt/evidence checks.
+
+**Verified additions missing from the submitted 34-entry bibliography:**
+
+- Yao, S., Shinn, N., Razavi, P., & Narasimhan, K. (2024). *τ-bench: A benchmark for tool-agent-user interaction in real-world domains* (arXiv:2406.12045). https://arxiv.org/abs/2406.12045. **Important correction:** τ-bench **does** grade annotated final database state and introduced `pass^k`—Second-Line's novelty is finance-specific domain semantics and assurance, not generic DB-state grading.
+- Zhan, Q., Liang, Z., Ying, Z., & Kang, D. (2024). *InjecAgent: Benchmarking indirect prompt injections in tool-integrated large language model agents*. *Findings of ACL 2024*, 10471–10506. https://doi.org/10.18653/v1/2024.findings-acl.624. Benchmark contains 1,054 cases. These are **supplemental verified references**, not silently inserted into the original submission's preserved list.
+
+**References / citation hygiene:** Original bibliography is preserved as a contextual provenance ledger, not revalidated item-by-item. No regulatory body has approved this prototype, and this source ledger is not a certification or legal opinion. Check DOI/arXiv and exact official sources before scholarly reuse; some studies discussed in the body may be **missing from the bibliography** (notably Yao et al. τ-bench and Zhan et al. InjecAgent). Verify legal naming, year and proposed ISO reason codes; never create a fabricated quote. Web URLs can change. Cite measured project outcomes to immutable local manifests rather than third-party marketing.
+
+### 24.1 Submitted proposal references (verbatim text extraction; verify before final academic use)
+
+1. Anthropic. (2024, November 25). Introducing the Model Context Protocol. https://www.anthropic.com/news/model-context-protocol
+2. Assefa, S. A., Dervovic, D., Mahfouz, M., Tillman, R. E., Reddy, P., & Veloso, M. (2020). Generating synthetic data in finance: Opportunities, challenges and pitfalls. In Proceedings of the First ACM International Conference on AI in Finance (Article 44). Association for Computing Machinery. https://doi.org/10.1145/3383455.3422554
+3. Basel Committee on Banking Supervision. (2013). Principles for effective risk data aggregation and risk reporting. Bank for International Settlements. https://www.bis.org/publ/bcbs239.pdf
+4. Bhagwatkar, R., Kasa, K., Puri, A., Huang, G., Rish, I., Taylor, G. W., Dvijotham, K. D., & Lacoste, A. (2025). Indirect prompt injections: Are firewalls all you need, or stronger benchmarks? (arXiv:2510.05244). arXiv. https://doi.org/10.48550/arXiv.2510.05244
+5. Board of Governors of the Federal Reserve System. (n.d.). Foreign exchange rates: H.10 [Data set]. Retrieved September 25, 2026, from https://www.federalreserve.gov/releases/h10/
+6. Board of Governors of the Federal Reserve System & Office of the Comptroller of the Currency. (2011). Supervisory guidance on model risk management (SR Letter 11-7). https://www.federalreserve.gov/supervisionreg/srletters/sr1107a1.pdf
+7. Debenedetti, E., Shumailov, I., Fan, T., Hayes, J., Carlini, N., Fabian, D., Kern, C., Shi, C., Terzis, A., & Tramèr, F. (2025). Defeating prompt injections by design (arXiv:2503.18813). arXiv. https://doi.org/10.48550/arXiv.2503.18813
+8. Debenedetti, E., Zhang, J., Balunović, M., Beurer-Kellner, L., Fischer, M., & Tramèr, F. (2024). AgentDojo: A dynamic environment to evaluate prompt injection attacks and defenses for LLM agents (arXiv:2406.13352). arXiv. https://doi.org/10.48550/arXiv.2406.13352
+9. Duco. (n.d.). Reconciliation software for financial markets. Retrieved September 25, 2026, from https://du.co/product/reconciliation/
+10. Eberhardt, C. (2025, November 12). FINOS AI governance framework v2.0: Addressing agentic AI risks in a rapidly evolving landscape. FINOS Community Blog. https://www.finos.org/blog/finos-ai-governance-framework-v2.0-addressing-agentic-ai-risks-in-a-rapidly-evolving-landscape
+11. European Central Bank. (n.d.-a). Euro foreign exchange reference rates [Data set]. Retrieved September 25, 2026, from https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html
+12. European Central Bank. (n.d.-b). Insights on multiple statuses in a status notification [Presentation slides]. https://www.ecb.europa.eu/paym/target/t2s/profuse/shared/pdf/insights_on_multiple_statuses_in_a_status_notification.pdf
+13. Financial Industry Regulatory Authority. (2025). 2026 FINRA annual regulatory oversight report. https://www.finra.org/sites/default/files/2025-12/2026-annual-regulatory-oversight-report.pdf
+14. Gebru, T., Morgenstern, J., Vecchione, B., Vaughan, J. W., Wallach, H., Daumé, H., III, & Crawford, K. (2021). Datasheets for datasets. Communications of the ACM, 64(12), 86–92. https://doi.org/10.1145/3458723
+15. Global Legal Entity Identifier Foundation. (n.d.-a). LEI data: Access & use. Retrieved September 25, 2026, from https://www.gleif.org/en/lei-data/access-and-use-lei-data
+16. Global Legal Entity Identifier Foundation. (n.d.-b). Open data. Retrieved September 25, 2026, from https://www.gleif.org/en/about/open-data
+17. JPMorgan Chase & Co. (n.d.). Synthetic data. Retrieved September 25, 2026, from https://www.jpmorganchase.com/about/technology/research/ai/synthetic-data
+18. Krakovna, V., Uesato, J., Mikulik, V., Rahtz, M., Everitt, T., Kumar, R., Kenton, Z., Leike, J., & Legg, S. (2020, April 21). Specification gaming: The flip side of AI ingenuity. Google DeepMind Blog. https://deepmind.google/blog/specification-gaming-the-flip-side-of-ai-ingenuity/
+19. Kwon, W., Li, Z., Zhuang, S., Sheng, Y., Zheng, L., Yu, C. H., Gonzalez, J. E., Zhang, H., & Stoica, I. (2023). Efficient memory management for large language model serving with PagedAttention (arXiv:2309.06180). arXiv. https://doi.org/10.48550/arXiv.2309.06180
+20. Mitchell, M., Wu, S., Zaldivar, A., Barnes, P., Vasserman, L., Hutchinson, B., Spitzer, E., Raji, I. D., & Gebru, T. (2019). Model cards for model reporting. In Proceedings of the Conference on Fairness, Accountability, and Transparency (pp. 220–229). Association for Computing Machinery. https://doi.org/10.1145/3287560.3287596
+21. National Institute of Standards and Technology. (2023). Artificial intelligence risk management framework (AI RMF 1.0) (NIST AI 100-1). U.S. Department of Commerce. https://doi.org/10.6028/NIST.AI.100-1
+22. National Institute of Standards and Technology. (2024). Artificial intelligence risk management framework: Generative artificial intelligence profile (NIST AI 600-1). U.S. Department of Commerce. https://doi.org/10.6028/NIST.AI.600-1
+23. Northeastern University Research Computing. (n.d.). Containers on Explorer. Retrieved September 25, 2026, from https://rc-docs.northeastern.edu/en/latest/containers/index.html
+24. Office of the Comptroller of the Currency. (2026). Model risk management: Revised guidance (OCC Bulletin 2026-13). https://www.occ.gov/news-issuances/bulletins/2026/bulletin-2026-13.html
+25. OWASP Foundation. (n.d.). LLM06:2025 Excessive agency. Retrieved September 25, 2026, from https://owasp.org/www-project-top-10-for-large-language-model-applications/2_0_vulns/LLM06_ExcessiveAgency.html
+26. Parasuraman, R., & Manzey, D. H. (2010). Complacency and bias in human use of automation: An attentional integration. Human Factors, 52(3), 381–410. https://doi.org/10.1177/0018720810376055
+27. Rebedea, T., Dinu, R., Sreedhar, M. N., Parisien, C., & Cohen, J. (2023). NeMo Guardrails: A toolkit for controllable and safe LLM applications with programmable rails. In Y. Feng & E. Lefever (Eds.), Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing: System Demonstrations (pp. 431–445). Association for Computational Linguistics. https://doi.org/10.18653/v1/2023.emnlp-demo.40
+28. Richardson, C. (2018). Microservices patterns: With examples in Java. Manning Publications.
+29. Scheurer, J., Balesni, M., & Hobbhahn, M. (2023). Large language models can strategically deceive their users when put under pressure (arXiv:2311.07590). arXiv. https://doi.org/10.48550/arXiv.2311.07590
+30. Smartstream. (2026, September 23). Smartstream unveils new version of Smart Reconciliations Premium – agentic AI reconciliations with GRIT – governance, ROI, integration and trust [Press release]. Business Wire. https://www.financialcontent.com/article/bizwire-2026-9-23-smartstream-unveils-new-version-of-smart-reconciliations-premium-agentic-ai-reconciliations-with-grit-governance-roi-integration-and-trust
+31. Son, H. (2026, February 6). Goldman Sachs taps Anthropic’s Claude to automate accounting, compliance roles. CNBC. https://www.cnbc.com/2026/02/06/anthropic-goldman-sachs-ai-model-accounting.html
+32. Wu, S., Irsoy, O., Lu, S., Dabravolski, V., Dredze, M., Gehrmann, S., Kambadur, P., Rosenberg, D., & Mann, G. (2023). BloombergGPT: A large language model for finance (arXiv:2303.17564). arXiv. https://doi.org/10.48550/arXiv.2303.17564
+33. Yao, S., Shinn, N., Razavi, P., & Narasimhan, K. (2024). τ-bench: A benchmark for tool-agent-user interaction in real-world domains (arXiv:2406.12045). arXiv. https://doi.org/10.48550/arXiv.2406.12045
+34. Zhan, Q., Liang, Z., Ying, Z., & Kang, D. (2024). InjecAgent: Benchmarking indirect prompt injections in tool-integrated large language model agents (arXiv:2403.02691). arXiv. https://doi.org/10.48550/arXiv.2403.02691
+
+**Original extracted reference entries:** 34. These are documentation of source-proposal citations, not an external full bibliography audit.
+

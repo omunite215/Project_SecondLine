@@ -1,0 +1,20 @@
+#!/bin/bash
+# Template for KG-10. Verify partition names, GPU types, limits and module names in the NU RC docs before use.
+#SBATCH --job-name=sl-vllm
+#SBATCH --partition=<gpu-partition>
+#SBATCH --gres=gpu:1
+#SBATCH --cpus-per-task=8
+#SBATCH --mem=64G
+#SBATCH --time=08:00:00
+#SBATCH --output=/scratch/%u/sl-logs/vllm-%j.out
+set -euo pipefail
+module load apptainer 2>/dev/null || true
+export HF_HOME=/scratch/$USER/hf
+SIF=/scratch/$USER/sif/vllm-<pinned-tag>.sif   # record its sha256 in experiments/manifests/serving.json
+MODEL=<org/model-id>                            # exact repo id
+REVISION=<weights-commit-hash>                  # pin the weights
+PARSER=<tool-call-parser>                       # must match the model family (vLLM tool-calling docs)
+echo "node=$(hostname) job=${SLURM_JOB_ID}"     # needed for the SSH tunnel
+apptainer exec --nv "$SIF" vllm serve "$MODEL" --revision "$REVISION" \
+  --host 0.0.0.0 --port 8000 --max-model-len 16384 --seed 0 \
+  --enable-auto-tool-choice --tool-call-parser "$PARSER"

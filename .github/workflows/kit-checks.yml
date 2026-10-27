@@ -1,0 +1,32 @@
+name: kit-checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  kit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Spec shards match master
+        run: python3 scripts/split_spec.py --check
+      - name: Boards valid + every spec ID owned
+        run: python3 scripts/board.py check
+      - name: Skills manifest + card skill references
+        run: python3 scripts/skills.py lint
+      - name: Generated docs up to date
+        run: |
+          python3 scripts/board.py trace --write
+          python3 scripts/board.py summary --write
+          git diff --exit-code -- docs/team/TRACEABILITY.md docs/team/PLAN.md || (echo "run: make trace" && exit 1)
+      - name: Kit guardrail + integrity tests (OM-26)
+        run: |
+          python3 -m unittest discover -s tests/security -p 'test_om_26_*.py'
+          python3 -m unittest discover -s tests/kit -p 'test_om_26_*.py'
+      - name: Always-loaded Claude context budget
+        run: python3 scripts/ctx_budget.py --max 3500

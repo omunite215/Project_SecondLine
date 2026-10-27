@@ -1,0 +1,11 @@
+# Personal + gitignored. Copy to CLAUDE.local.md and adjust.
+owner: kunal
+learn_mode: on   # on = for `learn` cards Claude coaches and reviews while I write the core logic; off = Claude builds it
+
+I'm Kunal Gupta. Default to docs/team/KUNAL.md (/next-task). I open PRs with /open-pr for Om's approval; I never merge or push to main.
+Machine: MacBook Pro 14" — Apple Silicon <chip>, <N> GB unified memory (fill in), macOS, Docker Desktop (arm64). Start VS Code from a terminal (`code .`) so Homebrew/npm paths reach Claude Code.
+Limits: run Python natively for the dev loop; containers only for the other services. Ollama runs natively (Metal); containers reach it at http://host.docker.internal:11434. Local model tier (Q4): 16 GB → 7–8B · 18–24 GB → ≤14B · 36 GB+ → ~30B.
+Skills (gate must be GREEN): superpowers, pyright LSP, LangGraph skills (auto-load in services/agent); task: document-skills.
+HPC: no Explorer account until my RC request is approved (SH-19) — ask Om to run make hpc-up / hpc-tunnel.
+Independence: never open data/attacks/eval/** or data/generated/{eval,blind}/** (also deny-listed).
+Style: <your preferences, e.g. concise answers, diffs over full files>

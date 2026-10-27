@@ -1,0 +1,9 @@
+{
+  "env": { "SL_OWNER": "kg" },
+  "extraKnownMarketplaces": {
+    "anthropic-agent-skills": { "source": { "source": "github", "repo": "anthropics/skills" } }
+  },
+  "permissions": {
+    "deny": ["Read(/data/attacks/eval/**)"]
+  }
+}

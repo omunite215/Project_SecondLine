@@ -4,7 +4,7 @@ description: Record an experiment AMENDMENT or exploratory analysis without touc
 disable-model-invocation: true
 allowed-tools:
   - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/board.py" *)'
-  - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/skills.py" *)'
+  - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/skills.py" gate *)'
   - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/ctx.py" *)'
 argument-hint: "<short title>"
 ---

@@ -332,9 +332,14 @@ def cmd_set(args: list[str]) -> int:
             print(f"Refusing to start {tid}: the skills gate is RED. Fix it (make skills-install CARD={tid}) and retry.", file=sys.stderr)
             return 1
     lines = texts[c.file]
+    changed = 0
     for i in range(c.start, c.end):
         if lines[i].startswith("- meta:"):
-            lines[i] = re.sub(r"status:\s*\w+", f"status: {status}", lines[i])
+            lines[i], n = re.subn(r"status:\s*\w+", f"status: {status}", lines[i])
+            changed += n
+    if not changed:
+        print(f"{tid}: its '- meta:' line has no 'status:' token; nothing changed", file=sys.stderr)
+        return 1
     if evidence:
         ev_idx = next((i for i in range(c.start, c.end) if lines[i].startswith("- evidence:")), None)
         new = f"- evidence: {evidence}\n"
@@ -414,7 +419,8 @@ def cmd_check(args: list[str]) -> int:
     for i in cards:
         visit(i, [])
     # coverage
-    covered = set().union(*(c.refs for c in cards.values())) if cards else set()
+    live = [c for c in cards.values() if c.status != "cut"]  # cut work no longer owns its spec IDs
+    covered = set().union(*(c.refs for c in live)) if live else set()
     for group, ids in required_ids().items():
         missing = [i for i in ids if i not in covered]
         if missing:
@@ -439,7 +445,7 @@ def cmd_trace(args: list[str]) -> int:
     for group, ids in required_ids().items():
         out += [f"## {group}", "", "| ID | tasks (owner) |", "|---|---|"]
         for i in ids:
-            ts = sorted((c for c in cards.values() if i in c.refs), key=order_key)
+            ts = sorted((c for c in cards.values() if i in c.refs and c.status != "cut"), key=order_key)
             cell = ", ".join(f"{c.id} ({'+'.join(NAMES[o] for o in c.owners)})" for c in ts) or "**UNCOVERED**"
             out.append(f"| {i} | {cell} |")
         out.append("")
@@ -497,7 +503,10 @@ def cmd_summary(args: list[str]) -> int:
     if "--write" in args:
         plan = TEAM / "PLAN.md"
         txt = plan.read_text(encoding="utf-8")
-        new = re.sub(r"(<!-- BEGIN:summary -->\n).*?(\n<!-- END:summary -->)", lambda m: m.group(1) + md + m.group(2), txt, flags=re.S)
+        new, n = re.subn(r"(<!-- BEGIN:summary -->\n).*?(\n<!-- END:summary -->)", lambda m: m.group(1) + md + m.group(2), txt, flags=re.S)
+        if n != 1:
+            print(f"PLAN.md needs exactly one <!-- BEGIN:summary --> … <!-- END:summary --> block (found {n})", file=sys.stderr)
+            return 1
         plan.write_text(new, encoding="utf-8")
         print("updated docs/team/PLAN.md summary block")
     else:

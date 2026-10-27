@@ -6,12 +6,14 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 HOST="${SL_HPC_HOST:-explorer}"
 PORT="${SL_HPC_PORT:-8001}"
-STATE=".hpc"; JOB_FILE="$STATE/job_id"
+STATE="${SL_HPC_STATE:-.hpc}"; JOB_FILE="$STATE/job_id"
 SBATCH="${SL_HPC_SBATCH:-infra/hpc/vllm.sbatch}"
 REMOTE_DIR='~/second-line-hpc'
 SSH=(ssh -o BatchMode=yes -o ConnectTimeout=15 "$HOST")
 die() { echo "hpc: $*" >&2; exit 1; }
-job() { [ -s "$JOB_FILE" ] || die "no job recorded — run: make hpc-up"; cat "$JOB_FILE"; }
+num() { [[ "$2" =~ ^[0-9]+$ ]] || die "$1 must be a number, got: $2"; }  # values reach remote shells
+job() { [ -s "$JOB_FILE" ] || die "no job recorded — run: make hpc-up"; local j; j=$(<"$JOB_FILE"); num "job id ($JOB_FILE)" "$j"; echo "$j"; }
+num SL_HPC_PORT "$PORT"
 case "${1:-help}" in
   check)
     "${SSH[@]}" 'echo "ok host=$(hostname) user=$USER"; command -v sbatch >/dev/null && echo slurm=ok || echo slurm=missing' \
@@ -32,7 +34,7 @@ case "${1:-help}" in
   health)
     curl -fsS "http://localhost:$PORT/v1/models" | head -c 400; echo ;;
   logs)
-    j=$(job); "${SSH[@]}" "tail -n ${TAIL:-50} /scratch/\$USER/sl-logs/vllm-$j.out" ;;
+    t="${TAIL:-50}"; num TAIL "$t"; j=$(job); "${SSH[@]}" "tail -n $t /scratch/\$USER/sl-logs/vllm-$j.out" ;;
   down)
     j=$(job); "${SSH[@]}" "scancel $j"; rm -f "$JOB_FILE"; pkill -f "ssh .*-L $PORT:" 2>/dev/null || true; echo "cancelled $j; tunnel closed" ;;
   *) echo "usage: scripts/hpc.sh check|up|status|tunnel|health|logs|down"; exit 2 ;;

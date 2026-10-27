@@ -5,7 +5,7 @@ disable-model-invocation: true
 argument-hint: "[TASK-ID]"
 allowed-tools:
   - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/board.py" *)'
-  - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/skills.py" *)'
+  - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/skills.py" gate *)'
   - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/ctx.py" *)'
 ---
 ## Context

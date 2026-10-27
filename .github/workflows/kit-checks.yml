@@ -3,6 +3,8 @@ on:
   push:
     branches: [main]
   pull_request:
+permissions:
+  contents: read
 jobs:
   kit:
     runs-on: ubuntu-latest
@@ -22,5 +24,9 @@ jobs:
           python3 scripts/board.py trace --write
           python3 scripts/board.py summary --write
           git diff --exit-code -- docs/team/TRACEABILITY.md docs/team/PLAN.md || (echo "run: make trace" && exit 1)
+      - name: Kit guardrail + integrity tests (OM-26)
+        run: |
+          python3 -m unittest discover -s tests/security -p 'test_om_26_*.py'
+          python3 -m unittest discover -s tests/kit -p 'test_om_26_*.py'
       - name: Always-loaded Claude context budget
         run: python3 scripts/ctx_budget.py --max 3500

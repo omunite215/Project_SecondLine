@@ -4,7 +4,7 @@ description: Create or update an Architecture Decision Record and the decision r
 disable-model-invocation: true
 allowed-tools:
   - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/board.py" *)'
-  - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/skills.py" *)'
+  - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/skills.py" gate *)'
   - 'Bash(python3 "${CLAUDE_PROJECT_DIR}/scripts/ctx.py" *)'
 argument-hint: "<title or ADR number>"
 ---

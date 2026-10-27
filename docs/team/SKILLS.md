@@ -2,7 +2,7 @@
 
 **Source of truth:** `tooling/claude-skills.json` · **Install:** `make skills-install` (in YOUR terminal — plugins run code with your privileges) · **Verify:** `make skills-check` · **Yours:** `make skills-list`
 
-While the gate is RED: the session opens with `[skills] RED`, `/next-task` stops, `board.py set <ID> doing` refuses, and PreToolUse hooks block project edits and non-setup shell commands. Only setup files stay editable (tooling/, .claude/, docs/setup/, this file, CLAUDE.local.md, START_HERE.md) so Claude can help fix the setup. The gate re-verifies every 48 h, whenever the manifest changes, and whenever a card with task skills goes `doing`.
+While the gate is RED: the session opens with `[skills] RED`, `/next-task` stops, `board.py set <ID> doing` refuses, and PreToolUse hooks block project edits and non-setup shell commands. Only setup docs stay editable (docs/setup/, this file, CLAUDE.local.md, START_HERE.md) so Claude can help fix the setup; the guardrails themselves (.claude/, tooling/) stay locked, and only setup/read-only commands run (no expansion, redirects other than `2>&1`, or flags that write files or run programs). The gate re-verifies every 48 h, whenever the manifest changes, and whenever a card with task skills goes `doing`.
 
 ## 1. The set
 | skill / plugin | who | tier | for |
@@ -36,7 +36,7 @@ Built in, no install: `/code-review`, `/doctor`, `/skill-doctor`, `/context`, `/
 
 **Om — approver toolkit.** `/review-pr <n>` chains: CI checks → card evidence → `pr-review-toolkit` agents → `differential-review` on boundary paths → `contract-guardian` / `leakage-auditor` → verdict + the `gh pr review` command you run yourself. `security-guidance` stays on while you write gateway, ledger, OPA and workflow code. Run `insecure-defaults` on the security cards before `/finish-task`. Use `mcp-server-dev` while building OM-06 and `frontend-design` for OM-21/22.
 
-**Kunal.** The LangGraph skills auto-load whenever Claude touches services/agent — use them over memory for StateGraph, Command/Send, checkpointers and interrupts (KG-08: approval waits + resume by run_id). They're pinned in `tooling/skills.lock.json`; `make skills-update` re-pins, then open a PR.
+**Kunal.** The LangGraph skills auto-load whenever Claude touches services/agent — use them over memory for StateGraph, Command/Send, checkpointers and interrupts (KG-08: approval waits + resume by run_id). They're pinned in `tooling/skills.lock.json`, which your first `make skills-install` writes: commit it (the gate stays RED for an unpinned vendored skill). `make skills-update` re-pins, then open a PR.
 
 **Both.** `document-skills` only for SH-15/16 files. `/finish-task` reminds you to disable task plugins afterwards: `claude plugin disable <name>@<marketplace> --scope local`.
 

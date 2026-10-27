@@ -1,8 +1,12 @@
 name: claude-review
 # Optional AI first-pass review (uses Om's Claude usage). Runs only when Om adds the `ai-review` label.
 # Setup: docs/setup/GITHUB.md §5 (Claude GitHub App + secret CLAUDE_CODE_OAUTH_TOKEN).
+# pull_request_target: this file and its label check come from protected main, so a PR can't edit them.
+# The token is a secret of environment `claude-review`, whose deployment-branch policy allows only main,
+# so a workflow added on a PR branch can't read it. Agent mode (prompt input) never checks out the PR head,
+# and the action restores .claude/ + CLAUDE.md from base. Never add `ref:` to the checkout below.
 on:
-  pull_request:
+  pull_request_target:
     types: [labeled]
 permissions:
   contents: read
@@ -11,8 +15,11 @@ permissions:
   id-token: write
 jobs:
   review:
-    if: github.event.label.name == 'ai-review' && github.event.pull_request.head.repo.full_name == github.repository
+    if: >-
+      github.event.label.name == 'ai-review' && github.event.sender.login == 'omunite215' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
+    environment: claude-review
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4

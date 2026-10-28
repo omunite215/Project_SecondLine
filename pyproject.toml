@@ -1,0 +1,51 @@
+# Second-Line 2.0 Python workspace (KG-01, §7 §19 §21). The root env installs every member for dev + CI;
+# isolation between members is enforced by each member's own dependencies (tests/workspace).
+[project]
+name = "secondline-workspace"
+version = "0.0.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "sl-contracts",
+    "sl-factory",
+    "sl-eval",
+    "sl-audit",
+    "sl-agent",
+    "sl-supervisor",
+    "sl-mcp",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "hypothesis>=6",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "datamodel-code-generator>=0.26",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+sl-contracts = { workspace = true }
+sl-factory = { workspace = true }
+sl-eval = { workspace = true }
+sl-audit = { workspace = true }
+sl-agent = { workspace = true }
+sl-supervisor = { workspace = true }
+sl-mcp = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "packages/contracts/py",
+    "packages/scenario-factory",
+    "packages/evaluation",
+    "packages/audit-verifier",
+    "services/agent",
+    "services/supervisor",
+    "services/mcp-adapter",
+]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers -q"
+testpaths = ["tests/workspace"]

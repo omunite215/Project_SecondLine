@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/test/money_fixture.schema.json",
+  "title": "MoneyFixture",
+  "description": "KG-01 codegen fixture only; real contracts arrive with SH-02.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["amount", "currency"],
+  "properties": {
+    "amount": {"type": "string", "format": "decimal", "pattern": "^-?[0-9]+(\\.[0-9]+)?$"},
+    "currency": {"type": "string", "pattern": "^[A-Z]{3}$"},
+    "memo": {"type": "string"}
+  }
+}

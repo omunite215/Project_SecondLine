@@ -96,6 +96,6 @@ MCS = cards tagged `mcs` (`mcs=Xd` = reduced scope); totals in §3. Cut in this 
 | Module 7 final submission | TBD (not yet announced) |
 | Weekly sync slot | TBD |
 | M-0 … M-5 target dates | TBD (set once the submission date is known) |
-| Kunal's Mac chip / unified memory | ______ |
+| Kunal's Mac chip / unified memory | Apple M4 / 16 GB |
 | Kunal's GitHub handle | @kunalgupta06 (Write, added 2026-10-24) |
-| Kunal's Explorer account status | requested ☐ approved ☐ |
+| Kunal's Explorer account status | approved ☑ |

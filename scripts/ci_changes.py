@@ -11,9 +11,11 @@ Fail closed: a git error or an empty diff runs every job.
 from __future__ import annotations
 
 import argparse
+import re
 import subprocess
 import sys
 from fnmatch import fnmatch
+from pathlib import Path
 
 JOBS: dict[str, tuple[str, ...]] = {
     "java": ("services/ledger/*", "services/gateway/*", "libs/contracts-java/*", "build.gradle.kts",
@@ -30,12 +32,22 @@ def classify(paths: list[str]) -> dict[str, bool]:
     return {"lint": True, **{job: any(fnmatch(p, g) for p in paths for g in globs) for job, globs in JOBS.items()}}
 
 
-def changed(base: str, head: str) -> list[str]:
-    r = subprocess.run(["git", "diff", "--name-only", f"{base}...{head}"], capture_output=True, text=True)
-    if r.returncode != 0:
-        print(f"ci_changes: git diff failed ({r.stderr.strip()[:200]}); running every job", file=sys.stderr)
+REF = re.compile(r"[0-9a-fA-F]{7,40}|HEAD|[A-Za-z0-9][\w./-]*")  # never starts with "-"
+
+
+def changed(base: str, head: str, cwd: Path | None = None) -> list[str]:
+    """Paths touched between base and head, both sides of renames, NUL-separated so no name is mangled.
+    Any error (bad ref, option-like ref, git failure) → [] → classify() runs every job."""
+    if not (REF.fullmatch(base) and REF.fullmatch(head)):
+        print(f"ci_changes: refusing ref {base!r}/{head!r}; running every job", file=sys.stderr)
         return []
-    return r.stdout.split()
+    r = subprocess.run(["git", "-c", "core.quotePath=false", "diff", "--name-only", "-z", "--no-renames",
+                        "--end-of-options", f"{base}...{head}"], capture_output=True, cwd=cwd)
+    if r.returncode != 0:
+        print(f"ci_changes: git diff failed ({r.stderr.decode(errors='replace').strip()[:200]}); running every job",
+              file=sys.stderr)
+        return []
+    return [p for p in r.stdout.decode("utf-8", errors="surrogateescape").split("\0") if p]
 
 
 def main(argv: list[str]) -> int:

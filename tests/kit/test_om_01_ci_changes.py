@@ -1,7 +1,9 @@
 """OM-01 CI change detection (§19): which jobs a PR's diff needs. Fails closed: unknown diff runs everything.
 Stdlib only, like the kit: python3 -m unittest discover -s tests/kit"""
+import shutil
 import subprocess
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -49,6 +51,50 @@ class Cli(unittest.TestCase):
     def test_OM_01_real_diff(self):
         r = self.run_cli("--base", "HEAD", "--head", "HEAD")  # no changes → fail closed: run all
         self.assertEqual(set(r.stdout.split()), {"lint=true", "java=true", "stack=true"})
+
+
+class ChangedInTempRepo(unittest.TestCase):
+    """changed() against a throwaway repo: odd filenames and renames must not hide a path."""
+
+    def setUp(self):
+        self.repo = Path(tempfile.mkdtemp())
+        self.git("init", "-q", "-b", "main")
+        self.git("config", "user.email", "t@example.invalid")
+        self.git("config", "user.name", "t")
+        (self.repo / "infra/db").mkdir(parents=True)
+        (self.repo / "infra/db/init.sql").write_text("select 1;\n")
+        self.commit("base")
+        self.base = self.git("rev-parse", "HEAD").strip()
+
+    def tearDown(self):
+        shutil.rmtree(self.repo)
+
+    def git(self, *args: str) -> str:
+        return subprocess.run(["git", *args], cwd=self.repo, capture_output=True, text=True, check=True).stdout
+
+    def commit(self, msg: str):
+        self.git("add", "-A")
+        self.git("commit", "-q", "-m", msg)
+
+    def test_OM_01_rename_out_of_infra_still_runs_stack(self):
+        (self.repo / "docs").mkdir()
+        self.git("mv", "infra/db/init.sql", "docs/init.sql")
+        self.commit("move")
+        paths = ci_changes.changed(self.base, "HEAD", cwd=self.repo)
+        self.assertIn("infra/db/init.sql", paths)
+        self.assertTrue(ci_changes.classify(paths)["stack"])
+
+    def test_OM_01_odd_filenames_are_exact(self):
+        for name in ("infra/db/a b.sql", "infra/db/caf\u00e9.sql"):
+            (self.repo / name).write_text("x\n")
+        self.commit("odd")
+        self.assertEqual(sorted(ci_changes.changed(self.base, "HEAD", cwd=self.repo)),
+                         ["infra/db/a b.sql", "infra/db/caf\u00e9.sql"])
+
+    def test_OM_01_option_like_ref_runs_all(self):
+        out = self.repo / "pwned"
+        self.assertEqual(ci_changes.changed(f"--output={out}", "HEAD", cwd=self.repo), [])
+        self.assertEqual(list(self.repo.glob("pwned*")), [], "ref was parsed as a git option")
 
 
 if __name__ == "__main__":

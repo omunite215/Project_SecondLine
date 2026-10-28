@@ -10,7 +10,7 @@ define todo
 endef
 
 .DEFAULT_GOAL := help
-.PHONY: help board-next board-check trace trace-check spec-check spec-split ctx kit-test kit-check hpc-help \
+.PHONY: help board-next board-check trace trace-check spec-check spec-split ctx kit-test kit-check gh-check gh-apply hpc-help \
  bootstrap up down ps logs reset db-shell lint test codegen codegen-java codegen-py contracts-check \
  test-ledger test-gateway test-mcp test-policy test-py test-agent test-factory test-eval test-supervisor test-console \
  test-int test-sec test-redteam test-chaos test-load leakage-check refdata-verify \
@@ -41,6 +41,10 @@ trace-check: ## Generated docs (TRACEABILITY.md, PLAN.md table) match the boards
 	cmp -s $$t/TRACEABILITY.md docs/team/TRACEABILITY.md && cmp -s $$t/PLAN.md docs/team/PLAN.md; s=$$?; rm -rf $$t; \
 	[ $$s -eq 0 ] || { echo "trace-check: generated docs were stale; regenerated now, review + commit docs/team/{TRACEABILITY,PLAN}.md"; exit 1; }
 kit-check: spec-check board-check skills-lint ctx kit-test trace-check ## All kit checks (same as CI)
+gh-check: ## Live GitHub settings == .github/settings.json (Om's admin gh session; not in CI)
+	@$(PY) scripts/gh_settings.py check
+gh-apply: ## Print the writes that would reconcile GitHub to settings.json (add --yes by hand to apply)
+	@$(PY) scripts/gh_settings.py apply
 hpc-help: ## Explorer vLLM runbook pointer
 	@@sed -n '1,25p' docs/setup/EXPLORER-HPC.md
 

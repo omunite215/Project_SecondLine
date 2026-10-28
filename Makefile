@@ -33,8 +33,8 @@ spec-split: ## Regenerate spec shards (only after an approved spec change)
 ctx: ## Always-loaded Claude context budget
 	@$(PY) scripts/ctx_budget.py --max 3500
 KIT_TESTS ?= tests/security tests/kit
-kit-test: ## Kit guardrail tests: hpc.sh, hooks, skills gate (OM-26)
-	@for d in $(KIT_TESTS); do out=$$($(PY) -m unittest discover -s $$d -p 'test_om_26_*.py' 2>&1) || { echo "$$out"; exit 1; }; echo "$$d: $$(echo "$$out" | tail -1)"; done
+kit-test: ## Kit guardrail tests: hpc.sh, hooks, skills gate (OM-25, OM-26)
+	@for d in $(KIT_TESTS); do out=$$($(PY) -m unittest discover -s $$d -p 'test_*.py' 2>&1) || { echo "$$out"; exit 1; }; echo "$$d: $$(echo "$$out" | tail -1)"; done
 trace-check: ## Generated docs (TRACEABILITY.md, PLAN.md table) match the boards, as CI checks
 	@t=$$(mktemp -d); cp docs/team/TRACEABILITY.md docs/team/PLAN.md $$t/; \
 	$(PY) scripts/board.py trace --write >/dev/null && $(PY) scripts/board.py summary --write >/dev/null || { rm -rf $$t; exit 1; }; \

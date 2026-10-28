@@ -1,4 +1,5 @@
 """KG-01 §21 · NFR-11: the uv workspace exposes every Python member as an importable package."""
+
 import importlib
 import re
 import tomllib

@@ -1,4 +1,5 @@
 """KG-01 §19 · NFR-06: `make codegen-py` is deterministic and maps money to Decimal (golden rule 3)."""
+
 import importlib.util
 import subprocess
 import sys
@@ -11,8 +12,12 @@ FIXTURES = Path(__file__).parent / "fixtures" / "schemas"
 
 
 def _codegen(out: Path) -> None:
-    subprocess.run([sys.executable, str(ROOT / "scripts" / "codegen_py.py"), "--schemas", str(FIXTURES),
-                    "--out", str(out)], check=True, capture_output=True, text=True)
+    subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "codegen_py.py"), "--schemas", str(FIXTURES), "--out", str(out)],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
 
 def _tree(root: Path) -> dict[str, bytes]:
@@ -43,3 +48,16 @@ def test_KG_01_codegen_money_is_decimal(tmp_path: Path) -> None:
     doc = model.model_validate({"amount": "10.10", "currency": "USD"})
     assert type(doc.amount) is Decimal and doc.amount == Decimal("10.10")
     assert doc.model_dump(mode="json")["amount"] == "10.10"  # strings in JSON, never float
+
+
+def test_KG_01_committed_models_are_current(tmp_path: Path) -> None:
+    # Same check CI runs as `make codegen-py && git diff --exit-code`: committed models == fresh codegen.
+    committed = ROOT / "packages" / "contracts" / "py" / "src" / "sl_contracts" / "_generated"
+    subprocess.run(
+        [sys.executable, str(ROOT / "scripts" / "codegen_py.py"), "--out", str(tmp_path)],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert committed.is_dir(), "run `make codegen-py`"
+    assert _tree(committed) == _tree(tmp_path), "stale sl_contracts models: run `make codegen-py`"

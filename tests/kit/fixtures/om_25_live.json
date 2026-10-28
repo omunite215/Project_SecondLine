@@ -8,6 +8,10 @@
   "full_name": "omunite215/Project_SecondLine",
   "private": true
  },
+ "repos/omunite215/Project_SecondLine/actions/secrets?per_page=100": {
+  "secrets": [],
+  "total_count": 0
+ },
  "repos/omunite215/Project_SecondLine/collaborators": [
   {
    "login": "omunite215",

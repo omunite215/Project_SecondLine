@@ -32,8 +32,9 @@ Rulesets evaluate independently: when Om merges, `merge-gate` shows `bypass` in 
 ## Flow
 - **Kunal's PR:** `/finish-task` → `/open-pr` → CI → Om runs `/review-pr <n>` → `gh pr review <n> --approve` (or `--request-changes`) → Om squash-merges → `python3 scripts/board.py set <ID> done`.
 - **Om's PR:** `/open-pr` with Kunal as reviewer → CI → Kunal approves → Om squash-merges.
+- **Om's merge command:** `gh pr merge <n> --squash` (VERIFY in OM-25 Task 5: if `merge-gate` refuses it, `--admin`). `--admin` only uses bypasses Om actually has, i.e. `merge-gate`; `main` has none, so approval and CI are still enforced.
 - **Dependabot PR:** Om reviews and approves → Om merges. When two touch neighbouring lines, merge one, comment `@dependabot rebase` on the other, re-approve after its CI.
-- Branch behind `main`? Update it (`gh api -X PUT repos/omunite215/Project_SecondLine/pulls/<n>/update-branch`) and wait for CI; there's no way around the strict check.
+- Branch behind `main`? The PR **author** updates it (`gh api -X PUT repos/omunite215/Project_SecondLine/pulls/<n>/update-branch` or the Update button) and the reviewer re-approves after CI. Never update or push to the other person's PR: you become the last pusher, and last-push approval means nobody can approve it. There's no way around the strict check.
 
 ## Milestone tags
 At each gate (§5 of PLAN.md) Om tags the merge commit: `git tag -a m0 -m "M-0 gate" <sha> && git push origin m0`. Only Om can create `m*` tags, and nobody can move or delete them once pushed. Never push a throwaway `m*` tag.

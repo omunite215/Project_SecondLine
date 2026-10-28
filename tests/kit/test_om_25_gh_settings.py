@@ -17,6 +17,11 @@ SETTINGS = json.loads((ROOT / ".github/settings.json").read_text())
 LIVE_API = json.loads((ROOT / "tests/kit/fixtures/om_25_live.json").read_text())  # raw `gh api` responses, 2026-10-28
 
 
+def as_live(settings: dict) -> dict:
+    """settings.json in fetch_live's shape (it also reports repo-level secret names)."""
+    return dict(copy.deepcopy(settings), repo_secrets=[])
+
+
 class FakeGh:
     """Replays recorded `gh api` responses; records every call so tests can assert reads vs writes."""
 
@@ -43,7 +48,7 @@ def run_cli(*args: str, gh: FakeGh) -> tuple[int, str]:
 
 class Diff(unittest.TestCase):
     def test_OM_25_identical_settings_no_diff(self):
-        self.assertEqual(gh_settings.diff(SETTINGS, copy.deepcopy(SETTINGS)), [])
+        self.assertEqual(gh_settings.diff(SETTINGS, as_live(SETTINGS)), [])
 
     def test_OM_25_today_live_reports_six_gaps(self):
         live = gh_settings.fetch_live(REPO, SETTINGS, gh=FakeGh(LIVE_API))
@@ -63,25 +68,33 @@ class Diff(unittest.TestCase):
         self.assertEqual(gh_settings.normalize_ruleset(raw), gh_settings.normalize_ruleset(bare))
 
     def test_OM_25_rule_order_ignored(self):
-        live = copy.deepcopy(SETTINGS)
+        live = as_live(SETTINGS)
         live["rulesets"][0]["rules"].reverse()
         live["rulesets"] = [gh_settings.normalize_ruleset(r) for r in live["rulesets"]]
         self.assertEqual(gh_settings.diff(SETTINGS, live), [])
 
     def test_OM_25_extra_live_ruleset_reported(self):
-        live = copy.deepcopy(SETTINGS)
+        live = as_live(SETTINGS)
         live["rulesets"].append(dict(copy.deepcopy(SETTINGS["rulesets"][1]), name="foo"))
         self.assertIn("rulesets.foo: not in settings.json", gh_settings.diff(SETTINGS, live))
 
     def test_OM_25_extra_collaborator_reported(self):
-        live = copy.deepcopy(SETTINGS)
+        live = as_live(SETTINGS)
         live["collaborators"]["mallory"] = "admin"
         self.assertIn("collaborators.mallory: not in settings.json", gh_settings.diff(SETTINGS, live))
 
     def test_OM_25_extra_github_default_labels_are_fine(self):
-        live = copy.deepcopy(SETTINGS)
+        live = as_live(SETTINGS)
         live["labels"] = ["bug", "ai-review", "dependencies"]
         self.assertEqual(gh_settings.diff(SETTINGS, live), [])
+
+
+    def test_OM_25_review_token_as_repo_secret_reported(self):
+        # A repo secret is readable by any workflow on a same-repo PR; the token belongs in the environment only.
+        api = copy.deepcopy(LIVE_API)
+        api[f"repos/{REPO}/actions/secrets?per_page=100"] = {"total_count": 1, "secrets": [{"name": "CLAUDE_CODE_OAUTH_TOKEN"}]}
+        lines = gh_settings.diff(SETTINGS, gh_settings.fetch_live(REPO, SETTINGS, gh=FakeGh(api)))
+        self.assertIn("repo_secrets.CLAUDE_CODE_OAUTH_TOKEN: must be an environment secret only", lines)
 
 
 class FailClosed(unittest.TestCase):

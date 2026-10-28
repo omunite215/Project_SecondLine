@@ -71,6 +71,7 @@ def fetch_live(repo: str, expected: dict, gh: Gh = run_gh) -> dict:
         "collaborators": {c["login"]: c["role_name"] for c in gh("GET", f"{R}/collaborators")},
         "labels": [l["name"] for l in gh("GET", f"{R}/labels?per_page=100")],
         "environments": {},
+        "repo_secrets": sorted(s["name"] for s in gh("GET", f"{R}/actions/secrets?per_page=100")["secrets"]),
         "rulesets": [],
         "_ids": {},
     }
@@ -109,6 +110,8 @@ def diff(expected: dict, live: dict) -> list[str]:
         for k in ("branch_policies", "secrets"):
             if sorted(want[k]) != got[k]:
                 out.append(f"environments.{env}.{k}: expected {_show(sorted(want[k]))} got {_show(got[k])}")
+    env_secrets = {s for e in expected["environments"].values() for s in e["secrets"]}
+    out += [f"repo_secrets.{s}: must be an environment secret only" for s in live["repo_secrets"] if s in env_secrets]
     live_rs = {r["name"]: r for r in live["rulesets"]}
     for want in expected["rulesets"]:
         got = live_rs.get(want["name"])

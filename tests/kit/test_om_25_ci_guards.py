@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[2]
 SETTINGS = json.loads((ROOT / ".github/settings.json").read_text())
 WORKFLOWS = ROOT / ".github/workflows"
 ADMIN = {"actor_id": 5, "actor_type": "RepositoryRole"}
+GITHUB_ACTIONS_APP = 15368
 
 
 def ruleset(name: str) -> dict:
@@ -43,8 +44,32 @@ def triggers(text: str) -> set[str]:
     return {m.group(1) for l in block[1:] if (m := re.match(r"^  ([\w-]+):?\s*$", l))}
 
 
-def job_ids(text: str) -> set[str]:
-    return {m.group(1) for l in top_block(text, "jobs")[1:] if (m := re.match(r"^  ([\w-]+):\s*$", l))}
+def sub_blocks(block: list[str]) -> dict[str, list[str]]:
+    """2-space-indented keys of a top-level block → their deeper-indented lines."""
+    out: dict[str, list[str]] = {}
+    key = None
+    for l in block[1:]:
+        if m := re.match(r"^  ([\w-]+):", l):
+            key = m.group(1)
+            out[key] = []
+        elif key and re.match(r"^   ", l):
+            out[key].append(l)
+    return out
+
+
+def always_on_pr_contexts(text: str) -> set[str]:
+    """Check contexts a workflow reports on EVERY pull_request: unfiltered trigger, job without `if:`;
+    the context is the job's `name:` when set, else its id."""
+    if "pull_request" not in triggers(text):
+        return set()
+    if sub_blocks(top_block(text, "on")).get("pull_request"):  # paths/branches/types filters
+        return set()
+    out = set()
+    for job, lines in sub_blocks(top_block(text, "jobs")).items():
+        keys = {m.group(1): m.group(2).strip() for l in lines if (m := re.match(r"^    ([\w-]+):(.*)$", l))}
+        if "if" not in keys:
+            out.add(keys.get("name") or job)
+    return out
 
 
 def tracked(name: str) -> list[Path]:
@@ -67,6 +92,8 @@ class MergeModel(unittest.TestCase):
         self.assertEqual(pr["allowed_merge_methods"], ["squash"])
         checks = rule(main, "required_status_checks")["parameters"]
         self.assertIs(checks["strict_required_status_checks_policy"], True)
+        for c in checks["required_status_checks"]:  # only the GitHub Actions app may report it, not a commit status
+            self.assertEqual(c.get("integration_id"), GITHUB_ACTIONS_APP, c)
         self.assertTrue(checks["required_status_checks"])
         self.assertEqual({r["type"] for r in main["rules"]} >= {"deletion", "non_fast_forward"}, True)
 
@@ -99,18 +126,35 @@ class MergeModel(unittest.TestCase):
                 self.assertEqual({k: actor[k] for k in ADMIN}, ADMIN, rs["name"])
 
 
+class WorkflowParser(unittest.TestCase):
+    WF = "on:\n  pull_request:\n{filters}jobs:\n  java:\n{name}    runs-on: ubuntu-latest\n"
+
+    def test_OM_25_check_context_is_job_name_when_set(self):
+        text = self.WF.format(filters="", name="    name: Java build\n")
+        self.assertEqual(always_on_pr_contexts(text), {"Java build"})
+
+    def test_OM_25_filtered_pull_request_trigger_is_not_always_on(self):
+        text = self.WF.format(filters="    paths: [services/**]\n", name="")
+        self.assertEqual(always_on_pr_contexts(text), set())
+
+    def test_OM_25_job_with_if_is_not_always_on(self):
+        text = self.WF.format(filters="", name="    if: github.actor != 'x'\n")
+        self.assertEqual(always_on_pr_contexts(text), set())
+
+    def test_OM_25_plain_job_is_always_on(self):
+        self.assertEqual(always_on_pr_contexts(self.WF.format(filters="", name="")), {"java"})
+
+
 class CiConsistency(unittest.TestCase):
     def test_OM_25_required_checks_are_pr_jobs(self):
         pr_jobs = set()
         for wf in WORKFLOWS.glob("*.yml"):
-            text = wf.read_text()
-            if "pull_request" in triggers(text):
-                pr_jobs |= job_ids(text)
+            pr_jobs |= always_on_pr_contexts(wf.read_text())
         self.assertIn("kit", pr_jobs)  # sanity: the parser sees today's only check
         contexts = [c["context"] for c in rule(ruleset("main"), "required_status_checks")["parameters"]
                     ["required_status_checks"]]
         for c in contexts:
-            self.assertIn(c, pr_jobs, f"required check {c!r} has no pull_request job — every merge would block")
+            self.assertIn(c, pr_jobs, f"required check {c!r} isn't reported on every PR — every merge would block")
 
     def test_OM_25_ai_review_label_matches_workflow(self):
         self.assertIn("ai-review", SETTINGS["labels"])
@@ -142,6 +186,13 @@ class CiConsistency(unittest.TestCase):
 
 
 class DocsMatchSettings(unittest.TestCase):
+    def test_OM_25_only_the_author_updates_a_branch(self):
+        # last-push approval: if Om updates Kunal's branch, Om is the last pusher and nobody can approve it.
+        gh = (ROOT / "docs/setup/GITHUB.md").read_text()
+        line = next(l for l in gh.splitlines() if "update-branch" in l)
+        self.assertIn("author", line)
+        self.assertIn("never", line.lower())
+
     def test_OM_25_docs_name_every_ruleset(self):
         gh = (ROOT / "docs/setup/GITHUB.md").read_text()
         for needle in (".github/settings.json", "make gh-check", "Break-glass log",

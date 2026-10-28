@@ -150,3 +150,4 @@ Owner key `kg` (`owner: kunal` in CLAUDE.local.md). Claude reads this through `p
 - refs: §6 §21 | REQ-015 | T-DOC-01 | NFR-06
 - build: docs/datasheets/second-line-scenarios.md (Gebru et al. sections), docs/model-cards/<config>.md per tested config (Mitchell et al.), docs/data-governance.md (sources, licenses, hashes, synthetic-only scope, misuse cases, review status from SH-11).
 - done: every tested config has a card; datasheet hashes match the manifests.
+- OM-25 merge test 2026-10-28

@@ -1,0 +1,158 @@
+{
+ "repos/omunite215/Project_SecondLine": {
+  "allow_auto_merge": false,
+  "allow_merge_commit": false,
+  "allow_rebase_merge": false,
+  "allow_squash_merge": true,
+  "delete_branch_on_merge": true,
+  "full_name": "omunite215/Project_SecondLine",
+  "private": true
+ },
+ "repos/omunite215/Project_SecondLine/actions/secrets?per_page=100": {
+  "secrets": [],
+  "total_count": 0
+ },
+ "repos/omunite215/Project_SecondLine/collaborators": [
+  {
+   "login": "omunite215",
+   "role_name": "admin"
+  },
+  {
+   "login": "kunalgupta06",
+   "role_name": "write"
+  }
+ ],
+ "repos/omunite215/Project_SecondLine/environments/claude-review/deployment-branch-policies": {
+  "branch_policies": [
+   {
+    "name": "main",
+    "type": "branch"
+   }
+  ],
+  "total_count": 1
+ },
+ "repos/omunite215/Project_SecondLine/environments/claude-review/secrets": {
+  "secrets": [
+   {
+    "name": "CLAUDE_CODE_OAUTH_TOKEN"
+   }
+  ],
+  "total_count": 1
+ },
+ "repos/omunite215/Project_SecondLine/labels?per_page=100": [
+  {
+   "name": "accessibility"
+  },
+  {
+   "name": "bug"
+  },
+  {
+   "name": "dependencies"
+  },
+  {
+   "name": "documentation"
+  },
+  {
+   "name": "duplicate"
+  },
+  {
+   "name": "enhancement"
+  },
+  {
+   "name": "github_actions"
+  },
+  {
+   "name": "good first issue"
+  },
+  {
+   "name": "help wanted"
+  },
+  {
+   "name": "invalid"
+  },
+  {
+   "name": "question"
+  },
+  {
+   "name": "wontfix"
+  }
+ ],
+ "repos/omunite215/Project_SecondLine/rulesets": [
+  {
+   "enforcement": "active",
+   "id": 25804326,
+   "name": "main",
+   "target": "branch"
+  }
+ ],
+ "repos/omunite215/Project_SecondLine/rulesets/25804326": {
+  "_links": {
+   "html": {
+    "href": "https://github.com/omunite215/Project_SecondLine/rules/25804326"
+   },
+   "self": {
+    "href": "https://api.github.com/repos/omunite215/Project_SecondLine/rulesets/25804326"
+   }
+  },
+  "bypass_actors": [
+   {
+    "actor_id": 5,
+    "actor_type": "RepositoryRole",
+    "bypass_mode": "pull_request"
+   }
+  ],
+  "conditions": {
+   "ref_name": {
+    "exclude": [],
+    "include": [
+     "~DEFAULT_BRANCH"
+    ]
+   }
+  },
+  "created_at": "2026-10-24T21:56:55.685-04:00",
+  "current_user_can_bypass": "pull_requests_only",
+  "enforcement": "active",
+  "id": 25804326,
+  "name": "main",
+  "node_id": "RRS_lACqUmVwb3NpdG9yec5VQP2dzgGJviY",
+  "rules": [
+   {
+    "type": "deletion"
+   },
+   {
+    "type": "non_fast_forward"
+   },
+   {
+    "parameters": {
+     "allowed_merge_methods": [
+      "squash"
+     ],
+     "dismiss_stale_reviews_on_push": true,
+     "require_code_owner_review": true,
+     "require_extra_approval_for_unattributed_changes": true,
+     "require_last_push_approval": false,
+     "required_approving_review_count": 1,
+     "required_review_thread_resolution": true,
+     "required_reviewers": []
+    },
+    "type": "pull_request"
+   },
+   {
+    "parameters": {
+     "do_not_enforce_on_create": false,
+     "required_status_checks": [
+      {
+       "context": "kit"
+      }
+     ],
+     "strict_required_status_checks_policy": true
+    },
+    "type": "required_status_checks"
+   }
+  ],
+  "source": "omunite215/Project_SecondLine",
+  "source_type": "Repository",
+  "target": "branch",
+  "updated_at": "2026-10-24T21:56:55.754-04:00"
+ }
+}

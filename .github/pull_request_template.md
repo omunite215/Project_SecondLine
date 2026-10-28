@@ -1,6 +1,6 @@
 ## Task
 Task ID(s): <!-- e.g. KG-06 --> · Spec §: · REQ / T / other IDs:
-Reviewer: @omunite215 (required). Om's own PR touching services/gateway, services/ledger, services/mcp-adapter, infra/opa or .github → Kunal requested too.
+Reviewer: Kunal's PR → @omunite215 · Om's PR → @kunalgupta06 (the ruleset needs the other person's approval; only Om merges).
 
 ## What changed
 

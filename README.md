@@ -22,7 +22,7 @@ The split follows the **tool boundary**: Om owns everything *below* it (the auth
 | Secrets/redaction, observability, chaos/load testing | `infra/` |
 | Review API, review console, demo environment | `apps/console/` |
 | Agent-facing attack packs (held out from Kunal) | `data/attacks/` |
-| CI/CD, repo settings; **approves and merges every PR**; Explorer HPC account | `.github/` |
+| CI/CD, repo settings; **the only one who merges**; approves Kunal's PRs; Explorer HPC account | `.github/` |
 
 ### Kunal Gupta: Intelligence & Evidence (above the tool boundary)
 

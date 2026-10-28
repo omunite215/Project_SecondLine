@@ -1,4 +1,3 @@
-# Om (@omunite215) owns CI/CD and approves + merges every PR.
-# Ruleset on main (docs/setup/GITHUB.md): PR required · 1 approval · code-owner review · required checks · no force-push/deletion.
-# Om's own PRs: green CI, Kunal requested as reviewer on trust-boundary paths, then merge via the admin bypass.
-*   @omunite215
+# Both people own everything so the other's approval is the code-owner review (maker/checker, §21).
+# Rules: .github/settings.json + docs/setup/GITHUB.md. Kunal's PRs need Om; Om's PRs need Kunal; only Om merges (merge-gate).
+*   @omunite215 @kunalgupta06

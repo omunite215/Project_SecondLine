@@ -4,4 +4,11 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-# OM-25 adds gradle / pip / npm entries once those build files exist.
+  - package-ecosystem: gradle
+    directory: "/"
+    schedule:
+      interval: weekly
+    groups:
+      spring-boot:
+        patterns: ["org.springframework.boot*"]
+# OM-01 Task 5 adds docker / docker-compose; KG-01 adds uv; OM-21 adds npm. tests/kit enforces coverage.

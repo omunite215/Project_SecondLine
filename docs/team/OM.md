@@ -9,7 +9,7 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 ## M-0 Contracts & setup
 
 ### OM-01 · Monorepo bootstrap, Compose base, CI skeleton
-- meta: P0 | M-0 | 2d | mcs | deps: SH-01 | status: todo
+- meta: P0 | M-0 | 2d | mcs | deps: SH-01 | status: doing
 - refs: §7 §19 §21 | NFR-11 NFR-06 | T-DOC-01 | ADR-009 ADR-010 | RSK-12
 - build: dirs from the CLAUDE.md repo map. Gradle Kotlin DSL multi-project (services/ledger, services/gateway, libs/contracts-java) + gradle/libs.versions.toml: Java 21, Spring Boot 3.5.x pinned (4.0.x only via ADR; default chosen for Jackson-2 library compatibility). infra/compose/docker-compose.yml profiles: core (postgres 17, redis 7, opa 1.x) · app (ledger, gateway, mcp-adapter) · events (kafka KRaft, supervisor) · obs (otel-collector, jaeger, prometheus, grafana) · ui (console) · chaos (toxiproxy); healthchecks; mem_limit per service sized for a 16 GB host; multi-stage Dockerfiles so the teammate needs no JDK; multi-arch base images (Kunal is arm64). infra/db/init/00-roles.sql: schemas ledger, audit, eval; roles ledger_app, grader_ro, operator. Replace Makefile TODO stubs: bootstrap up down ps logs reset db-shell lint test codegen. GitHub Actions: path-filtered java / python / policy / console jobs next to kit-checks; Testcontainers-ready. pre-commit: gitleaks, LF, EOF. No Kubernetes.
 - done: fresh clone on BOTH machines: `make bootstrap && make up PROFILES="core"` healthy in < 2 min; CI green; `make ctx` under budget; infra/CLAUDE.md lists the real commands.

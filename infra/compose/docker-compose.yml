@@ -1,0 +1,53 @@
+# Second-Line local platform (OM-01). Profiles: core · app · events · obs · ui · chaos.
+# `make up PROFILES="core app"`; secrets only from ../../.env (make bootstrap). Host ports bind to 127.0.0.1.
+name: secondline
+
+services:
+  postgres:
+    image: postgres:17.11-alpine
+    profiles: [core]
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?run make bootstrap}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run make bootstrap}
+      LEDGER_SVC_PASSWORD: ${LEDGER_SVC_PASSWORD:?run make bootstrap}
+      GRADER_SVC_PASSWORD: ${GRADER_SVC_PASSWORD:?run make bootstrap}
+      OPERATOR_SVC_PASSWORD: ${OPERATOR_SVC_PASSWORD:?run make bootstrap}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ../db/init:/docker-entrypoint-initdb.d:ro
+    ports: ["127.0.0.1:5432:5432"]
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d $${POSTGRES_DB}"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7.4.12-alpine
+    profiles: [core]
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    ports: ["127.0.0.1:6379:6379"]
+    mem_limit: 128m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  opa:
+    image: openpolicyagent/opa:1.21.4-static
+    profiles: [core]
+    command: ["run", "--server", "--addr", "0.0.0.0:8181", "--log-level", "error"]
+    ports: ["127.0.0.1:8181:8181"]
+    mem_limit: 128m
+    healthcheck:
+      # Static image: no shell or curl. Process check here; server readiness is asserted from the host
+      # (tests/infra test_OM_01_opa_health).
+      test: ["CMD", "/opa", "version"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  pgdata:

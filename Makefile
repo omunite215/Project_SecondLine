@@ -4,7 +4,10 @@ SHELL := /bin/bash
 PY ?= python3
 GRADLE ?= ./gradlew --no-daemon -q
 PROFILES ?= core
-# Intended (OM-01): COMPOSE = docker compose -f infra/compose/docker-compose.yml $(foreach p,$(PROFILES),--profile $(p))
+ENV_FILE ?= .env
+ALL_PROFILES := core app events obs ui chaos
+COMPOSE = docker compose -f infra/compose/docker-compose.yml --env-file $(ENV_FILE)
+need_env = @[ -f $(ENV_FILE) ] || { echo "$(ENV_FILE) missing: run make bootstrap"; exit 1; }
 
 define todo
 @echo "TODO($(1)): '$@' is not built yet -> python3 scripts/board.py show $(1)"; exit 1
@@ -51,19 +54,26 @@ hpc-help: ## Explorer vLLM runbook pointer
 
 # ---- platform / stack (Om) -----------------------------------------------------
 bootstrap: ## One-time dependency install (OM-01 + KG-01)
-	$(call todo,OM-01)
+	@docker compose version --short | awk -F. '{ if ($$1 < 2 || ($$1 == 2 && $$2 < 17)) { print "need docker compose >= 2.17"; exit 1 } }'
+	@$(PY) scripts/bootstrap_env.py
+	@if [ ! -f .pre-commit-config.yaml ]; then :; elif command -v uv >/dev/null; then uvx pre-commit install; else echo "install uv, then: uvx pre-commit install"; fi
 up: ## Start profiles, e.g. make up PROFILES="core app" (core app events obs ui chaos)
-	$(call todo,OM-01)
+	$(need_env)
+	$(COMPOSE) $(foreach p,$(PROFILES),--profile $(p)) up -d --wait --wait-timeout 120
 down: ## Stop the stack
-	$(call todo,OM-01)
+	$(need_env)
+	$(COMPOSE) $(foreach p,$(ALL_PROFILES),--profile $(p)) down
 ps: ## Service health
-	$(call todo,OM-01)
+	$(need_env)
+	@$(COMPOSE) $(foreach p,$(ALL_PROFILES),--profile $(p)) ps --format 'table {{.Service}}\t{{.Status}}'
 logs: ## Tail one service: make logs SVC=ledger TAIL=50
-	$(call todo,OM-01)
+	$(need_env)
+	@$(COMPOSE) $(foreach p,$(ALL_PROFILES),--profile $(p)) logs --tail $(or $(TAIL),50) $(SVC)
 reset: ## Drop + reload a namespace: make reset NS=<id>
 	$(call todo,OM-04)
 db-shell: ## psql into the dev database
-	$(call todo,OM-01)
+	$(need_env)
+	$(COMPOSE) exec postgres psql -U postgres -d secondline
 lint: ## All linters
 	$(call todo,OM-01)
 test: ## All unit suites (quiet): Java + kit (Python suites: make test-py)

@@ -72,7 +72,7 @@ MCS = cards tagged `mcs` (`mcs=Xd` = reduced scope); totals in §3. Cut in this 
 
 ## 8. Collaboration protocol
 - **Om owns CI/CD and approves + merges every PR** (ruleset on main: PR + 1 approval + code-owner review + required checks). Kunal opens PRs with `/open-pr` and never merges; Om reviews with `/review-pr <n>` within 24 h.
-- Om's own PRs: green CI, Kunal requested as reviewer on trust-boundary paths (services/gateway, services/ledger, services/mcp-adapter, infra/opa, .github — independence of controls), then merge via the admin bypass.
+- Om's own PRs: green CI + Kunal's approval (independence of controls), then Om merges. No ruleset bypass on `main`; only Om can merge (`merge-gate`). Details + break-glass: docs/setup/GITHUB.md (OM-25).
 - Branch `<owner>/<TASK-ID>-slug`; Conventional Commits with the task ID; small PRs.
 - Skills gate GREEN before any card (`make skills-check`); task skills are re-checked when a card goes `doing`.
 - Contracts change only through a PR both approve + `/handoff` + `make codegen`.

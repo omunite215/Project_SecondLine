@@ -61,7 +61,8 @@ class MergeModel(unittest.TestCase):
         self.assertEqual(main["enforcement"], "active")
         pr = rule(main, "pull_request")["parameters"]
         self.assertGreaterEqual(pr["required_approving_review_count"], 1)
-        for k in ("require_code_owner_review", "dismiss_stale_reviews_on_push", "required_review_thread_resolution"):
+        for k in ("require_code_owner_review", "dismiss_stale_reviews_on_push", "required_review_thread_resolution",
+                  "require_last_push_approval"):
             self.assertIs(pr[k], True, k)
         self.assertEqual(pr["allowed_merge_methods"], ["squash"])
         checks = rule(main, "required_status_checks")["parameters"]
@@ -85,6 +86,12 @@ class MergeModel(unittest.TestCase):
         self.assertEqual(imm["bypass_actors"], [])
         self.assertEqual(create["rules"], [{"type": "creation"}])
         self.assertEqual(create["bypass_actors"], [dict(ADMIN, bypass_mode="always")])
+
+    def test_OM_25_both_people_are_code_owners(self):
+        # Om's PRs are approved by Kunal; that approval must count as code-owner review explicitly,
+        # not via GitHub's author-is-owner behaviour observed on PR #1.
+        owners = [l for l in (ROOT / ".github/CODEOWNERS").read_text().splitlines() if l.startswith("*")]
+        self.assertEqual(owners, ["*   @omunite215 @kunalgupta06"])
 
     def test_OM_25_no_ruleset_bypass_beyond_admin(self):
         for rs in SETTINGS["rulesets"]:
@@ -132,6 +139,17 @@ class CiConsistency(unittest.TestCase):
         self.assertNotIn("test_om_26_*", mk + ci)
         self.assertRegex(mk, r"-p 'test_\*\.py'")
         self.assertEqual(len(re.findall(r"-p 'test_\*\.py'", ci)), 2)
+
+
+class DocsMatchSettings(unittest.TestCase):
+    def test_OM_25_docs_name_every_ruleset(self):
+        gh = (ROOT / "docs/setup/GITHUB.md").read_text()
+        for needle in (".github/settings.json", "make gh-check", "Break-glass log",
+                       *(r["name"] for r in SETTINGS["rulesets"])):
+            self.assertIn(needle, gh)
+        for doc in ("docs/setup/GITHUB.md", "docs/team/PLAN.md", ".github/CODEOWNERS",
+                    ".github/pull_request_template.md", "README.md"):
+            self.assertNotRegex((ROOT / doc).read_text(), r"(?i)admin bypass|via (the )?bypass", doc)
 
 
 if __name__ == "__main__":

@@ -45,12 +45,14 @@ class Diff(unittest.TestCase):
     def test_OM_25_identical_settings_no_diff(self):
         self.assertEqual(gh_settings.diff(SETTINGS, copy.deepcopy(SETTINGS)), [])
 
-    def test_OM_25_today_live_reports_five_gaps(self):
+    def test_OM_25_today_live_reports_six_gaps(self):
         live = gh_settings.fetch_live(REPO, SETTINGS, gh=FakeGh(LIVE_API))
         lines = gh_settings.diff(SETTINGS, live)
-        self.assertEqual(len(lines), 5, lines)
+        self.assertEqual(len(lines), 6, lines)
         self.assertTrue(lines[0].startswith("labels.ai-review: missing"), lines)
         self.assertTrue(any(l.startswith("rulesets.main.bypass_actors: expected []") for l in lines), lines)
+        self.assertTrue(any(l.startswith("rulesets.main.rules:") and '"require_last_push_approval": false' in l
+                            for l in lines), lines)
         for name in ("merge-gate", "gate-tags-create", "gate-tags-immutable"):
             self.assertIn(f"rulesets.{name}: missing", lines)
 

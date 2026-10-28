@@ -2,6 +2,7 @@
 # Recipes are TAB-indented. Works with GNU make 3.81 (macOS default) and 4.x (WSL/CI).
 SHELL := /bin/bash
 PY ?= python3
+GRADLE ?= ./gradlew --no-daemon -q
 PROFILES ?= core
 # Intended (OM-01): COMPOSE = docker compose -f infra/compose/docker-compose.yml $(foreach p,$(PROFILES),--profile $(p))
 
@@ -65,8 +66,9 @@ db-shell: ## psql into the dev database
 	$(call todo,OM-01)
 lint: ## All linters
 	$(call todo,OM-01)
-test: ## All unit suites (quiet)
-	$(call todo,OM-01)
+test: ## All unit suites (quiet): Java + kit (Python suites: make test-py)
+	@$(GRADLE) test
+	@$(MAKE) --no-print-directory kit-test
 codegen: ## Regenerate Java + Python (+ TS) types from packages/contracts
 	$(call todo,SH-02)
 codegen-java: ## Java types
@@ -76,9 +78,9 @@ codegen-py: ## Python sl_contracts models
 contracts-check: ## Validate schemas + examples
 	$(call todo,SH-02)
 test-ledger: ## Ledger unit + property tests
-	$(call todo,OM-03)
+	@$(GRADLE) :services:ledger:test
 test-gateway: ## Gateway tests
-	$(call todo,OM-05)
+	@$(GRADLE) :services:gateway:test
 test-mcp: ## MCP adapter contract tests
 	$(call todo,OM-06)
 test-policy: ## opa test

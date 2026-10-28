@@ -4,4 +4,36 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-# OM-25 adds gradle / pip / npm entries once those build files exist.
+# KG-01: one uv entry per pyproject.toml (OM-25 test_OM_25_dependabot_covers_build_files). OM-25 adds gradle / npm.
+  - package-ecosystem: uv
+    directory: "/"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/packages/contracts/py"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/packages/scenario-factory"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/packages/evaluation"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/packages/audit-verifier"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/services/agent"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/services/supervisor"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/services/mcp-adapter"
+    schedule:
+      interval: weekly

@@ -24,7 +24,7 @@ def test_KG_01_dockerfiles_pinned(service: str) -> None:
     images = re.findall(r"^\s*(?:FROM|COPY --from=)\s*(\S+)", text, flags=re.MULTILINE | re.IGNORECASE)
     assert images, f"{service}/Dockerfile has no base image"
     for image in images:
-        name, _, tag = image.partition(":")
+        _, _, tag = image.partition(":")
         assert tag and tag != "latest" and re.search(r"\d", tag), f"{service}: pin {image} to a versioned tag"
     assert "--frozen" in text, f"{service}: install from uv.lock (uv sync --frozen)"
 

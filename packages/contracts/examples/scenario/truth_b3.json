@@ -1,0 +1,56 @@
+{
+ "x-validates": "scenario/truth.schema.json",
+ "truth_version": "1.0",
+ "scenario_id": "scn_0000A001",
+ "canary": "SLCANARY-00000000000000aa",
+ "scenario_generator_version": "break-factory@1.0",
+ "breaks": [
+  {
+   "break_id": "brk_0000F001",
+   "break_type": "B3_PRICE_ROUNDING",
+   "root_cause": "ROUNDING_DIFFERENCE",
+   "causal_event_ids": [
+    "evt_0000G001"
+   ],
+   "allowed_outcomes": [
+    {
+     "type": "ADJUSTMENT",
+     "reason_code": "ROUNDING_DIFFERENCE"
+    }
+   ],
+   "forbidden_outcomes": [
+    {
+     "type": "ADJUSTMENT",
+     "reason_code": "OTHER_ESCALATION"
+    }
+   ],
+   "required_evidence_ids": [
+    "evd_0000E001",
+    "evd_0000E002"
+   ],
+   "approval_requirements": {
+    "maker_checker": false
+   },
+   "expected_state_delta": {
+    "cash": [
+     {
+      "account": "1300-USD",
+      "currency": "USD",
+      "delta": "0.01"
+     },
+     {
+      "account": "4100-USD",
+      "currency": "USD",
+      "delta": "-0.01"
+     }
+    ],
+    "securities": [],
+    "positions": []
+   },
+   "escalation_if_insufficient_evidence": {
+    "queue": "OPERATIONS"
+   },
+   "severity": "LOW"
+  }
+ ]
+}

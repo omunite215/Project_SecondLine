@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/actions/parameters/classify.schema.json",
+  "title": "CLASSIFY parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "classification"
+  ],
+  "properties": {
+    "classification": {
+      "enum": [
+        "TIMING",
+        "PARTIAL_SETTLEMENT",
+        "NO_BREAK"
+      ]
+    },
+    "as_of_date": {
+      "$ref": "../../common.schema.json#/$defs/date"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/request_counterparty_clarification.input.schema.json",
+  "title": "Simulated message to a counterparty \u2014 input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "break_id",
+    "question"
+  ],
+  "properties": {
+    "run_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "break_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "question": {
+      "type": "string",
+      "maxLength": 2000
+    }
+  }
+}

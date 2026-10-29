@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/error_response.schema.json",
+  "title": "Error response for every 4xx/5xx (codes from errors.json; never ORACLE_MISMATCH)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "error_code",
+    "message",
+    "request_id"
+  ],
+  "properties": {
+    "error_code": {
+      "enum": [
+        "PERMISSION_DENIED",
+        "POLICY_DENIED",
+        "REVIEW_REQUIRED",
+        "APPROVAL_EXPIRED",
+        "EVIDENCE_STALE",
+        "STATE_CONFLICT",
+        "IDEMPOTENCY_CONFLICT",
+        "DOMAIN_INVALID",
+        "INSUFFICIENT_EVIDENCE",
+        "RUN_HALTED",
+        "RETRYABLE_UNAVAILABLE"
+      ]
+    },
+    "message": {
+      "type": "string",
+      "maxLength": 500
+    },
+    "request_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    },
+    "receipt_id": {
+      "$ref": "common.schema.json#/$defs/uuid"
+    }
+  }
+}

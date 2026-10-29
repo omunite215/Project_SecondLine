@@ -13,6 +13,10 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+      - name: uv (contracts-check runs pinned jsonschema/pyyaml through it)
+        run: python3 -m pip install --quiet uv==0.13.6
+      - name: Contracts valid, examples validate (SH-02)
+        run: make contracts-check
       - name: Spec shards match master
         run: python3 scripts/split_spec.py --check
       - name: Boards valid + every spec ID owned

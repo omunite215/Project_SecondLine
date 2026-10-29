@@ -37,8 +37,15 @@ class Shapes(unittest.TestCase):
         for name in ("action_with_requires_approval", "action_with_budget", "action_with_approved_by",
                      "adjustment_amount_number", "adjustment_amount_exponent", "action_without_evidence",
                      "receipt_unknown_decision", "envelope_missing_payload_hash", "approval_float_state_version",
-                     "classify_with_adjustment_parameters"):
+                     "classify_with_adjustment_parameters", "adjustment_negative_amount",
+                     "adjustment_account_currency_mismatch", "booking_correction_negative_price",
+                     "booking_correction_negative_quantity"):
             self.assertTrue((C / f"examples/invalid/{name}.json").exists(), name)
+
+    def test_SH_02_same_account_both_sides_is_a_validator_rule(self):
+        # JSON Schema can't compare two fields; the shape documents it and OM-08's validator enforces it.
+        d = load("actions/parameters/adjustment.schema.json")["description"]
+        self.assertIn("debit_account != credit_account", d)
 
     def test_SH_02_proposed_action_fields(self):
         s = load("actions/proposed_action.schema.json")

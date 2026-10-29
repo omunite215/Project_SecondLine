@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_bookings.output.schema.json",
+  "title": "Journal entries for a trade \u2014 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "entries"
+  ],
+  "properties": {
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "entry_id",
+          "entry_type",
+          "effective_date",
+          "lines",
+          "record_version"
+        ],
+        "properties": {
+          "entry_id": {
+            "$ref": "../common.schema.json#/$defs/opaque_id"
+          },
+          "entry_type": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "effective_date": {
+            "$ref": "../common.schema.json#/$defs/date"
+          },
+          "reverses_entry_id": {
+            "$ref": "../common.schema.json#/$defs/opaque_id"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "account",
+                "side"
+              ],
+              "properties": {
+                "account": {
+                  "type": "string",
+                  "pattern": "^(1110|1210|1300|1500|1900|2100|4100|4200|4300|S100|S200|S900)-[A-Z0-9]{3,12}$"
+                },
+                "currency": {
+                  "$ref": "../common.schema.json#/$defs/currency"
+                },
+                "isin": {
+                  "$ref": "../common.schema.json#/$defs/isin"
+                },
+                "amount": {
+                  "$ref": "../common.schema.json#/$defs/decimal"
+                },
+                "quantity": {
+                  "$ref": "../common.schema.json#/$defs/quantity"
+                },
+                "side": {
+                  "enum": [
+                    "DEBIT",
+                    "CREDIT"
+                  ]
+                }
+              }
+            },
+            "minItems": 2
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  }
+}

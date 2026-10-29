@@ -1,0 +1,5 @@
+{
+ "x-validates": "tools/read_trade.input.schema.json",
+ "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+ "trade_id": "trd_00004521"
+}

@@ -18,10 +18,10 @@
       "$ref": "../../common.schema.json#/$defs/isin"
     },
     "corrected_quantity": {
-      "$ref": "../../common.schema.json#/$defs/quantity"
+      "$ref": "../../common.schema.json#/$defs/non_negative_quantity"
     },
     "corrected_price": {
-      "$ref": "../../common.schema.json#/$defs/decimal"
+      "$ref": "../../common.schema.json#/$defs/positive_decimal"
     }
   }
 }

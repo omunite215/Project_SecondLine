@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/get_action_status.output.schema.json",
+  "title": "Receipt for an action (idempotent) \u2014 output",
+  "$ref": "../receipts/decision_receipt.schema.json"
+}

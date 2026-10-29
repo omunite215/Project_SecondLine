@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_custodian_statement.output.schema.json",
+  "title": "Synthetic custodian statement \u2014 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "statement_id",
+    "as_of_date",
+    "lines",
+    "record_version"
+  ],
+  "properties": {
+    "statement_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "as_of_date": {
+      "$ref": "../common.schema.json#/$defs/date"
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "isin",
+          "quantity"
+        ],
+        "properties": {
+          "isin": {
+            "$ref": "../common.schema.json#/$defs/isin"
+          },
+          "quantity": {
+            "$ref": "../common.schema.json#/$defs/quantity"
+          }
+        }
+      }
+    },
+    "record_version": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

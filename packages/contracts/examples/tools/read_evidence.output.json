@@ -1,0 +1,9 @@
+{
+ "x-validates": "tools/read_evidence.output.schema.json",
+ "record_id": "ev_00000017",
+ "version": 2,
+ "kind": "CONFIRMATION",
+ "untrusted": true,
+ "content": "Broker confirm: BUY 300 XS0000000017 @ 41.23456789 USD, consideration 12370.37.",
+ "content_sha256": "sha256:3434343434343434343434343434343434343434343434343434343434343434"
+}

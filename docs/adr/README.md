@@ -41,5 +41,5 @@ Status values: ADOPTED (in the spec) · PROPOSED · ACCEPTED (both approved in a
 | U9 | audit threat model | SH-09 → ADR-018 | open |
 | U10 | contract versioning | SH-02 (single API v1) | open |
 | U11 | metrics + budgets | KG-17 → SH-10 | open |
-| U12 | team assignments | SH-01 (this plan) | open |
+| U12 | team assignments | SH-01 (this plan) | resolved (PR #1, 2026-10-27) |
 | U13 | source reconciliation | SH-13 | open |

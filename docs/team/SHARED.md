@@ -5,10 +5,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 ## M-0 Contracts & decisions
 
 ### SH-01 · Kickoff: confirm split, calendar, machines, repo
-- meta: P0 | M-0 | om=0.25d kg=0.25d | mcs | driver: om | deps: — | status: doing
+- meta: P0 | M-0 | om=0.25d kg=0.25d | mcs | driver: om | deps: — | status: review
 - refs: §20 §21 | U12 | RSK-12
 - build: 45-minute call: walk PLAN.md and both boards, edit anything you disagree with, rerun `make board-check`; fill the PLAN.md §10 calendar; Kunal records exact chip/RAM in KUNAL.md and CLAUDE.local.md; create the private repo, add both, protect main (1 approving review + CODEOWNERS), Om adds Kunal as collaborator (Write) and applies the ruleset (OM-25); each person creates CLAUDE.local.md + .claude/settings.local.json from the examples, then runs `make skills-install BIN=1` → `make skills-check` (GREEN required before any other card); Kunal files the Explorer access request (SH-19).
 - done: docs/adr/README.md marks U12 resolved; skills gate GREEN and `make kit-check` green on both machines; this kit merged through a cross-reviewed PR.
+- evidence: U12 resolved in docs/adr/README.md; kit merged via PR #1 (approved by Kunal); skills gate GREEN + make kit-check green on Om's machine 2026-10-28, Kunal reports GREEN; PLAN §10 dates TBD
 
 ### SH-02 · Contracts v1: schemas, errors, OpenAPI skeletons
 - meta: P0 | M-0 | om=1d kg=1d | mcs | driver: om | deps: SH-01 | status: todo

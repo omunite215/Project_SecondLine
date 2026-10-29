@@ -47,7 +47,7 @@ members = [
 ]
 
 [tool.pytest.ini_options]
-addopts = "--strict-markers -q"
+addopts = "--strict-markers -q --import-mode=importlib"
 testpaths = ["tests/workspace"]
 
 [tool.ruff]

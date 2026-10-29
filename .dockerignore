@@ -1,6 +1,8 @@
 # Keep the build context small and free of data, secrets and local envs (KG-01).
 .git
 .venv
+**/.venv
+CLAUDE.local.md
 **/__pycache__
 **/.mypy_cache
 **/.ruff_cache

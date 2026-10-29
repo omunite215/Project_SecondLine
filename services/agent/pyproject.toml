@@ -3,7 +3,7 @@ name = "sl-agent"
 version = "0.0.0"
 description = "LangGraph agent and rules baseline"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = ["sl-contracts"]
 
 [build-system]
 requires = ["hatchling>=1.25"]

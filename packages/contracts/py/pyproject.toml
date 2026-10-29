@@ -3,7 +3,7 @@ name = "sl-contracts"
 version = "0.0.0"
 description = "Generated pydantic contract models"
 requires-python = ">=3.12,<3.13"
-dependencies = []
+dependencies = ["pydantic>=2"]
 
 [build-system]
 requires = ["hatchling>=1.25"]

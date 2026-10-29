@@ -32,3 +32,14 @@ def _deps(member: str) -> set[str]:
 def test_KG_01_unprivileged_members_dont_depend_on_privileged(member: str) -> None:
     # Golden rule 4: hidden truth lives only in the factory and evaluation packages.
     assert not _deps(member) & PRIVILEGED, f"{member} must not depend on {PRIVILEGED}"
+
+
+def test_KG_01_contracts_declare_their_runtime_deps() -> None:
+    # Generated models are pydantic v2 classes: a non-dev install (service images) must pull pydantic in.
+    assert "pydantic" in _deps("packages/contracts/py")
+
+
+@pytest.mark.parametrize("member", ["services/agent", "services/supervisor"])
+def test_KG_01_services_depend_on_contracts(member: str) -> None:
+    # Cross-service shapes come only from sl_contracts (golden rule 8).
+    assert "sl-contracts" in _deps(member)

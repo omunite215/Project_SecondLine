@@ -61,5 +61,16 @@ class BootstrapEnv(unittest.TestCase):
         self.assertIn("make bootstrap", r.stdout + r.stderr)
 
 
+class Hook(unittest.TestCase):
+    def test_OM_01_hook_tolerates_branches_without_config(self):
+        # The hook lives in .git/ and outlives branch switches; a branch cut before the config existed
+        # must still commit (found when SH-03 branched from main before OM-01 merged).
+        mk = (ROOT / "Makefile").read_text()
+        install = [l for l in mk.splitlines() if "pre-commit install" in l]
+        self.assertTrue(install)
+        for l in install:
+            self.assertIn("--allow-missing-config", l)
+
+
 if __name__ == "__main__":
     unittest.main()

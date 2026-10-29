@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/actions/parameters/booking_correction.schema.json",
+  "title": "BOOKING_CORRECTION parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trade_id",
+    "isin",
+    "corrected_quantity",
+    "corrected_price"
+  ],
+  "properties": {
+    "trade_id": {
+      "$ref": "../../common.schema.json#/$defs/opaque_id"
+    },
+    "isin": {
+      "$ref": "../../common.schema.json#/$defs/isin"
+    },
+    "corrected_quantity": {
+      "$ref": "../../common.schema.json#/$defs/quantity"
+    },
+    "corrected_price": {
+      "$ref": "../../common.schema.json#/$defs/decimal"
+    }
+  }
+}

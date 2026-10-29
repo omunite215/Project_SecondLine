@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/actions/parameters/adjustment.schema.json",
+  "title": "ADJUSTMENT parameters (§10: currency, amount, account, trade, purpose)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "currency",
+    "amount",
+    "debit_account",
+    "credit_account",
+    "trade_id",
+    "purpose"
+  ],
+  "properties": {
+    "currency": {
+      "$ref": "../../common.schema.json#/$defs/currency"
+    },
+    "amount": {
+      "$ref": "../../common.schema.json#/$defs/decimal"
+    },
+    "debit_account": {
+      "$ref": "../../common.schema.json#/$defs/cash_account"
+    },
+    "credit_account": {
+      "$ref": "../../common.schema.json#/$defs/cash_account"
+    },
+    "trade_id": {
+      "$ref": "../../common.schema.json#/$defs/opaque_id"
+    },
+    "purpose": {
+      "enum": [
+        "ROUNDING",
+        "FX_REVALUATION"
+      ]
+    },
+    "rate_id": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "Required for FX_REVALUATION (policy check)."
+    }
+  },
+  "description": "Schema allows any ADR-016 cash account; posting to 1900 suspense is denied by policy (ADR-014), not shape."
+}

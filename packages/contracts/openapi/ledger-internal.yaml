@@ -1,0 +1,26 @@
+# Gateway → ledger only (OM-04/OM-08). The ledger re-checks everything (§8 step 5) and is the only writer.
+openapi: 3.1.0
+info: {title: Second-Line ledger internal, version: 1.0.0}
+paths:
+  /internal/v1/ns/{ns}/actions:
+    post:
+      summary: Execute an authorized ProposedAction in one DB transaction (journal + outbox)
+      parameters:
+        - {name: ns, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
+      requestBody: {content: {application/json: {schema: {$ref: '../actions/proposed_action.schema.json'}}}}
+      responses:
+        '200': {description: executed or idempotent replay, content: {application/json: {schema: {$ref: '../receipts/decision_receipt.schema.json'}}}}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: 409, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: 423, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /internal/v1/ns/{ns}/state:
+    get:
+      summary: Current state version and projected positions
+      parameters:
+        - {name: ns, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
+      responses:
+        '200': {description: state, content: {application/json: {schema: {$ref: '../tools/read_positions.output.schema.json'}}}}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}

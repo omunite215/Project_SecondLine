@@ -6,7 +6,8 @@
 Checks: every *.schema.json is valid JSON Schema 2020-12 with a versioned $id; every examples/**.json names its
 schema in "x-validates" and validates (examples/invalid/** must FAIL); no JSON `number` anywhere (golden rule 3:
 money/quantity/price/FX are decimal strings); no truth-named property outside a schema marked "x-privileged"
-(golden rule 4); VERSION is semver. Exit 1 with one line per problem.
+(golden rule 4); VERSION is semver. openapi/*.yaml: 3.1, every $ref resolves, every 4xx/5xx
+response uses error_response.schema.json, no truth-named property. Exit 1 with one line per problem.
 """
 from __future__ import annotations
 
@@ -18,6 +19,7 @@ from pathlib import Path
 
 from jsonschema import Draft202012Validator  # pyright: ignore[reportMissingImports]
 from jsonschema.exceptions import SchemaError  # pyright: ignore[reportMissingImports]
+import yaml  # pyright: ignore[reportMissingModuleSource]
 from referencing import Registry, Resource  # pyright: ignore[reportMissingImports]
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -83,6 +85,36 @@ def check(root: Path) -> list[str]:
                 problems.append(f"{rel}: expected to be INVALID against {target} but it validates")
         elif errors:
             problems.append(f"{rel}: invalid against {target}: {errors[0].message[:160]}")
+    problems += check_openapi(root, schemas)
+    return problems
+
+
+def check_openapi(root: Path, schemas: dict[str, dict]) -> list[str]:
+    problems: list[str] = []
+    for f in sorted((root / "openapi").glob("*.yaml")) if (root / "openapi").exists() else []:
+        rel = f.relative_to(root).as_posix()
+        try:
+            api = yaml.safe_load(f.read_text())
+        except yaml.YAMLError as e:
+            problems.append(f"{rel}: invalid YAML: {str(e).splitlines()[0]}")
+            continue
+        if not str(api.get("openapi", "")).startswith("3.1"):
+            problems.append(f"{rel}: openapi must be 3.1.x")
+        for p, k, v in walk(api):
+            if k == "$ref" and isinstance(v, str) and not v.startswith("#"):
+                target, _, frag = v.partition("#")
+                target = (f.parent / target).resolve().relative_to(root.resolve()).as_posix() if target else ""
+                if target not in schemas:
+                    problems.append(f"{rel}{p}: unresolved $ref {v}")
+            if k == "properties" and isinstance(v, dict):
+                problems += [f"{rel}{p}/properties/{n}: truth field in an API" for n in v if TRUTH_NAMES.match(n)]
+        for path, ops in (api.get("paths") or {}).items():
+            for method, op in (ops or {}).items():
+                for code, resp in ((op or {}).get("responses") or {}).items():
+                    if str(code)[0] in "45":
+                        refs = [r for _, k, r in walk(resp) if k == "$ref"]
+                        if not any(str(r).endswith("error_response.schema.json") for r in refs):
+                            problems.append(f"{rel} {method.upper()} {path} {code}: error response must use error_response.schema.json")
     return problems
 
 

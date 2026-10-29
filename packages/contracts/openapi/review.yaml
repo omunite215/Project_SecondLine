@@ -1,0 +1,24 @@
+# Console / human reviewer (OM-20/OM-21). Checker identity must differ from the maker (§8 step 4).
+openapi: 3.1.0
+info: {title: Second-Line review, version: 1.0.0}
+paths:
+  /review/v1/approvals:
+    get:
+      summary: Held actions awaiting a checker
+      parameters:
+        - {name: status, in: query, schema: {enum: [PENDING, APPROVED, REJECTED, EXPIRED]}}
+      responses:
+        '200': {description: approval requests, content: {application/json: {schema: {type: array, items: {$ref: '../approvals/approval_request.schema.json'}}}}}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /review/v1/approvals/{approvalId}/decision:
+    post:
+      summary: Approve or reject by digest with a reason code
+      parameters:
+        - {name: approvalId, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
+      requestBody: {content: {application/json: {schema: {$ref: '../approvals/approval_decision.schema.json'}}}}
+      responses:
+        '200': {description: decision recorded, content: {application/json: {schema: {$ref: '../receipts/decision_receipt.schema.json'}}}}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: 409, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}

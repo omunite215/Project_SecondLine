@@ -1,0 +1,25 @@
+# Agent-facing tool API (gateway, OM-05). The MCP adapter (OM-06) forwards here; the run token binds run → ns.
+openapi: 3.1.0
+info: {title: Second-Line gateway tools, version: 1.0.0}
+paths:
+  /v1/runs:
+    post:
+      summary: Create a run and issue its short-lived token (harness only)
+      responses:
+        '201': {description: created}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/{tool}:
+    post:
+      summary: Call one §10 tool (input/output schemas in ../tools/INDEX.json)
+      parameters:
+        - {name: runId, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
+        - {name: tool, in: path, required: true, schema: {type: string, pattern: '^[a-z_]+$'}}
+      responses:
+        '200': {description: tool output (read tools) or DecisionReceipt (write tools), content: {application/json: {schema: {$ref: '../receipts/decision_receipt.schema.json'}}}}
+        '202': {description: REVIEW_REQUIRED, held for maker-checker, content: {application/json: {schema: {$ref: '../receipts/decision_receipt.schema.json'}}}}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: 409, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: 423, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}

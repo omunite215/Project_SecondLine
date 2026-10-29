@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://secondline.invalid/contracts/1/tools/read_evidence.output.schema.json",
-  "title": "An evidence record; its content is untrusted \u2014 output",
+  "title": "An evidence record; its content is untrusted — output",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -21,13 +21,7 @@
       "minimum": 1
     },
     "kind": {
-      "enum": [
-        "CONFIRMATION",
-        "STATEMENT",
-        "EMAIL",
-        "NOTE",
-        "SETTLEMENT_MESSAGE"
-      ]
+      "$ref": "../common.schema.json#/$defs/evidence_kind"
     },
     "untrusted": {
       "const": true

@@ -133,6 +133,18 @@
         "B8_SSI_MISMATCH"
       ],
       "description": "Root-cause pattern (ADR-016 table). Privileged: only x-privileged shapes may use it."
+    },
+    "evidence_kind": {
+      "enum": [
+        "CUSTODIAN_STATEMENT",
+        "BROKER_CONFIRM",
+        "NOSTRO_STATEMENT",
+        "CA_NOTICE",
+        "SSI_RECORD",
+        "FX_RATE_NOTICE",
+        "COUNTERPARTY_MESSAGE"
+      ],
+      "description": "Evidence vocabulary (ADR-017). One source for world_bundle and read_evidence."
     }
   }
 }

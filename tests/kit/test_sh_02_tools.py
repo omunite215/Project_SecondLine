@@ -68,6 +68,13 @@ class Tools(unittest.TestCase):
             self.assertIn(f"/v1/runs/{{runId}}/tools/{t}:", text, t)
             self.assertIn(f"../tools/{t}.output.schema.json", text, t)
 
+    def test_SH_02_evidence_kind_has_one_source(self):
+        # read_evidence returns world-bundle evidence records: one vocabulary (ADR-017), defined once.
+        ref = "common.schema.json#/$defs/evidence_kind"
+        self.assertEqual(schema("read_evidence", "output")["properties"]["kind"], {"$ref": "../" + ref})
+        wb = json.loads((C / "scenario/world_bundle.schema.json").read_text())
+        self.assertEqual(wb["$defs"]["evidence_record"]["properties"]["kind"], {"$ref": "../" + ref})
+
     def test_SH_02_every_tool_has_examples(self):
         for t in SPEC_TOOLS:
             for kind in ("input", "output"):

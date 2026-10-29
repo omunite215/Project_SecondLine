@@ -399,15 +399,7 @@
           "minimum": 1
         },
         "kind": {
-          "enum": [
-            "CUSTODIAN_STATEMENT",
-            "BROKER_CONFIRM",
-            "NOSTRO_STATEMENT",
-            "CA_NOTICE",
-            "SSI_RECORD",
-            "FX_RATE_NOTICE",
-            "COUNTERPARTY_MESSAGE"
-          ]
+          "$ref": "../common.schema.json#/$defs/evidence_kind"
         },
         "source_system": {
           "type": "string",

@@ -40,7 +40,13 @@
         {"type": "required_status_checks", "parameters": {
           "strict_required_status_checks_policy": true,
           "do_not_enforce_on_create": false,
-          "required_status_checks": [{"context": "kit", "integration_id": 15368}]
+          "required_status_checks": [
+            {"context": "kit", "integration_id": 15368},
+            {"context": "changes", "integration_id": 15368},
+            {"context": "lint", "integration_id": 15368},
+            {"context": "java", "integration_id": 15368},
+            {"context": "stack", "integration_id": 15368}
+          ]
         }}
       ]
     },

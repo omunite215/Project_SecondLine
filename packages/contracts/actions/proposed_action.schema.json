@@ -43,22 +43,7 @@
       ]
     },
     "reason_code": {
-      "enum": [
-        "CUTOFF_TIMING",
-        "PARTIAL_SETTLEMENT",
-        "QUANTITY_MISMATCH",
-        "ROUNDING_DIFFERENCE",
-        "PRICE_MISMATCH",
-        "FX_RATE_SOURCE",
-        "MISSING_TRADE",
-        "DUPLICATE_TRADE",
-        "CORPORATE_ACTION_SPLIT",
-        "CORPORATE_ACTION_OTHER",
-        "CASH_SHORTFALL",
-        "SSI_MISMATCH",
-        "INSUFFICIENT_EVIDENCE",
-        "OTHER_ESCALATION"
-      ]
+      "$ref": "../common.schema.json#/$defs/reason_code"
     },
     "parameters": {
       "type": "object"

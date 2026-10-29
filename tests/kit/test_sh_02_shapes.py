@@ -55,7 +55,8 @@ class Shapes(unittest.TestCase):
         self.assertFalse(s["additionalProperties"])
         self.assertEqual(s["properties"]["type"]["enum"],
                          ["CLASSIFY", "BOOKING_CORRECTION", "CORPORATE_ACTION", "ADJUSTMENT", "ESCALATE"])
-        self.assertEqual(s["properties"]["reason_code"]["enum"], REASON_CODES)
+        self.assertEqual(s["properties"]["reason_code"]["$ref"], "../common.schema.json#/$defs/reason_code")
+        self.assertEqual(load("common.schema.json")["$defs"]["reason_code"]["enum"], REASON_CODES)  # C4, shared with Truth
 
     def test_SH_02_envelope_fields_are_spec_fields(self):
         s = load("events/envelope.schema.json")

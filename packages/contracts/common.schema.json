@@ -93,6 +93,38 @@
       "pattern": "^(0|[1-9][0-9]*)$",
       "maxLength": 21,
       "description": "Whole shares ≥ 0 (0 = cancel the booking)."
+    },
+    "reason_code": {
+      "enum": [
+        "CUTOFF_TIMING",
+        "PARTIAL_SETTLEMENT",
+        "QUANTITY_MISMATCH",
+        "ROUNDING_DIFFERENCE",
+        "PRICE_MISMATCH",
+        "FX_RATE_SOURCE",
+        "MISSING_TRADE",
+        "DUPLICATE_TRADE",
+        "CORPORATE_ACTION_SPLIT",
+        "CORPORATE_ACTION_OTHER",
+        "CASH_SHORTFALL",
+        "SSI_MISMATCH",
+        "INSUFFICIENT_EVIDENCE",
+        "OTHER_ESCALATION"
+      ],
+      "description": "C4: one code per B1–B8 cause; shared by ProposedAction and Truth."
+    },
+    "break_type": {
+      "enum": [
+        "B1_TIMING_CUTOFF",
+        "B2_QUANTITY_MISMATCH",
+        "B3_PRICE_ROUNDING",
+        "B4_FX_REVALUATION",
+        "B5_MISSING_OR_DUPLICATE_TRADE",
+        "B6_CORPORATE_ACTION",
+        "B7_SETTLEMENT_SHORTFALL",
+        "B8_SSI_MISMATCH"
+      ],
+      "description": "Root-cause pattern (ADR-016 table). Privileged: only x-privileged shapes may use it."
     }
   }
 }

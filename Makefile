@@ -74,8 +74,8 @@ reset: ## Drop + reload a namespace: make reset NS=<id>
 db-shell: ## psql into the dev database
 	$(need_env)
 	$(COMPOSE) exec postgres psql -U postgres -d secondline
-lint: ## All linters
-	$(call todo,OM-01)
+lint: ## All linters: pre-commit (gitleaks, EOF, LF) on every file
+	@if command -v uv >/dev/null; then uvx pre-commit run --all-files; else pre-commit run --all-files; fi
 test: ## All unit suites (quiet): Java + kit (Python suites: make test-py)
 	@$(GRADLE) test
 	@$(MAKE) --no-print-directory kit-test

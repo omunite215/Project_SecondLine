@@ -11,4 +11,16 @@ updates:
     groups:
       spring-boot:
         patterns: ["org.springframework.boot*"]
-# OM-01 Task 5 adds docker / docker-compose; KG-01 adds uv; OM-21 adds npm. tests/kit enforces coverage.
+  - package-ecosystem: docker
+    directory: "/services/ledger"
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: "/services/gateway"
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker-compose
+    directory: "/infra/compose"
+    schedule:
+      interval: weekly
+# KG-01 adds uv; OM-21 adds npm. tests/kit enforces coverage.

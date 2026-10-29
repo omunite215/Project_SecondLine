@@ -75,6 +75,12 @@ class Compose(unittest.TestCase):
             if m:
                 self.assertRegex(m.group(3).strip(), r"^\$\{[A-Z0-9_]+:\?", line)
 
+    def test_OM_01_built_images_never_pulled(self):
+        # secondline/* images exist only locally; pulling them first fails (and could fetch a squatted image).
+        for name, s in self.services.items():
+            if "build" in s:
+                self.assertEqual(s.get("pull_policy"), "build", name)
+
     def test_OM_01_jvm_heap_capped(self):
         for name in ("ledger", "gateway"):
             self.assertIn("-Xmx512m", self.services[name]["environment"]["JAVA_TOOL_OPTIONS"])

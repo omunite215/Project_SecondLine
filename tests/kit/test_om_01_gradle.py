@@ -1,6 +1,7 @@
 """OM-01 Gradle build hygiene (§7 §19): pinned, checksum-verified wrapper; memory caps for a 16 GB laptop.
 Stdlib only, like the kit: python3 -m unittest discover -s tests/kit"""
 import re
+import subprocess
 import unittest
 from pathlib import Path
 
@@ -30,6 +31,12 @@ class Gradle(unittest.TestCase):
     def test_OM_01_spring_boot_pinned(self):
         cat = (ROOT / "gradle/libs.versions.toml").read_text()
         self.assertRegex(cat, r'(?m)^spring-boot\s*=\s*"3\.5\.16"$')
+
+    def test_OM_01_executables_committed_executable(self):
+        # CI and Docker builds use the git index mode, not the local file mode.
+        for f in ("gradlew", "infra/db/init/01-logins.sh"):
+            mode = subprocess.run(["git", "ls-files", "-s", f], cwd=ROOT, capture_output=True, text=True).stdout[:6]
+            self.assertEqual(mode, "100755", f)
 
     def test_OM_01_wrapper_scripts_lf(self):
         self.assertNotIn(b"\r\n", (ROOT / "gradlew").read_bytes())

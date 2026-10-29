@@ -54,6 +54,7 @@ services:
   ledger:
     build: {context: ../.., dockerfile: services/ledger/Dockerfile}
     image: secondline/ledger:dev
+    pull_policy: build
     profiles: [app]
     environment:
       JAVA_TOOL_OPTIONS: "-Xmx512m -XX:+ExitOnOutOfMemoryError"
@@ -68,6 +69,7 @@ services:
   gateway:
     build: {context: ../.., dockerfile: services/gateway/Dockerfile}
     image: secondline/gateway:dev
+    pull_policy: build
     profiles: [app]
     environment:
       JAVA_TOOL_OPTIONS: "-Xmx512m -XX:+ExitOnOutOfMemoryError"

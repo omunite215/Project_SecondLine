@@ -67,7 +67,7 @@ class DependabotPins(unittest.TestCase):
         # Decided pins (OM-01 card + D3; declined majors on #19-#24) live in the repo, not only in Dependabot state.
         text = (ROOT / ".github/dependabot.yml").read_text()
         for dep in ("org.springframework.boot*", "gradle-wrapper", "eclipse-temurin", "postgres", "redis"):
-            block = re.search(rf'dependency-name: "{re.escape(dep)}"\n\s*update-types: \["version-update:semver-major"\]', text)
+            block = re.search(rf'dependency-name: "{re.escape(dep)}"[^\n]*\n\s*update-types: \["version-update:semver-major"\]', text)
             self.assertIsNotNone(block, dep)
 
 

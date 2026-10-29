@@ -93,6 +93,14 @@
       "pattern": "^(0|[1-9][0-9]*)$",
       "maxLength": 21,
       "description": "Whole shares ≥ 0 (0 = cancel the booking)."
+    },
+    "scenario_ref": {
+      "type": "string",
+      "pattern": "^scn_[0-9A-Za-z]{8,32}$",
+      "not": {
+        "pattern": "([dD][eE][vV]|[eE][vV][aA][lL]|[bB][lL][iI][nN][dD]|[tT][eE][sS][tT])"
+      },
+      "description": "Opaque; must not reveal split or break type (ADR-015). The runner maps it to the manifest privately."
     }
   }
 }

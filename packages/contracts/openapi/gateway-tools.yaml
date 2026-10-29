@@ -1,25 +1,222 @@
-# Agent-facing tool API (gateway, OM-05). The MCP adapter (OM-06) forwards here; the run token binds run → ns.
+# Agent-facing tool API (gateway, OM-05). Generated from ../tools/INDEX.json: one typed path per §10 tool.
+# The MCP adapter (OM-06) forwards here; the run token binds run → ns.
 openapi: 3.1.0
 info: {title: Second-Line gateway tools, version: 1.0.0}
+components:
+  parameters:
+    runId: {name: runId, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
 paths:
   /v1/runs:
     post:
       summary: Create a run and issue its short-lived token (harness only)
       responses:
         '201': {description: created}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-  /v1/runs/{runId}/tools/{tool}:
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/escalate_break:
     post:
-      summary: Call one §10 tool (input/output schemas in ../tools/INDEX.json)
-      parameters:
-        - {name: runId, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
-        - {name: tool, in: path, required: true, schema: {type: string, pattern: '^[a-z_]+$'}}
+      summary: 'escalate_break (restricted)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/escalate_break.input.schema.json'}}}}
       responses:
-        '200': {description: tool output (read tools) or DecisionReceipt (write tools), content: {application/json: {schema: {$ref: '../receipts/decision_receipt.schema.json'}}}}
-        '202': {description: REVIEW_REQUIRED, held for maker-checker, content: {application/json: {schema: {$ref: '../receipts/decision_receipt.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '409': {description: 409, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '423': {description: 423, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/escalate_break.output.schema.json'}}}}
+        '202': {description: REVIEW_REQUIRED, held for maker-checker, content: {application/json: {schema: {$ref: '../tools/escalate_break.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: '409', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: '422', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/get_action_status:
+    post:
+      summary: 'get_action_status (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/get_action_status.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/get_action_status.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/get_approval_status:
+    post:
+      summary: 'get_approval_status (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/get_approval_status.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/get_approval_status.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/get_break:
+    post:
+      summary: 'get_break (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/get_break.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/get_break.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/list_breaks:
+    post:
+      summary: 'list_breaks (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/list_breaks.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/list_breaks.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/propose_adjustment:
+    post:
+      summary: 'propose_adjustment (high)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/propose_adjustment.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/propose_adjustment.output.schema.json'}}}}
+        '202': {description: REVIEW_REQUIRED, held for maker-checker, content: {application/json: {schema: {$ref: '../tools/propose_adjustment.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: '409', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: '422', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/propose_booking_correction:
+    post:
+      summary: 'propose_booking_correction (high)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/propose_booking_correction.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/propose_booking_correction.output.schema.json'}}}}
+        '202': {description: REVIEW_REQUIRED, held for maker-checker, content: {application/json: {schema: {$ref: '../tools/propose_booking_correction.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: '409', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: '422', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/propose_classification:
+    post:
+      summary: 'propose_classification (restricted)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/propose_classification.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/propose_classification.output.schema.json'}}}}
+        '202': {description: REVIEW_REQUIRED, held for maker-checker, content: {application/json: {schema: {$ref: '../tools/propose_classification.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: '409', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: '422', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/propose_corporate_action:
+    post:
+      summary: 'propose_corporate_action (high)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/propose_corporate_action.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/propose_corporate_action.output.schema.json'}}}}
+        '202': {description: REVIEW_REQUIRED, held for maker-checker, content: {application/json: {schema: {$ref: '../tools/propose_corporate_action.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: '409', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: '422', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/read_bookings:
+    post:
+      summary: 'read_bookings (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/read_bookings.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_bookings.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/read_corporate_actions:
+    post:
+      summary: 'read_corporate_actions (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/read_corporate_actions.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_corporate_actions.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/read_custodian_statement:
+    post:
+      summary: 'read_custodian_statement (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/read_custodian_statement.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_custodian_statement.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/read_evidence:
+    post:
+      summary: 'read_evidence (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/read_evidence.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_evidence.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/read_fx_snapshot:
+    post:
+      summary: 'read_fx_snapshot (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/read_fx_snapshot.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_fx_snapshot.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/read_positions:
+    post:
+      summary: 'read_positions (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/read_positions.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_positions.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/read_reference_data:
+    post:
+      summary: 'read_reference_data (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/read_reference_data.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_reference_data.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/read_settlement_status:
+    post:
+      summary: 'read_settlement_status (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/read_settlement_status.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_settlement_status.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/read_trade:
+    post:
+      summary: 'read_trade (read)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/read_trade.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_trade.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /v1/runs/{runId}/tools/request_counterparty_clarification:
+    post:
+      summary: 'request_counterparty_clarification (restricted)'
+      parameters: [{$ref: '#/components/parameters/runId'}]
+      requestBody: {content: {application/json: {schema: {$ref: '../tools/request_counterparty_clarification.input.schema.json'}}}}
+      responses:
+        '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/request_counterparty_clarification.output.schema.json'}}}}
+        '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: '409', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: '422', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '423': {description: '423', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}

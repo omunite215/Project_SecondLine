@@ -54,6 +54,19 @@ class Tools(unittest.TestCase):
         for t in SPEC_TOOLS - set(WRITES):
             self.assertIn("run_id", schema(t, "input")["required"], t)
 
+    def test_SH_02_reads_never_return_reason_labels(self):
+        # reason_code is the agent's claim (graded); no read tool may hand the agent those labels.
+        labels = set(json.loads((C / "actions/proposed_action.schema.json").read_text())["properties"]["reason_code"]["enum"])
+        for t in SPEC_TOOLS - set(WRITES) - {"get_action_status"}:
+            text = (C / f"tools/{t}.output.schema.json").read_text()
+            self.assertFalse([l for l in labels if f'"{l}"' in text], t)
+
+    def test_SH_02_gateway_openapi_types_each_tool(self):
+        text = (C / "openapi/gateway-tools.yaml").read_text()
+        for t in SPEC_TOOLS:
+            self.assertIn(f"/v1/runs/{{runId}}/tools/{t}:", text, t)
+            self.assertIn(f"../tools/{t}.output.schema.json", text, t)
+
     def test_SH_02_every_tool_has_examples(self):
         for t in SPEC_TOOLS:
             for kind in ("input", "output"):

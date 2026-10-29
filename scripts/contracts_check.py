@@ -24,7 +24,10 @@ from referencing import Registry, Resource  # pyright: ignore[reportMissingImpor
 
 ROOT = Path(__file__).resolve().parents[1]
 ID_BASE = "https://secondline.invalid/contracts/1/"
-TRUTH_NAMES = re.compile(r"^(truth|truth_ref|root_cause|expected_state_delta|oracle_.*)$")
+# Substring, case-insensitive: names, required entries and enum/const values (not prose descriptions).
+TRUTH_NAMES = re.compile(r"(?i)(truth|root[_-]?cause|allowed_outcomes|forbidden_outcomes|expected_state_delta|"
+                         r"required_evidence_ids|oracle|canary|break_(type|kind)|injected|hidden)")
+CANARY = "SLCANARY-"
 SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
 
 
@@ -59,10 +62,13 @@ def check(root: Path) -> list[str]:
         for p, k, v in walk(doc):
             if k == "type" and (v == "number" or (isinstance(v, list) and "number" in v)):
                 problems.append(f"{rel}{p}: JSON number is float money/quantity; use common decimal string")
-            if k == "properties" and isinstance(v, dict) and not doc.get("x-privileged"):
-                for name in v:
-                    if TRUTH_NAMES.match(name):
-                        problems.append(f"{rel}{p}/properties/{name}: truth field outside an x-privileged schema")
+            if doc.get("x-privileged"):
+                continue
+            names = list(v) if k == "properties" and isinstance(v, dict) else []
+            names += [x for x in v if isinstance(x, str)] if k in ("required", "enum") and isinstance(v, list) else []
+            names += [v] if k == "const" and isinstance(v, str) else []
+            problems += [f"{rel}{p}/{k}: truth field {n!r} outside an x-privileged schema" for n in names
+                         if TRUTH_NAMES.search(n)]
         schemas[rel] = doc
 
     registry = Registry().with_resources(
@@ -86,6 +92,9 @@ def check(root: Path) -> list[str]:
         elif errors:
             problems.append(f"{rel}: invalid against {target}: {errors[0].message[:160]}")
     problems += check_openapi(root, schemas)
+    for f in sorted(root.rglob("*")):
+        if f.is_file() and f.suffix in (".json", ".yaml") and CANARY in f.read_text():
+            problems.append(f"{f.relative_to(root).as_posix()}: contains a {CANARY} truth canary")
     return problems
 
 
@@ -107,7 +116,7 @@ def check_openapi(root: Path, schemas: dict[str, dict]) -> list[str]:
                 if target not in schemas:
                     problems.append(f"{rel}{p}: unresolved $ref {v}")
             if k == "properties" and isinstance(v, dict):
-                problems += [f"{rel}{p}/properties/{n}: truth field in an API" for n in v if TRUTH_NAMES.match(n)]
+                problems += [f"{rel}{p}/properties/{n}: truth field in an API" for n in v if TRUTH_NAMES.search(n)]
         for path, ops in (api.get("paths") or {}).items():
             for method, op in (ops or {}).items():
                 for code, resp in ((op or {}).get("responses") or {}).items():

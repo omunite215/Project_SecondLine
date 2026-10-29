@@ -28,7 +28,7 @@
       "$ref": "../common.schema.json#/$defs/uuid"
     },
     "scenario_id": {
-      "$ref": "../common.schema.json#/$defs/opaque_id"
+      "$ref": "../common.schema.json#/$defs/scenario_ref"
     },
     "break_id": {
       "$ref": "../common.schema.json#/$defs/opaque_id"

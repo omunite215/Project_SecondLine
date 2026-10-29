@@ -39,7 +39,7 @@ class Shapes(unittest.TestCase):
                      "receipt_unknown_decision", "envelope_missing_payload_hash", "approval_float_state_version",
                      "classify_with_adjustment_parameters", "adjustment_negative_amount",
                      "adjustment_account_currency_mismatch", "booking_correction_negative_price",
-                     "booking_correction_negative_quantity"):
+                     "booking_correction_negative_quantity", "envelope_split_in_scenario_id"):
             self.assertTrue((C / f"examples/invalid/{name}.json").exists(), name)
 
     def test_SH_02_same_account_both_sides_is_a_validator_rule(self):

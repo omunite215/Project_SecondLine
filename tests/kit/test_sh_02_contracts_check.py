@@ -85,6 +85,21 @@ class ContractsCheck(unittest.TestCase):
         self.write("examples/bad_ref.json", {"x-validates": "common.schema.json#/$defs/ref"})
         self.assertFails("examples/bad_ref.json")
 
+    def test_SH_02_truth_variants_rejected(self):
+        for name in ("rootCause", "root_cause_label", "break_type", "ground_truth", "allowed_outcomes",
+                     "required_evidence_ids", "injected_flag", "hidden_label", "canary"):
+            with self.subTest(name=name):
+                self.write("t.schema.json", schema("t.schema.json", {name: {"type": "string"}}))
+                self.assertFails("truth field")
+
+    def test_SH_02_truth_in_enum_or_required_rejected(self):
+        self.write("t.schema.json", schema("t.schema.json", {"k": {"enum": ["OK", "ROOT_CAUSE_TIMING"]}}))
+        self.assertFails("truth field")
+
+    def test_SH_02_canary_string_anywhere_rejected(self):
+        self.write("examples/money.json", {"x-validates": "money.schema.json", "amount": "1", "note": "SLCANARY-ab12"})
+        self.assertFails("SLCANARY")
+
     def test_SH_02_bad_version_rejected(self):
         (self.root / "VERSION").write_text("v1\n")
         self.assertFails("VERSION")

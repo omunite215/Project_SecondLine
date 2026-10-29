@@ -2,6 +2,8 @@
 # Recipes are TAB-indented. Works with GNU make 3.81 (macOS default) and 4.x (WSL/CI).
 SHELL := /bin/bash
 PY ?= python3
+UV ?= uv
+PY_TESTS ?= tests/workspace packages services
 PROFILES ?= core
 # Intended (OM-01): COMPOSE = docker compose -f infra/compose/docker-compose.yml $(foreach p,$(PROFILES),--profile $(p))
 
@@ -11,7 +13,7 @@ endef
 
 .DEFAULT_GOAL := help
 .PHONY: help board-next board-check trace trace-check spec-check spec-split ctx kit-test kit-check gh-check gh-apply hpc-help \
- bootstrap up down ps logs reset db-shell lint test codegen codegen-java codegen-py contracts-check \
+ bootstrap up down ps logs reset db-shell lint test codegen codegen-java codegen-py lint-py contracts-check \
  test-ledger test-gateway test-mcp test-policy test-py test-agent test-factory test-eval test-supervisor test-console \
  test-int test-sec test-redteam test-chaos test-load leakage-check refdata-verify \
  factory factory-all run-one pilot campaign analyze replay verify-chain demo-up demo-seed demo-run demo-test
@@ -71,8 +73,8 @@ codegen: ## Regenerate Java + Python (+ TS) types from packages/contracts
 	$(call todo,SH-02)
 codegen-java: ## Java types
 	$(call todo,OM-02)
-codegen-py: ## Python sl_contracts models
-	$(call todo,KG-01)
+codegen-py: ## Python sl_contracts models (deterministic; CI fails on diff)
+	@$(UV) run python scripts/codegen_py.py
 contracts-check: ## Validate schemas + examples
 	$(call todo,SH-02)
 test-ledger: ## Ledger unit + property tests
@@ -104,7 +106,9 @@ demo-test: ## Demo smoke test
 
 # ---- intelligence / evidence (Kunal) ---------------------------------------------
 test-py: ## All Python suites (quiet)
-	$(call todo,KG-01)
+	@$(UV) run pytest $(PY_TESTS)
+lint-py: ## ruff + mypy over the Python workspace
+	@$(UV) run ruff check . && $(UV) run ruff format --check . && $(UV) run mypy
 test-agent: ## Agent tests
 	$(call todo,KG-08)
 test-factory: ## Factory tests

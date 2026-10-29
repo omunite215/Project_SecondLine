@@ -1,0 +1,13 @@
+[project]
+name = "sl-agent"
+version = "0.0.0"
+description = "LangGraph agent and rules baseline"
+requires-python = ">=3.12,<3.13"
+dependencies = ["sl-contracts"]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sl_agent"]

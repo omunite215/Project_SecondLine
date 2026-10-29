@@ -30,3 +30,42 @@ jobs:
           python3 -m unittest discover -s tests/kit -p 'test_*.py'
       - name: Always-loaded Claude context budget
         run: python3 scripts/ctx_budget.py --max 3500
+  python:
+    # KG-01: Python workspace. Always reports (so it can become a required check) but skips the work when
+    # a PR touches no Python paths.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Python paths changed?
+        id: paths
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.base_ref }}
+        run: |
+          if [ "$EVENT" != "pull_request" ]; then echo "run=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          changed=$(git diff --name-only "origin/$BASE...HEAD")
+          if echo "$changed" | grep -qE '^(packages/|services/(agent|supervisor|mcp-adapter)/|tests/workspace/|scripts/codegen_py\.py$|pyproject\.toml$|uv\.lock$|\.python-version$|Makefile$|\.github/workflows/kit-checks\.yml$)'; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"; echo "no Python paths changed: skipping"
+          fi
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        if: steps.paths.outputs.run == 'true'
+        with:
+          enable-cache: true
+      - name: Lockfile current + sync
+        if: steps.paths.outputs.run == 'true'
+        run: uv lock --check && uv sync --frozen
+      - name: Lint + types
+        if: steps.paths.outputs.run == 'true'
+        run: make lint-py
+      - name: Tests
+        if: steps.paths.outputs.run == 'true'
+        run: make test-py
+      - name: Generated contracts up to date
+        if: steps.paths.outputs.run == 'true'
+        run: |
+          make codegen-py
+          test -z "$(git status --porcelain -- packages/contracts/py)" || (git status --short -- packages/contracts/py; echo "run: make codegen-py" && exit 1)

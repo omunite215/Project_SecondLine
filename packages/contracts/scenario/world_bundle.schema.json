@@ -403,7 +403,10 @@
         },
         "source_system": {
           "type": "string",
-          "pattern": "^[a-z0-9_-]{2,32}$"
+          "pattern": "^[a-z0-9_-]{2,32}$",
+          "not": {
+            "pattern": "([dD][eE][vV]|[eE][vV][aA][lL]|[bB][lL][iI][nN][dD]|[tT][eE][sS][tT])"
+          }
         },
         "received_at": {
           "$ref": "../common.schema.json#/$defs/utc_timestamp"
@@ -451,6 +454,38 @@
                     "settle_date",
                     "counterparty"
                   ]
+                },
+                "properties": {
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  },
+                  "isin": {
+                    "$ref": "../common.schema.json#/$defs/isin"
+                  },
+                  "side": {
+                    "enum": [
+                      "BUY",
+                      "SELL"
+                    ]
+                  },
+                  "quantity": {
+                    "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+                  },
+                  "price": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "gross": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "trade_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "settle_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  }
                 }
               }
             }
@@ -476,6 +511,23 @@
                     "settle_date",
                     "trade_ref"
                   ]
+                },
+                "properties": {
+                  "isin": {
+                    "$ref": "../common.schema.json#/$defs/isin"
+                  },
+                  "quantity": {
+                    "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+                  },
+                  "as_of": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "settle_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  }
                 }
               }
             }
@@ -502,6 +554,26 @@
                     "value_date",
                     "trade_ref"
                   ]
+                },
+                "properties": {
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "debit_amount": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "credit_amount": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "balance": {
+                    "$ref": "../common.schema.json#/$defs/decimal"
+                  },
+                  "value_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  }
                 }
               }
             }
@@ -530,6 +602,44 @@
                     "amount",
                     "quantity"
                   ]
+                },
+                "properties": {
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  },
+                  "status": {
+                    "enum": [
+                      "PENDING",
+                      "MATCHED",
+                      "SETTLED",
+                      "PARTIALLY_SETTLED",
+                      "FAILED",
+                      "CANCELLED"
+                    ]
+                  },
+                  "status_code": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{4}$",
+                    "description": "ISO 20022 4-letter code; the list is cited in KG-02 (verify: true until SH-13)."
+                  },
+                  "value_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "settle_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "cutoff_time": {
+                    "$ref": "../common.schema.json#/$defs/utc_timestamp"
+                  },
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "amount": {
+                    "$ref": "../common.schema.json#/$defs/decimal"
+                  },
+                  "quantity": {
+                    "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+                  }
                 }
               }
             }
@@ -558,6 +668,37 @@
                     "cash_in_lieu_price",
                     "currency"
                   ]
+                },
+                "properties": {
+                  "isin": {
+                    "$ref": "../common.schema.json#/$defs/isin"
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{4}$",
+                    "description": "ISO 20022 4-letter code; the list is cited in KG-02 (verify: true until SH-13)."
+                  },
+                  "ratio_new": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "ratio_old": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "ex_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "record_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "pay_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "cash_in_lieu_price": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  }
                 }
               }
             }
@@ -583,6 +724,14 @@
                     "place_of_settlement",
                     "effective_date"
                   ]
+                },
+                "properties": {
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "effective_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  }
                 }
               }
             }
@@ -607,6 +756,20 @@
                     "as_of",
                     "rate_source"
                   ]
+                },
+                "properties": {
+                  "base_currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "quote_currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "rate": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "as_of": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  }
                 }
               }
             }
@@ -630,6 +793,11 @@
                     "subject",
                     "channel"
                   ]
+                },
+                "properties": {
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  }
                 }
               }
             }

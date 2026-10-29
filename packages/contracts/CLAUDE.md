@@ -12,3 +12,5 @@ VERSION                                                  semver; bump on every c
 ```
 Commands: `make contracts-check` · `make codegen`
 Change flow: edit schema → bump VERSION → update examples/vectors → `make codegen` → `make contracts-check` → `/handoff` → both approve.
+Evidence (ADR-017): `evidence_kind` is ADR-017's closed set; world bundles and `read_evidence` carry only `evidence_record_kind` (all but INTERNAL_BOOKING), with field keys allowlisted and typed per kind. An INTERNAL_BOOKING citation is an `evidence_ref` to a `trade_id` (read_trade `record_version`) or `entry_id` (read_bookings `record_version`); securities movements aren't agent-readable in v1, so they can't be cited.
+IDs: `opaque_id`, `scenario_ref` and `source_system` reject dev/eval/blind/test in any case. Every generator (factory, ledger, gateway) re-draws on a hit, the same way in every split, so the id distribution can't reveal the split.

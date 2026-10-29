@@ -21,7 +21,14 @@ SPLIT_WORDS = ("dev", "eval", "blind", "test")
 INVALID = {"world_bundle_evidence_key_root_cause_hint": ["evidence", 0, "fields"],
            "world_bundle_evidence_key_outside_kind_allowlist": ["evidence", 1, "fields"],
            "world_bundle_evidence_internal_booking_record": ["evidence", 0, "kind"],
-           "world_bundle_record_id_with_split": ["evidence", 0, "record_id"]}
+           "world_bundle_record_id_with_split": ["evidence", 0, "record_id"],
+           "world_bundle_settlement_quantity_free_text": ["evidence", 2, "fields", "quantity"],
+           "world_bundle_settlement_status_outside_enum": ["evidence", 2, "fields", "status"],
+           "world_bundle_source_system_with_split": ["evidence", 0, "source_system"]}
+TYPED = {"quantity", "price", "gross", "amount", "debit_amount", "credit_amount", "balance", "rate", "ratio_new",
+         "ratio_old", "cash_in_lieu_price", "currency", "base_currency", "quote_currency", "isin", "trade_ref", "side",
+         "status", "status_code", "event_type", "trade_date", "settle_date", "value_date", "as_of", "ex_date",
+         "record_date", "pay_date", "effective_date", "cutoff_time"}
 
 
 def load(rel: str) -> dict:
@@ -50,6 +57,14 @@ class EvidenceVocabulary(unittest.TestCase):
             for key in keys:
                 self.assertIsNone(CAUSE_WORDS.search(key), f"{kind}.{key}")
 
+    def test_SH_02_T_DOM_03_value_keys_are_typed_not_free_text(self):
+        # Golden rule 3 + leakage: a number, date or code can't hide a cause as free text ("short 100").
+        rec = load("scenario/world_bundle.schema.json")["$defs"]["evidence_record"]
+        for rule in rec["allOf"]:
+            fields = rule["then"]["properties"]["fields"]
+            for key in set(fields["propertyNames"]["enum"]) & TYPED:
+                self.assertIn(key, fields.get("properties", {}), f"{rule['if']['properties']['kind']['const']}.{key}")
+
     def test_SH_02_T_DOM_03_bundle_record_kind_excludes_internal_booking(self):
         kind = load("common.schema.json")["$defs"]["evidence_record_kind"]
         self.assertEqual(kind["$ref"], "#/$defs/evidence_kind")
@@ -61,6 +76,8 @@ class EvidenceVocabulary(unittest.TestCase):
         for word in SPLIT_WORDS:
             self.assertTrue(forbid.search(f"evd_000{word.upper()}01"), word)
             self.assertTrue(forbid.search(f"{word}_00000001"), word)
+        for ok in ("evd_0000E001", "trd_0000B001", "brk_0000F001", "act_9fK2mQ7xZ1"):
+            self.assertIsNone(forbid.search(ok), ok)
 
     def test_SH_02_new_examples_exist(self):
         for name in INVALID:

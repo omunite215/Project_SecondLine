@@ -232,11 +232,12 @@ class CiConsistency(unittest.TestCase):
 
 class DocsMatchSettings(unittest.TestCase):
     def test_OM_25_only_the_author_updates_a_branch(self):
-        # last-push approval: if Om updates Kunal's branch, Om is the last pusher and nobody can approve it.
         gh = (ROOT / "docs/setup/GITHUB.md").read_text()
+        # Verified on PR #16: a merge-only update keeps approvals even when the reviewer does it; pushing
+        # *changes* to the other person's PR still deadlocks (last-push approval).
         line = next(l for l in gh.splitlines() if "update-branch" in l)
-        self.assertIn("author", line)
-        self.assertIn("never", line.lower())
+        self.assertIn("merge-only update keeps", line)
+        self.assertIn("never push **changes**", line.lower())
 
     def test_OM_25_docs_name_every_ruleset(self):
         gh = (ROOT / "docs/setup/GITHUB.md").read_text()

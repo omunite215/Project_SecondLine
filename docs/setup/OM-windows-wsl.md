@@ -58,4 +58,4 @@ VS Code server + the Java language server + a Gradle daemon add ~2–3 GB more. 
 - `docs/setup/GITHUB.md` — rulesets, secrets, PR approvals.
 
 ## 8. Campaign shards
-Before an overnight shard: plug in, set Windows power mode to "Best performance", disable sleep, and set the MyASUS fan profile to "Performance". Then `make campaign CFG=<yaml> SHARD=<i>/<n>`.
+Before an overnight shard: plug in, set Windows power mode to "Best performance", disable sleep, and set the MyASUS fan profile to "Performance". Then start the shard with the campaign runner (PLANNED: KG-15 builds `campaign`; `make help` lists it once implemented).

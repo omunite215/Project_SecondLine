@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/scenario/manifest.schema.json",
+  "title": "ScenarioManifest",
+  "description": "Agent-visible scenario manifest (§9). No truth_ref, break_type, seed, split, pressure or injection labels (golden rule 4); those live in run_manifest.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["scenario_id", "schema_version", "snapshot_hash", "source_snapshot_refs", "initial_state_ref"],
+  "properties": {
+    "scenario_id": {"$ref": "../common.schema.json#/$defs/opaque_id"},
+    "schema_version": {"const": "1.0"},
+    "snapshot_hash": {"$ref": "../common.schema.json#/$defs/sha256_ref", "description": "sha256(JCS(world bundle)) (ADR-015)."},
+    "source_snapshot_refs": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^[a-z0-9_-]{2,32}@[A-Za-z0-9._:-]{1,64}$"},
+      "uniqueItems": true
+    },
+    "initial_state_ref": {"type": "string", "pattern": "^snapshot/[a-z]{2,6}_[0-9A-Za-z]{8,32}$"}
+  }
+}

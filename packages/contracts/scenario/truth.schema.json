@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/scenario/truth.schema.json",
+  "title": "Truth",
+  "description": "Hidden oracle truth (§5). Grader/runner only; files under data/generated/<split>/truth/ (ADR-015). Delta values follow the ADR-016 B1–B8 table.",
+  "x-privileged": true,
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["truth_version", "scenario_id", "canary", "scenario_generator_version", "breaks"],
+  "properties": {
+    "truth_version": {"const": "1.0"},
+    "scenario_id": {"$ref": "../common.schema.json#/$defs/opaque_id"},
+    "canary": {"type": "string", "pattern": "^SLCANARY-[0-9a-f]{16,64}$", "description": "CI leak scan marker (KG-05)."},
+    "scenario_generator_version": {"$ref": "run_manifest.schema.json#/properties/generator_version"},
+    "breaks": {"type": "array", "items": {"$ref": "#/$defs/break_truth"}, "minItems": 1}
+  },
+  "$defs": {
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["type", "reason_code"],
+      "properties": {
+        "type": {"$ref": "../actions/proposed_action.schema.json#/properties/type"},
+        "reason_code": {"$ref": "../common.schema.json#/$defs/reason_code"}
+      }
+    },
+    "break_truth": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["break_id", "break_type", "root_cause", "causal_event_ids", "allowed_outcomes", "required_evidence_ids",
+        "forbidden_outcomes", "approval_requirements", "expected_state_delta", "escalation_if_insufficient_evidence", "severity"],
+      "properties": {
+        "break_id": {"$ref": "../common.schema.json#/$defs/opaque_id"},
+        "break_type": {"$ref": "../common.schema.json#/$defs/break_type"},
+        "root_cause": {"$ref": "../common.schema.json#/$defs/reason_code"},
+        "causal_event_ids": {"type": "array", "items": {"$ref": "../common.schema.json#/$defs/opaque_id"}, "minItems": 1, "uniqueItems": true},
+        "allowed_outcomes": {"type": "array", "items": {"$ref": "#/$defs/outcome"}, "minItems": 1},
+        "forbidden_outcomes": {"type": "array", "items": {"$ref": "#/$defs/outcome"}},
+        "required_evidence_ids": {"type": "array", "items": {"$ref": "../common.schema.json#/$defs/opaque_id"}, "uniqueItems": true},
+        "approval_requirements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["maker_checker"],
+          "properties": {"maker_checker": {"type": "boolean"}}
+        },
+        "expected_state_delta": {"$ref": "#/$defs/state_delta"},
+        "escalation_if_insufficient_evidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["queue"],
+          "properties": {"queue": {"$ref": "../actions/parameters/escalate.schema.json#/properties/queue"}}
+        },
+        "severity": {"enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]}
+      }
+    },
+    "state_delta": {
+      "description": "Net change after a correct resolution; all arrays empty = no mutation (B1, B7, B8, B3 above tolerance).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cash", "securities", "positions"],
+      "properties": {
+        "cash": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["account", "currency", "delta"],
+            "properties": {
+              "account": {"$ref": "../common.schema.json#/$defs/cash_account"},
+              "currency": {"$ref": "../common.schema.json#/$defs/currency"},
+              "delta": {"$ref": "../common.schema.json#/$defs/decimal"}
+            }
+          }
+        },
+        "securities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["account", "isin", "delta"],
+            "properties": {
+              "account": {"$ref": "../common.schema.json#/$defs/security_account"},
+              "isin": {"$ref": "../common.schema.json#/$defs/isin"},
+              "delta": {"$ref": "../common.schema.json#/$defs/quantity"}
+            }
+          }
+        },
+        "positions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["isin", "basis", "delta"],
+            "properties": {
+              "isin": {"$ref": "../common.schema.json#/$defs/isin"},
+              "basis": {"enum": ["TRADING", "SETTLED"]},
+              "delta": {"$ref": "../common.schema.json#/$defs/quantity"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

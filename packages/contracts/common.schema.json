@@ -4,8 +4,8 @@
   "title": "Shared definitions (SH-02)",
   "description": "Money, quantity, price and FX are decimal strings (golden rule 3). Accounts and currencies per ADR-016 / docs/domain.md.",
   "$defs": {
-    "decimal": {"type": "string", "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$", "maxLength": 40},
-    "quantity": {"type": "string", "pattern": "^-?(0|[1-9][0-9]*)$", "maxLength": 21, "description": "Whole shares."},
+    "decimal": {"type": "string", "format": "decimal", "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$", "maxLength": 40},
+    "quantity": {"type": "string", "format": "decimal", "pattern": "^-?(0|[1-9][0-9]*)$", "maxLength": 21, "description": "Whole shares."},
     "currency": {"enum": ["USD", "EUR", "GBP", "CHF", "JPY"]},
     "cash_account": {"type": "string", "pattern": "^(1110|1210|1300|1500|1900|2100|4100|4200|4300)-(USD|EUR|GBP|CHF|JPY)$"},
     "security_account": {"type": "string", "pattern": "^S(100|200|900)-[A-Z]{2}[A-Z0-9]{9}[0-9]$"},

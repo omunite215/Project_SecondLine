@@ -17,7 +17,7 @@ The driver owns the outcome and schedules the session; the other person contribu
 - done: `make contracts-check` passes; both approve; git tag contracts-v1.0.0; ADR-013 and ADR-015 ACCEPTED.
 
 ### SH-03 · ADR-016 accounting model & precision
-- meta: P0 | M-0 | om=0.75d kg=0.25d | mcs | driver: om | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=0.75d kg=0.25d | mcs | driver: om | deps: SH-01 | status: doing
 - refs: §5 §9 §1 | U1 | ADR-001 ADR-002 | REQ-002 | I1 I2 | B1..B8 | NFR-02
 - build: docs/adr/ADR-016-accounting-model.md + docs/domain.md: cash journal vs securities position ledger; position projection; synthetic chart of accounts (nostro cash, custody, suspense, rounding P&L, FX revaluation); precision per ISO 4217 minor units, quantity, price, FX; rounding + B3 tolerance policy; permitted adjustment categories; reversal semantics; expected state delta for each B1–B8 pattern; one synthetic bank only.
 - done: ACCEPTED by both; its tables are referenced by KG-03/KG-04 truth and OM-08 validators.

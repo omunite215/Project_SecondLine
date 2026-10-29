@@ -23,7 +23,7 @@ Status values: ADOPTED (in the spec) · PROPOSED · ACCEPTED (both approved in a
 | 013 | Java gateway as policy enforcement point + thin Python MCP adapter | PROPOSED (SH-02) | U3 (part) | ADR-013-service-boundaries-mcp-adapter.md |
 | 014 | Control conditions off/monitor/full + shortcut affordances | PROPOSED (SH-05) | U4 | ADR-014-control-conditions.md |
 | 015 | Run namespaces, snapshots, hidden-truth isolation | PROPOSED (SH-02) | — | ADR-015-namespaces-truth-isolation.md |
-| 016 | Accounting model & precision | to write (SH-03) | U1 | — |
+| 016 | Accounting model & precision | PROPOSED (SH-03) | U1 | ADR-016-accounting-model.md |
 | 017 | Evidence semantics & detection gap | to write (SH-04) | U5 | — |
 | 018 | Audit threat model | to write (SH-09) | U9 | — |
 

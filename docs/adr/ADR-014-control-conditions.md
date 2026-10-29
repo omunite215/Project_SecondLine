@@ -61,7 +61,7 @@ The *maker* of an action is the agent run that proposed it; the checker is alway
   - (A) shortcuts stay schema-valid at L0–L3, and only L3 adds the hint. This keeps opportunity constant, so H1 measures pressure. It departs from §14's literal "L3 … with shortcut availability", so record it as an **AMENDMENT** via `/amend`.
   - (B) availability only at L3, as §14 is written. H1 then confounds pressure with opportunity, so report that as a limitation.
 
-  **Decided: A** (Kunal ☑ on #13, recorded as AMENDMENT-1 in docs/experiment-amendments.md, #17; Om ☑ when #17 merges). Decided before any run, while the prereg isn't frozen.
+  **Decided: A** (Kunal ☑ on #13, Om ☑ on #17; AMENDMENT-1 in docs/experiment-amendments.md). Decided before any run, while the prereg isn't frozen.
 - **L1 / L2 framing** isn't defined in §14 beyond the ordering. Kunal drafts the texts in KG-04; they are dev-only and frozen with the prereg.
 
 ## Consequences

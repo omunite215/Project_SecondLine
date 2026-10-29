@@ -32,6 +32,7 @@ Rulesets evaluate independently. An Om merge is logged as suite result `bypass` 
 ## Flow
 - **Kunal's PR:** `/finish-task` → `/open-pr` → CI → Om runs `/review-pr <n>` → `gh pr review <n> --approve` (or `--request-changes`) → Om squash-merges → `python3 scripts/board.py set <ID> done`.
 - **Om's PR:** `/open-pr` with Kunal as reviewer → CI → Kunal approves → Om squash-merges.
+- **Before merging:** resolve every review thread, including a reviewer's *applied* suggestions. They stay open and `required_review_thread_resolution` blocks the merge (`main pull_request: fail` in the rule suite; seen on PR #6).
 - **Om's merge command:** `gh pr merge <n> --squash --admin`. Plain `--squash` is refused ("base branch policy prohibits the merge") because of `merge-gate`. `--admin` only uses bypasses Om actually has, i.e. `merge-gate`; `main` has none, so approval and CI are still enforced (verified on PR #7).
 - **Dependabot PR:** Om reviews and approves → Om merges. When two touch neighbouring lines, merge one, comment `@dependabot rebase` on the other, re-approve after its CI.
 - Branch behind `main`? The PR **author** updates it (`gh api -X PUT repos/omunite215/Project_SecondLine/pulls/<n>/update-branch` or the Update button) and the reviewer re-approves after CI. Never update or push to the other person's PR: you become the last pusher, and last-push approval means nobody can approve it. There's no way around the strict check.

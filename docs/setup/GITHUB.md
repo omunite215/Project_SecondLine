@@ -16,7 +16,7 @@ Source of truth: **`.github/settings.json`** (merge options, collaborators, labe
 | `gate-tags-create` | `refs/tags/m*` | restrict creation | Repository admin, always |
 | `gate-tags-immutable` | `refs/tags/m*` | no update · no deletion · no force push | none |
 
-Rulesets evaluate independently: when Om merges, `merge-gate` shows `bypass` in the rule-suite log (by design) while `main` must still `pass`. A `main` = `bypass` entry means something is wrong. Rulesets on a private repo need GitHub Pro (free with the Student Developer Pack).
+Rulesets evaluate independently. An Om merge is logged as suite result `bypass` with `merge-gate update: fail` (the bypass) and every `main` rule `pass` (verified on PR #7, rule suite 4776053357). Any `main` rule that isn't `pass` on a merge means something is wrong: `gh api "repos/omunite215/Project_SecondLine/rulesets/rule-suites?ref=refs/heads/main"`. Rulesets on a private repo need GitHub Pro (free with the Student Developer Pack).
 
 ## One-time setup (Om, already done unless `make gh-check` says otherwise)
 1. **Collaborator:** Settings → Collaborators → Kunal with Write. He works in this repo, not a fork, so Actions and secrets work on his PRs.
@@ -32,7 +32,7 @@ Rulesets evaluate independently: when Om merges, `merge-gate` shows `bypass` in 
 ## Flow
 - **Kunal's PR:** `/finish-task` → `/open-pr` → CI → Om runs `/review-pr <n>` → `gh pr review <n> --approve` (or `--request-changes`) → Om squash-merges → `python3 scripts/board.py set <ID> done`.
 - **Om's PR:** `/open-pr` with Kunal as reviewer → CI → Kunal approves → Om squash-merges.
-- **Om's merge command:** `gh pr merge <n> --squash` (VERIFY in OM-25 Task 5: if `merge-gate` refuses it, `--admin`). `--admin` only uses bypasses Om actually has, i.e. `merge-gate`; `main` has none, so approval and CI are still enforced.
+- **Om's merge command:** `gh pr merge <n> --squash --admin`. Plain `--squash` is refused ("base branch policy prohibits the merge") because of `merge-gate`. `--admin` only uses bypasses Om actually has, i.e. `merge-gate`; `main` has none, so approval and CI are still enforced (verified on PR #7).
 - **Dependabot PR:** Om reviews and approves → Om merges. When two touch neighbouring lines, merge one, comment `@dependabot rebase` on the other, re-approve after its CI.
 - Branch behind `main`? The PR **author** updates it (`gh api -X PUT repos/omunite215/Project_SecondLine/pulls/<n>/update-branch` or the Update button) and the reviewer re-approves after CI. Never update or push to the other person's PR: you become the last pusher, and last-push approval means nobody can approve it. There's no way around the strict check.
 
@@ -40,7 +40,7 @@ Rulesets evaluate independently: when Om merges, `merge-gate` shows `bypass` in 
 At each gate (§5 of PLAN.md) Om tags the merge commit: `git tag -a m0 -m "M-0 gate" <sha> && git push origin m0`. Only Om can create `m*` tags, and nobody can move or delete them once pushed. Never push a throwaway `m*` tag.
 
 ## Required checks (grow with the services)
-`kit` now. Later `java` (Gradle + Testcontainers), `python` (uv + pytest), `policy` (opa test), `console` (pnpm + Playwright), `leakage` (KG-05) and contracts drift. The day a job exists, add its id to `main`'s `required_status_checks` in `.github/settings.json`, apply, and `make gh-check`. `test_OM_25_required_checks_are_pr_jobs` fails if a required check names a job that doesn't run on `pull_request`, which would block every merge. `test_OM_25_dependabot_covers_build_files` fails if a `build.gradle.kts`, `pyproject.toml` or `package.json` lands without a Dependabot entry.
+`kit` (kit-checks.yml) and, from OM-01, `lint` (pre-commit), `java` (Gradle) and `stack` (compose + DB roles) in ci.yml. Later `python` (uv + pytest, KG-01), `policy` (opa test), `console` (pnpm + Playwright, OM-21), `leakage` (KG-05) and contracts drift. Path filtering happens inside ci.yml (`changes` job + `if: needs.changes.outputs.<job> == 'true'`), never on the trigger: a skipped job satisfies a required check, a workflow that never runs blocks it forever. The day a job exists, add its id to `main`'s `required_status_checks` in `.github/settings.json`, apply, and `make gh-check`. `test_OM_25_required_checks_are_pr_jobs` fails if a required check names a job that doesn't run on `pull_request`, which would block every merge. `test_OM_25_dependabot_covers_build_files` fails if a `build.gradle.kts`, `pyproject.toml` or `package.json` lands without a Dependabot entry.
 
 ## Break-glass
 Only when a merge can't wait for the other person (e.g. submission deadline, Kunal unreachable): Om adds himself as a bypass actor on `main` in the GitHub UI, merges, removes it, and adds a row below. `make gh-check` stays red until the bypass is removed.

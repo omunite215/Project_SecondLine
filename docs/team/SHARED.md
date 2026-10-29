@@ -12,7 +12,7 @@ The driver owns the outcome and schedules the session; the other person contribu
 - evidence: merged PR #6 (2026-10-29, rule suite 4785959665: all main rules pass); U12 resolved; both skills gates GREEN; kit merged via PR #1
 
 ### SH-02 · Contracts v1: schemas, errors, OpenAPI skeletons
-- meta: P0 | M-0 | om=1d kg=1d | mcs | driver: om | deps: SH-01 | status: review
+- meta: P0 | M-0 | om=1d kg=1d | mcs | driver: om | deps: SH-01 | status: doing
 - refs: §9 §10 §8 §12 §4 | REQ-004 REQ-005 REQ-007 | T-DOM-03 | ADR-005 ADR-013 ADR-015 | U3 U10
 - build: packages/contracts: tools/<tool>.{input,output}.schema.json for every §10 tool; actions/proposed_action; receipts/decision_receipt; scenario/{manifest, world_bundle, truth (x-privileged)}; attacks/attack_pack; events/envelope (§12 fields); errors.json (§8 codes); openapi/{gateway-tools, ledger-internal, ledger-admin, review, eval}.yaml skeletons; examples/ (§9 documents, minimal world bundle, minimal ns export); VERSION 1.0.0; scripts/contracts_check.py. Om drafts gateway / ledger / receipt / event / errors; Kunal drafts world_bundle / truth / manifest / attack_pack. One API v1 with idempotency + reason codes; the legacy v1/v2 deprecation demo is skipped and recorded (U10). Pin MCP SDK + spec revision in ADR-013 (U3).
 - done: `make contracts-check` passes; both approve; git tag contracts-v1.0.0; ADR-013 and ADR-015 ACCEPTED.

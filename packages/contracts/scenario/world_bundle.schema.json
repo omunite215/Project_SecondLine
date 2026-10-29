@@ -378,7 +378,7 @@
       }
     },
     "evidence_record": {
-      "description": "What the agent can read. Counterparty text is untrusted (may carry dev injections) but never truth.",
+      "description": "What the agent can read. Counterparty text is untrusted (may carry dev injections) but never truth. Field keys are allowlisted per kind (ADR-017), so no field name can carry a cause.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -399,7 +399,7 @@
           "minimum": 1
         },
         "kind": {
-          "$ref": "../common.schema.json#/$defs/evidence_kind"
+          "$ref": "../common.schema.json#/$defs/evidence_record_kind"
         },
         "source_system": {
           "type": "string",
@@ -410,12 +410,9 @@
         },
         "fields": {
           "type": "object",
-          "maxProperties": 40,
+          "maxProperties": 16,
           "propertyNames": {
-            "pattern": "^[a-z][a-z0-9_]{0,39}$",
-            "not": {
-              "pattern": "^(truth|truth_ref|root_cause|cause|expected_.*|oracle_.*|canary|break_type|seed)$|SLCANARY|^b[1-8]_"
-            }
+            "pattern": "^[a-z][a-z0-9_]{0,39}$"
           },
           "additionalProperties": {
             "type": "string",
@@ -428,7 +425,217 @@
         "text": {
           "$ref": "#/$defs/safe_text"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "BROKER_CONFIRM"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "trade_ref",
+                    "isin",
+                    "side",
+                    "quantity",
+                    "price",
+                    "gross",
+                    "currency",
+                    "trade_date",
+                    "settle_date",
+                    "counterparty"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "CUSTODIAN_STATEMENT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "account",
+                    "isin",
+                    "quantity",
+                    "as_of",
+                    "settle_date",
+                    "trade_ref"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "NOSTRO_STATEMENT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "account",
+                    "currency",
+                    "debit_amount",
+                    "credit_amount",
+                    "balance",
+                    "value_date",
+                    "trade_ref"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "SETTLEMENT_STATUS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "trade_ref",
+                    "status",
+                    "status_code",
+                    "value_date",
+                    "settle_date",
+                    "cutoff_time",
+                    "currency",
+                    "amount",
+                    "quantity"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "CA_NOTICE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "isin",
+                    "event_type",
+                    "ratio_new",
+                    "ratio_old",
+                    "ex_date",
+                    "record_date",
+                    "pay_date",
+                    "cash_in_lieu_price",
+                    "currency"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "SSI_RECORD"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "counterparty",
+                    "currency",
+                    "account",
+                    "bic",
+                    "place_of_settlement",
+                    "effective_date"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "FX_RATE_NOTICE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "base_currency",
+                    "quote_currency",
+                    "rate",
+                    "as_of",
+                    "rate_source"
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "COUNTERPARTY_MESSAGE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "counterparty",
+                    "trade_ref",
+                    "subject",
+                    "channel"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "break_symptom": {
       "description": "What reconciliation sees: a difference, not its cause.",

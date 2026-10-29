@@ -70,7 +70,7 @@ class Tools(unittest.TestCase):
 
     def test_SH_02_evidence_kind_has_one_source(self):
         # read_evidence returns world-bundle evidence records: one vocabulary (ADR-017), defined once.
-        ref = "common.schema.json#/$defs/evidence_kind"
+        ref = "common.schema.json#/$defs/evidence_record_kind"
         self.assertEqual(schema("read_evidence", "output")["properties"]["kind"], {"$ref": "../" + ref})
         wb = json.loads((C / "scenario/world_bundle.schema.json").read_text())
         self.assertEqual(wb["$defs"]["evidence_record"]["properties"]["kind"], {"$ref": "../" + ref})

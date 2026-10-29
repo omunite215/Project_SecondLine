@@ -2,7 +2,7 @@
 JSON Schema 2020-12 · OpenAPI 3.1 · errors.json · test vectors. Rules: .claude/rules/contracts.md.
 ```text
 tools/<tool>.input.schema.json | .output.schema.json    one pair per §10 tool
-actions/ receipts/ events/ scenario/ attacks/            ProposedAction, DecisionReceipt, envelope, manifest + world_bundle + truth, attack_pack
+actions/ receipts/ events/ scenario/ attacks/            ProposedAction, DecisionReceipt, envelope, manifest (agent) + run_manifest, world_bundle, ns_export, truth (x-privileged), attack_pack (x-privileged)
 errors.json                                              typed codes (§8)
 openapi/                                                 gateway-tools, ledger-internal, ledger-admin, review, eval
 examples/                                                valid documents used by tests and mocks

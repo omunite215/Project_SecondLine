@@ -14,7 +14,7 @@ define todo
 endef
 
 .DEFAULT_GOAL := help
-.PHONY: help board-next board-check trace trace-check spec-check spec-split ctx kit-test kit-check gh-check gh-apply hpc-help \
+.PHONY: help board-next board-check trace trace-check spec-check spec-split ctx kit-test kit-check gh-check gh-apply submission-check hpc-help \
  bootstrap up down ps logs reset db-shell lint test codegen codegen-java codegen-py contracts-check \
  test-ledger test-gateway test-mcp test-policy test-py test-agent test-factory test-eval test-supervisor test-console \
  test-int test-sec test-redteam test-chaos test-load leakage-check refdata-verify \
@@ -49,6 +49,8 @@ gh-check: ## Live GitHub settings == .github/settings.json (Om's admin gh sessio
 	@$(PY) scripts/gh_settings.py check
 gh-apply: ## Print the writes that would reconcile GitHub to settings.json (add --yes by hand to apply)
 	@$(PY) scripts/gh_settings.py apply
+submission-check: ## Rubric check (OM-27): make submission-check [DEPLOY=1 REF=<branch>]
+	@$(PY) scripts/submission_check.py $(if $(DEPLOY),--deploy) $(if $(REF),--ref $(REF))
 hpc-help: ## Explorer vLLM runbook pointer
 	@@sed -n '1,25p' docs/setup/EXPLORER-HPC.md
 

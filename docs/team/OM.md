@@ -29,6 +29,13 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - done: one failing-first test per item under tests/security/ (OM_26_*): TAIL injection rejected; multi-edit truth wiring blocked; each bypass string rejected by the RED gate; gate-RED edits to settings/hooks/manifest blocked; `make kit-check` green.
 - evidence: merged via PR #2 → PR #1 (8e42126); tests/security/test_om_26_kit_hardening.py; make kit-check green on main 2026-10-28
 
+### OM-27 · Submission rubric check (code organization, docs, quality, completeness, deployment)
+- meta: P1 | M-0 | 0.5d | deps: SH-01 | status: review
+- refs: §19 §21 §23 | NFR-11 | T-DOC-01
+- build: scripts/submission_check.py + `make submission-check [DEPLOY=1 REF=<branch>]`: one or more executable checks per rubric criterion (organization 20 · technical documentation 20 · code quality 15 · completeness 20 · deployment & reproducibility 25), each PASS/FAIL with evidence; DEPLOY=1 clones REF into a temp dir and runs bootstrap → up core → tests → down. Report lists failing checks and an evidence-based band per criterion (an estimate, not a grade).
+- done: tests/kit/test_om_27_submission_check.py (stdlib, temp trees) green; report run on main and on the OM-01 branch, findings filed as follow-ups.
+- evidence: tests/kit/test_om_27_submission_check.py 21/21 (each check has a failing-tree test; 4 false positives found on the real repo fixed test-first); main: O 2/3 D 1/4 Q 3/3 P 1/4; DEPLOY=1 REF=om/OM-01-bootstrap R2 PASS (clone 1.1s, bootstrap 0.8s, up core 6.0s, test 22.7s)
+
 ## M-1 Truthful simulator (ledger side)
 
 ### OM-02 · Java contracts library (types, schema validation, JCS, digests)

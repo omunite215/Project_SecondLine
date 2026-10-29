@@ -59,8 +59,8 @@ class ContractsCheck(unittest.TestCase):
         self.assertFails("truth field")
 
     def test_SH_02_truth_field_allowed_when_privileged(self):
-        self.write("truth.schema.json", schema("truth.schema.json", {"truth_ref": {"type": "string"}},
-                                               **{"x-privileged": True}))
+        self.write("scenario/truth.schema.json", schema("scenario/truth.schema.json", {"truth_ref": {"type": "string"}},
+                                                        **{"x-privileged": True}))
         self.assertEqual(self.check().returncode, 0)
 
     def test_SH_02_example_mismatch_rejected(self):
@@ -102,15 +102,52 @@ class ContractsCheck(unittest.TestCase):
 
     def test_SH_02_canary_allowed_where_truth_lives(self):
         # ADR-015: truth carries a canary; invalid examples prove rejection; a pattern can forbid it.
-        self.write("truth.schema.json", schema("truth.schema.json", {"canary_id": {"type": "string"}},
-                                               **{"x-privileged": True, "description": "has SLCANARY-x"}))
-        self.write("examples/truth.json", {"x-validates": "truth.schema.json", "canary_id": "SLCANARY-ab12"})
+        self.write("scenario/truth.schema.json", schema("scenario/truth.schema.json", {"canary_id": {"type": "string"}},
+                                                        **{"x-privileged": True, "description": "has SLCANARY-x"}))
+        self.write("examples/truth.json", {"x-validates": "scenario/truth.schema.json", "canary_id": "SLCANARY-ab12"})
         self.write("examples/invalid/money_canary.json", {"x-validates": "money.schema.json", "amount": 2,
                                                           "note": "SLCANARY-ab12"})
         self.write("bundle.schema.json", schema("bundle.schema.json", {"note": {"type": "string",
                                                 "not": {"pattern": "SLCANARY-"}}}))
         r = self.check()
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
+    def priv(self):
+        self.write("scenario/truth.schema.json", schema("scenario/truth.schema.json", {"k": {"type": "string"}},
+                                                        **{"x-privileged": True}))
+        self.write("common.schema.json", {"$schema": SCHEMA, "$id": BASE + "common.schema.json",
+                                          "$defs": {"break_type": {"enum": ["B1_TIMING_CUTOFF"]}}})
+
+    def test_SH_02_visible_schema_cannot_ref_privileged(self):
+        self.priv()
+        self.write("tool.schema.json", schema("tool.schema.json", {"x": {"$ref": "scenario/truth.schema.json"}}))
+        self.assertFails("privileged")
+
+    def test_SH_02_visible_schema_cannot_ref_break_type(self):
+        self.priv()
+        self.write("tool.schema.json", schema("tool.schema.json", {"x": {"$ref": "common.schema.json#/$defs/break_type"}}))
+        self.assertFails("privileged")
+
+    def test_SH_02_privileged_schema_may_ref_break_type(self):
+        self.priv()
+        self.write("scenario/truth.schema.json", schema("scenario/truth.schema.json",
+                   {"b": {"$ref": "../common.schema.json#/$defs/break_type"}}, **{"x-privileged": True}))
+        r = self.check()
+        self.assertEqual(r.returncode, 0, r.stdout)
+
+    def test_SH_02_self_declared_privileged_rejected(self):
+        self.write("tool.schema.json", schema("tool.schema.json", {"root_cause": {"type": "string"}},
+                                              **{"x-privileged": True}))
+        self.assertFails("not on the privileged list")
+
+    def test_SH_02_non_hex_canary_rejected(self):
+        self.write("examples/money.json", {"x-validates": "money.schema.json", "amount": "1", "n": "SLCANARY-zzzz"})
+        self.assertFails("SLCANARY")
+
+    def test_SH_02_canary_in_plain_pattern_rejected(self):
+        self.write("money.schema.json", schema("money.schema.json", {"amount": {"type": "string",
+                                               "pattern": "^SLCANARY-ab12$"}}))
+        self.assertFails("SLCANARY")
 
     def test_SH_02_bad_version_rejected(self):
         (self.root / "VERSION").write_text("v1\n")

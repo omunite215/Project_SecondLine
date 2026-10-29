@@ -28,7 +28,10 @@ ID_BASE = "https://secondline.invalid/contracts/1/"
 TRUTH_NAMES = re.compile(r"(?i)(truth|root[_-]?cause|allowed_outcomes|forbidden_outcomes|expected_state_delta|"
                          r"required_evidence_ids|oracle|canary|break_(type|kind)|injected|hidden)")
 CANARY = "SLCANARY-"
-CANARY_TOKEN = re.compile(r"SLCANARY-[0-9a-fA-F]{4,}")  # a real canary value, not prose naming the prefix
+CANARY_TOKEN = re.compile(r"SLCANARY-[A-Za-z0-9]+")  # a canary value (any alphanumerics), not prose naming the prefix
+# Truth may live only here (ADR-015). A schema can't make itself privileged; visible shapes can't $ref these.
+PRIVILEGED = {"scenario/truth.schema.json", "scenario/run_manifest.schema.json", "attacks/attack_pack.schema.json"}
+PRIVILEGED_DEFS = {"common.schema.json#/$defs/break_type"}
 SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
 
 
@@ -63,7 +66,7 @@ def check(root: Path) -> list[str]:
         for p, k, v in walk(doc):
             if k == "type" and (v == "number" or (isinstance(v, list) and "number" in v)):
                 problems.append(f"{rel}{p}: JSON number is float money/quantity; use common decimal string")
-            if doc.get("x-privileged"):
+            if doc.get("x-privileged") and rel in PRIVILEGED:
                 continue
             names = list(v) if k == "properties" and isinstance(v, dict) else []
             names += [x for x in v if isinstance(x, str)] if k in ("required", "enum") and isinstance(v, list) else []
@@ -72,6 +75,11 @@ def check(root: Path) -> list[str]:
                          if TRUTH_NAMES.search(n)]
         schemas[rel] = doc
 
+    for rel, doc in schemas.items():
+        if doc.get("x-privileged") and rel not in PRIVILEGED:
+            problems.append(f"{rel}: x-privileged but not on the privileged list (scripts/contracts_check.py PRIVILEGED)")
+        if not (doc.get("x-privileged") and rel in PRIVILEGED):
+            problems += [f"{rel}: {m}" for m in privileged_refs(root, root / rel, doc)]
     registry = Registry().with_resources(
         (d["$id"], Resource.from_contents(d)) for d in schemas.values() if "$id" in d)
     docs = sorted((root / "examples").rglob("*.json")) if (root / "examples").exists() else []
@@ -97,10 +105,26 @@ def check(root: Path) -> list[str]:
     return problems
 
 
+def privileged_refs(root: Path, here: Path, doc) -> list[str]:
+    """$refs from a visible schema/API that reach a privileged schema or privileged definition."""
+    out = []
+    for p, k, v in walk(doc):
+        if k != "$ref" or not isinstance(v, str) or v.startswith("#"):
+            continue
+        file, _, frag = v.partition("#")
+        try:
+            target = (here.parent / file).resolve().relative_to(root.resolve()).as_posix()
+        except ValueError:
+            continue
+        if target in PRIVILEGED or f"{target}#{frag}" in PRIVILEGED_DEFS:
+            out.append(f"{p}: visible shape refs privileged {v}")
+    return out
+
+
 def check_canaries(root: Path, schemas: dict[str, dict]) -> list[str]:
     """SLCANARY- may appear only where truth lives (ADR-015): x-privileged schemas, examples of them,
     examples/invalid/** (they prove rejection) and `pattern` values that forbid it. Anywhere else fails."""
-    privileged = {rel for rel, d in schemas.items() if d.get("x-privileged")}
+    privileged = {rel for rel, d in schemas.items() if d.get("x-privileged") and rel in PRIVILEGED}
     problems = []
     for f in sorted(root.rglob("*")):
         if not f.is_file() or f.suffix not in (".json", ".yaml") or CANARY not in f.read_text():
@@ -112,7 +136,9 @@ def check_canaries(root: Path, schemas: dict[str, dict]) -> list[str]:
         if rel.startswith("examples/") and isinstance(doc, dict) and \
                 str(doc.get("x-validates", "")).partition("#")[0] in privileged:
             continue
-        hits = [p for p, k, v in walk(doc) if k != "pattern" and isinstance(v, str) and CANARY_TOKEN.search(v)]
+        # Only a `not: {pattern}` (a rule forbidding the canary) may contain it.
+        hits = [p for p, k, v in walk(doc) if isinstance(v, str) and CANARY_TOKEN.search(v)
+                and not (k == "pattern" and p.endswith("/not"))]
         hits += [p for p, _, v in walk(doc) if isinstance(v, list) for x in v if isinstance(x, str) and CANARY_TOKEN.search(x)]
         problems += [f"{rel}{p}: contains a {CANARY} truth canary outside a privileged shape" for p in hits]
     return problems
@@ -127,6 +153,7 @@ def check_openapi(root: Path, schemas: dict[str, dict]) -> list[str]:
         except yaml.YAMLError as e:
             problems.append(f"{rel}: invalid YAML: {str(e).splitlines()[0]}")
             continue
+        problems += [f"{rel}: {m}" for m in privileged_refs(root, f, api)]
         if not str(api.get("openapi", "")).startswith("3.1"):
             problems.append(f"{rel}: openapi must be 3.1.x")
         for p, k, v in walk(api):

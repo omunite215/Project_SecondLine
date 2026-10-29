@@ -65,7 +65,9 @@ def check(root: Path) -> list[str]:
 
     registry = Registry().with_resources(
         (d["$id"], Resource.from_contents(d)) for d in schemas.values() if "$id" in d)
-    for f in sorted((root / "examples").rglob("*.json")) if (root / "examples").exists() else []:
+    docs = sorted((root / "examples").rglob("*.json")) if (root / "examples").exists() else []
+    docs += [root / "errors.json"] if (root / "errors.json").exists() else []
+    for f in docs:
         rel = f.relative_to(root).as_posix()
         doc = json.loads(f.read_text())
         target = doc.pop("x-validates", None) if isinstance(doc, dict) else None

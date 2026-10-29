@@ -1,0 +1,75 @@
+name: ci
+# OM-01. Triggers are NOT path-filtered: a filtered workflow never reports, so a required check would block
+# every PR it skips. `changes` decides per job (scripts/ci_changes.py); a job skipped by its `if:` reports
+# "skipped", which satisfies the required check (docs/setup/GITHUB.md).
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      java: ${{ steps.c.outputs.java }}
+      stack: ${{ steps.c.outputs.stack }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: c
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD: ${{ github.sha }}
+        run: python3 scripts/ci_changes.py --base "$BASE" --head "$HEAD" | tee -a "$GITHUB_OUTPUT"
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: python3 -m pip install --quiet pre-commit==4.7.0
+      - run: pre-commit run --all-files --show-diff-on-failure
+
+  java:
+    needs: changes
+    if: needs.changes.outputs.java == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: gradle/actions/wrapper-validation@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "21"
+      - uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
+      - run: ./gradlew test --no-daemon
+
+  stack:
+    needs: changes
+    if: needs.changes.outputs.stack == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      CI: "1"
+    steps:
+      - uses: actions/checkout@v7
+      - run: make bootstrap
+      - name: core healthy (OM-01 done criterion < 2 min)
+        run: time make up PROFILES="core"
+      - run: make up PROFILES="core app"
+      - name: DB roles + truth isolation
+        run: python3 -m unittest discover -s tests/infra -p 'test_*.py' -v
+      - run: make up PROFILES="core app events obs chaos"
+      - name: distroless readiness (otel-collector)
+        run: curl -fsS http://127.0.0.1:13133/ >/dev/null
+      - if: failure()
+        run: make ps && make logs TAIL=80
+      - if: always()
+        run: make down

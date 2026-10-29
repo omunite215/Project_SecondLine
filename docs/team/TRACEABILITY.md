@@ -97,7 +97,7 @@ Every spec ID below maps to ≥1 task; `make board-check` fails CI if any ID los
 | M-2 | SH-07 (Om+Kunal), KG-08 (Kunal), OM-05 (Om), KG-09 (Kunal), OM-06 (Om), KG-10 (Kunal), SH-19 (Om+Kunal) |
 | M-3 | OM-07 (Om), OM-08 (Om), OM-09 (Om), OM-10 (Om), KG-15 (Kunal), OM-11 (Om), OM-16 (Om), SH-08 (Om+Kunal), SH-09 (Om+Kunal), KG-11 (Kunal), KG-12 (Kunal), KG-13 (Kunal), OM-12 (Om), OM-13 (Om), OM-14 (Om), OM-15 (Om) |
 | M-4 | KG-16 (Kunal), KG-17 (Kunal), KG-18 (Kunal), KG-19 (Kunal), SH-10 (Om+Kunal), SH-11 (Om+Kunal), KG-14 (Kunal), KG-20 (Kunal) |
-| M-5 | SH-15 (Om+Kunal), SH-16 (Om+Kunal), SH-18 (Om+Kunal), OM-23 (Om), SH-12 (Om+Kunal), SH-13 (Om+Kunal), SH-17 (Om+Kunal), OM-17 (Om), OM-18 (Om), KG-22 (Kunal), OM-19 (Om), OM-20 (Om), OM-21 (Om), OM-24 (Om), KG-21 (Kunal), OM-22 (Om) |
+| M-5 | SH-15 (Om+Kunal), SH-16 (Om+Kunal), SH-18 (Om+Kunal), OM-23 (Om), SH-12 (Om+Kunal), SH-13 (Om+Kunal), SH-17 (Om+Kunal), OM-17 (Om), KG-22 (Kunal), OM-18 (Om), OM-19 (Om), OM-20 (Om), OM-21 (Om), OM-24 (Om), KG-21 (Kunal), OM-22 (Om) |
 
 ## Break types
 

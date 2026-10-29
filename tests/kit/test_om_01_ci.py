@@ -62,6 +62,15 @@ class SecretScan(unittest.TestCase):
         self.assertRegex(lint, r"gitleaks git --redact[^\n]*--config \.gitleaks\.toml")
 
 
+class DependabotPins(unittest.TestCase):
+    def test_OM_01_pinned_majors_are_ignored_in_config(self):
+        # Decided pins (OM-01 card + D3; declined majors on #19-#24) live in the repo, not only in Dependabot state.
+        text = (ROOT / ".github/dependabot.yml").read_text()
+        for dep in ("org.springframework.boot*", "gradle-wrapper", "eclipse-temurin", "postgres", "redis"):
+            block = re.search(rf'dependency-name: "{re.escape(dep)}"\n\s*update-types: \["version-update:semver-major"\]', text)
+            self.assertIsNotNone(block, dep)
+
+
 class PreCommit(unittest.TestCase):
     def test_OM_01_precommit_hooks_pinned(self):
         text = (ROOT / ".pre-commit-config.yaml").read_text()

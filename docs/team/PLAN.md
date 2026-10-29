@@ -81,7 +81,7 @@ MCS = cards tagged `mcs` (`mcs=Xd` = reduced scope); totals in §3. Cut in this 
 - One Claude Code task per session; `/clear` between tasks.
 
 ## 9. Machine roles
-| | Om — Vivobook Pro 15 (Windows 11 + WSL2) | Kunal — MacBook Pro 14" (Apple Silicon) |
+| | Om — Vivobook Pro 15 (Windows 11 + WSL2) | Kunal — MacBook Air (Apple M4, 16 GB) |
 |---|---|---|
 | daily dev | Java/Spring, console, infra inside WSL2 (≤10 GB) | Python natively; agent loop with a local model |
 | local LLM | ≤4B smoke model (4 GB VRAM) | 7–14B via Ollama/Metal, by RAM tier |

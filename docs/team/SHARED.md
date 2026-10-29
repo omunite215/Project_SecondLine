@@ -5,11 +5,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 ## M-0 Contracts & decisions
 
 ### SH-01 · Kickoff: confirm split, calendar, machines, repo
-- meta: P0 | M-0 | om=0.25d kg=0.25d | mcs | driver: om | deps: — | status: review
+- meta: P0 | M-0 | om=0.25d kg=0.25d | mcs | driver: om | deps: — | status: done
 - refs: §20 §21 | U12 | RSK-12
 - build: 45-minute call: walk PLAN.md and both boards, edit anything you disagree with, rerun `make board-check`; fill the PLAN.md §10 calendar; Kunal records exact chip/RAM in KUNAL.md and CLAUDE.local.md; create the private repo, add both, protect main (1 approving review + CODEOWNERS), Om adds Kunal as collaborator (Write) and applies the ruleset (OM-25); each person creates CLAUDE.local.md + .claude/settings.local.json from the examples, then runs `make skills-install BIN=1` → `make skills-check` (GREEN required before any other card); Kunal files the Explorer access request (SH-19).
 - done: docs/adr/README.md marks U12 resolved; skills gate GREEN and `make kit-check` green on both machines; this kit merged through a cross-reviewed PR.
-- evidence: U12 resolved in docs/adr/README.md; kit merged via PR #1 (approved by Kunal); skills gate GREEN + make kit-check green on Om's machine 2026-10-28, Kunal reports GREEN; PLAN §10 dates TBD
+- evidence: merged PR #6 (2026-10-29, rule suite 4785959665: all main rules pass); U12 resolved; both skills gates GREEN; kit merged via PR #1
 
 ### SH-02 · Contracts v1: schemas, errors, OpenAPI skeletons
 - meta: P0 | M-0 | om=1d kg=1d | mcs | driver: om | deps: SH-01 | status: todo
@@ -18,10 +18,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 - done: `make contracts-check` passes; both approve; git tag contracts-v1.0.0; ADR-013 and ADR-015 ACCEPTED.
 
 ### SH-03 · ADR-016 accounting model & precision
-- meta: P0 | M-0 | om=0.75d kg=0.25d | mcs | driver: om | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=0.75d kg=0.25d | mcs | driver: om | deps: SH-01 | status: review
 - refs: §5 §9 §1 | U1 | ADR-001 ADR-002 | REQ-002 | I1 I2 | B1..B8 | NFR-02
 - build: docs/adr/ADR-016-accounting-model.md + docs/domain.md: cash journal vs securities position ledger; position projection; synthetic chart of accounts (nostro cash, custody, suspense, rounding P&L, FX revaluation); precision per ISO 4217 minor units, quantity, price, FX; rounding + B3 tolerance policy; permitted adjustment categories; reversal semantics; expected state delta for each B1–B8 pattern; one synthetic bank only.
 - done: ACCEPTED by both; its tables are referenced by KG-03/KG-04 truth and OM-08 validators.
+- evidence: ADR-016 ACCEPTED: Kunal approved PR #10 2026-10-29 confirming (a)-(d) + B1-B8 deltas; U1 resolved; make kit-check green
 
 ### SH-04 · ADR-017 evidence semantics & detection gap
 - meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-01 | status: todo

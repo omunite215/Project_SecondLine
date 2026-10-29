@@ -28,6 +28,7 @@ ID_BASE = "https://secondline.invalid/contracts/1/"
 TRUTH_NAMES = re.compile(r"(?i)(truth|root[_-]?cause|allowed_outcomes|forbidden_outcomes|expected_state_delta|"
                          r"required_evidence_ids|oracle|canary|break_(type|kind)|injected|hidden)")
 CANARY = "SLCANARY-"
+CANARY_TOKEN = re.compile(r"SLCANARY-[0-9a-fA-F]{4,}")  # a real canary value, not prose naming the prefix
 SEMVER = re.compile(r"^\d+\.\d+\.\d+$")
 
 
@@ -92,9 +93,28 @@ def check(root: Path) -> list[str]:
         elif errors:
             problems.append(f"{rel}: invalid against {target}: {errors[0].message[:160]}")
     problems += check_openapi(root, schemas)
+    problems += check_canaries(root, schemas)
+    return problems
+
+
+def check_canaries(root: Path, schemas: dict[str, dict]) -> list[str]:
+    """SLCANARY- may appear only where truth lives (ADR-015): x-privileged schemas, examples of them,
+    examples/invalid/** (they prove rejection) and `pattern` values that forbid it. Anywhere else fails."""
+    privileged = {rel for rel, d in schemas.items() if d.get("x-privileged")}
+    problems = []
     for f in sorted(root.rglob("*")):
-        if f.is_file() and f.suffix in (".json", ".yaml") and CANARY in f.read_text():
-            problems.append(f"{f.relative_to(root).as_posix()}: contains a {CANARY} truth canary")
+        if not f.is_file() or f.suffix not in (".json", ".yaml") or CANARY not in f.read_text():
+            continue
+        rel = f.relative_to(root).as_posix()
+        if rel in privileged or rel.startswith("examples/invalid/"):
+            continue
+        doc = yaml.safe_load(f.read_text())
+        if rel.startswith("examples/") and isinstance(doc, dict) and \
+                str(doc.get("x-validates", "")).partition("#")[0] in privileged:
+            continue
+        hits = [p for p, k, v in walk(doc) if k != "pattern" and isinstance(v, str) and CANARY_TOKEN.search(v)]
+        hits += [p for p, _, v in walk(doc) if isinstance(v, list) for x in v if isinstance(x, str) and CANARY_TOKEN.search(x)]
+        problems += [f"{rel}{p}: contains a {CANARY} truth canary outside a privileged shape" for p in hits]
     return problems
 
 
@@ -121,6 +141,9 @@ def check_openapi(root: Path, schemas: dict[str, dict]) -> list[str]:
             for method, op in (ops or {}).items():
                 for code, resp in ((op or {}).get("responses") or {}).items():
                     if str(code)[0] in "45":
+                        comp = str(resp.get("$ref", "")) if isinstance(resp, dict) else ""
+                        if comp.startswith("#/components/responses/"):  # follow one reusable response
+                            resp = ((api.get("components") or {}).get("responses") or {}).get(comp.rsplit("/", 1)[1], {})
                         refs = [r for _, k, r in walk(resp) if k == "$ref"]
                         if not any(str(r).endswith("error_response.schema.json") for r in refs):
                             problems.append(f"{rel} {method.upper()} {path} {code}: error response must use error_response.schema.json")

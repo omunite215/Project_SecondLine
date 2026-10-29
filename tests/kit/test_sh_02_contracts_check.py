@@ -100,6 +100,18 @@ class ContractsCheck(unittest.TestCase):
         self.write("examples/money.json", {"x-validates": "money.schema.json", "amount": "1", "note": "SLCANARY-ab12"})
         self.assertFails("SLCANARY")
 
+    def test_SH_02_canary_allowed_where_truth_lives(self):
+        # ADR-015: truth carries a canary; invalid examples prove rejection; a pattern can forbid it.
+        self.write("truth.schema.json", schema("truth.schema.json", {"canary_id": {"type": "string"}},
+                                               **{"x-privileged": True, "description": "has SLCANARY-x"}))
+        self.write("examples/truth.json", {"x-validates": "truth.schema.json", "canary_id": "SLCANARY-ab12"})
+        self.write("examples/invalid/money_canary.json", {"x-validates": "money.schema.json", "amount": 2,
+                                                          "note": "SLCANARY-ab12"})
+        self.write("bundle.schema.json", schema("bundle.schema.json", {"note": {"type": "string",
+                                                "not": {"pattern": "SLCANARY-"}}}))
+        r = self.check()
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+
     def test_SH_02_bad_version_rejected(self):
         (self.root / "VERSION").write_text("v1\n")
         self.assertFails("VERSION")

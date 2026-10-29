@@ -56,7 +56,8 @@ class Tools(unittest.TestCase):
 
     def test_SH_02_reads_never_return_reason_labels(self):
         # reason_code is the agent's claim (graded); no read tool may hand the agent those labels.
-        labels = set(json.loads((C / "actions/proposed_action.schema.json").read_text())["properties"]["reason_code"]["enum"])
+        labels = set(json.loads((C / "common.schema.json").read_text())["$defs"]["reason_code"]["enum"])
+        self.assertIn("reason_code", json.dumps(json.loads((C / "actions/proposed_action.schema.json").read_text())))
         for t in SPEC_TOOLS - set(WRITES) - {"get_action_status"}:
             text = (C / f"tools/{t}.output.schema.json").read_text()
             self.assertFalse([l for l in labels if f'"{l}"' in text], t)

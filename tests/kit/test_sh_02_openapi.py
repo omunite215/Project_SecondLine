@@ -60,6 +60,14 @@ class OpenApi(unittest.TestCase):
         self.assertEqual(r.returncode, 1)
         self.assertIn("truth field", r.stdout)
 
+    def test_SH_02_component_error_response_followed(self):
+        api = OK_API.replace("'409': {description: conflict, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}",
+                             "'409': {$ref: '#/components/responses/Error'}")
+        good = api + "components: {responses: {Error: {description: e, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}}}\n"
+        self.assertEqual(self.check(good).returncode, 0)
+        bad = api + "components: {responses: {Error: {description: e, content: {application/json: {schema: {type: object}}}}}}\n"
+        self.assertEqual(self.check(bad).returncode, 1)
+
     def test_SH_02_om_openapi_files_exist(self):
         for name in ("gateway-tools", "ledger-internal", "ledger-admin", "review"):
             self.assertTrue((ROOT / f"packages/contracts/openapi/{name}.yaml").exists(), name)

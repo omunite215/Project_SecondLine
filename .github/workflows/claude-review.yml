@@ -4,7 +4,8 @@ name: claude-review
 # pull_request_target: this file and its label check come from protected main, so a PR can't edit them.
 # The token is a secret of environment `claude-review`, whose deployment-branch policy allows only main,
 # so a workflow added on a PR branch can't read it. Agent mode (prompt input) never checks out the PR head,
-# and the action restores .claude/ + CLAUDE.md from base. Never add `ref:` to the checkout below.
+# and the action restores .claude/ + CLAUDE.md from base. CLAUDE.md imports docs/ai/CLAUDE.md, which comes from
+# the same base checkout, so a PR still cannot inject instructions. Never add `ref:` to the checkout below.
 on:
   pull_request_target:
     types: [labeled]

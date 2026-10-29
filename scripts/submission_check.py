@@ -32,10 +32,10 @@ CRITERIA = {"O": ("Code organization", 20), "D": ("Technical documentation", 20)
 SKIP = {".git", "build", ".gradle", "node_modules", ".venv", ".next", "__pycache__", "_generated", ".superpowers",
         ".mypy_cache", ".ruff_cache", ".pytest_cache"}
 SKIP_PATHS = ("data/generated", "experiments/runs")
-ROOT_FILES = {"README.md", "START_HERE.md", "CLAUDE.md", "LICENSE", "Makefile", ".gitignore", ".gitattributes",
+ROOT_FILES = {"README.md", "CLAUDE.md", "LICENSE", "Makefile", ".gitignore", ".gitattributes",
               ".dockerignore", ".env.example", ".pre-commit-config.yaml", ".python-version", "pyproject.toml",
               "uv.lock", "settings.gradle.kts", "build.gradle.kts", "gradle.properties", "gradlew", "gradlew.bat",
-              "CLAUDE.local.md.om.example", "CLAUDE.local.md.kunal.example"}
+              }
 ROOT_LOCAL = {".env", "CLAUDE.local.md"}  # gitignored, personal: allowed on disk, never required
 COMPONENT_PARENTS = ("apps/", "services/", "packages/", "libs/")
 CODE_SUFFIXES = {".py", ".java", ".kt", ".ts", ".tsx", ".js", ".go", ".rego", ".sql", ".sh"}
@@ -62,6 +62,9 @@ def files(root: Path):
 
 def repo_map(root: Path) -> list[str]:
     text = (root / "CLAUDE.md").read_text() if (root / "CLAUDE.md").exists() else ""
+    imp = re.match(r"\s*@(\S+)\s*$", text)  # root CLAUDE.md may be an @import stub (docs/ai/CLAUDE.md)
+    if imp and (root / imp.group(1)).exists():
+        text = (root / imp.group(1)).read_text()
     block = re.search(r"## Repo map\s*```text\n(.*?)```", text, re.S)
     return [line.split()[0].rstrip("/") for line in block.group(1).splitlines() if line.strip()] if block else []
 
@@ -76,7 +79,8 @@ def make_targets(root: Path) -> dict[str, bool]:
 
 
 def human_docs(root: Path, all_files: list[str]) -> list[str]:
-    docs = [f for f in ("README.md", "START_HERE.md") if (root / f).exists()]
+    docs = [f for f in ("README.md",) if (root / f).exists()]
+    docs += [f for f in all_files if f == "docs/ai/README.md"]
     docs += [f for f in all_files if f.startswith("docs/setup/") and f.endswith(".md")]
     docs += [f for f in all_files if f.startswith(COMPONENT_PARENTS) and f.endswith("/README.md") and f.count("/") == 2]
     return docs

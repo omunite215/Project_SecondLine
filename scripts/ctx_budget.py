@@ -28,11 +28,26 @@ def desc(t: str) -> str:
     return m.group(1) if m else ""
 
 
+def imports(path: Path, seen: set[Path]) -> list[Path]:
+    """Files a CLAUDE.md pulls in with `@relative/path` lines (Claude Code loads them every session)."""
+    out = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        m = re.match(r"^@(\S+)\s*$", line.strip())
+        target = (path.parent / m.group(1)).resolve() if m else None
+        if target and target.exists() and target not in seen:
+            seen.add(target)
+            out += [target] + imports(target, seen)
+    return out
+
+
 always, ondemand = [], []
+imported: set[Path] = set()
 if (ROOT / "CLAUDE.md").exists():
     always.append(("CLAUDE.md", tok(nocomments((ROOT / "CLAUDE.md").read_text(encoding="utf-8")))))
+    for f in imports(ROOT / "CLAUDE.md", imported):
+        always.append((f"{f.relative_to(ROOT)} (@import)", tok(nocomments(f.read_text(encoding="utf-8")))))
 local = ROOT / "CLAUDE.local.md"
-examples = sorted(ROOT.glob("CLAUDE.local.md.*.example"))
+examples = sorted((ROOT / "docs/ai").glob("CLAUDE.local.md.*.example"))
 src = local if local.exists() else (max(examples, key=lambda p: p.stat().st_size) if examples else None)
 if src:
     always.append((src.name if src == local else f"{src.name} (largest example)", tok(nocomments(src.read_text(encoding="utf-8")))))
@@ -55,7 +70,7 @@ try:
 except Exception:
     pass
 for n in sorted(ROOT.glob("**/CLAUDE.md")):
-    if n.parent != ROOT and "node_modules" not in n.parts:
+    if n.parent != ROOT and "node_modules" not in n.parts and n.resolve() not in imported:
         ondemand.append((str(n.relative_to(ROOT)), tok(nocomments(n.read_text(encoding="utf-8")))))
 
 total = sum(t for _, t in always)

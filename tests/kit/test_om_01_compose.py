@@ -102,7 +102,7 @@ class Dockerfiles(unittest.TestCase):
 
     def test_OM_01_dockerignore_excludes_secrets_and_builds(self):
         lines = (ROOT / ".dockerignore").read_text().split()
-        for pattern in (".env", ".git", "**/build", ".gradle"):
+        for pattern in (".env", ".git", "**/build", ".gradle", "data/attacks", "secrets"):  # eval packs are deny-listed
             self.assertIn(pattern, lines)
 
 

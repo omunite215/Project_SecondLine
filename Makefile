@@ -73,7 +73,7 @@ reset: ## Drop + reload a namespace: make reset NS=<id>
 	$(call todo,OM-04)
 db-shell: ## psql into the dev database
 	$(need_env)
-	$(COMPOSE) exec postgres psql -U postgres -d secondline
+	$(COMPOSE) exec postgres sh -c 'psql -U postgres -d "$$POSTGRES_DB"'
 lint: ## All linters: pre-commit (gitleaks, EOF, LF) on every file
 	@if command -v uv >/dev/null; then uvx pre-commit run --all-files; else pre-commit run --all-files; fi
 test: ## All unit suites (quiet): Java + kit (Python suites: make test-py)

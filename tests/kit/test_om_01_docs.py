@@ -19,6 +19,10 @@ class Docs(unittest.TestCase):
         for t in OM01_TARGETS:
             self.assertNotIn("TODO(", dry_run(t), t)
 
+    def test_OM_01_db_shell_follows_env_database(self):
+        self.assertIn("POSTGRES_DB", dry_run("db-shell"))
+        self.assertNotIn("-d secondline", dry_run("db-shell"))
+
     def test_OM_01_infra_claude_lists_real_commands(self):
         text = (ROOT / "infra/CLAUDE.md").read_text()
         targets = set(re.findall(r"`make ([a-z][\w-]*)", text))

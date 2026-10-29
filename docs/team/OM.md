@@ -90,6 +90,7 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - skills: insecure-defaults
 - build: infra/opa/policies: default deny; decisions allow | deny | requires_review with reason codes; role/action matrix, per-break-type allowed actions, posting limits, permitted + suspense accounts, reference-data immutability, approval thresholds, toxic sequences (input carries the run's recent actions); bundle revision + hash returned in every decision; numbers come from SH-05, never invented.
 - done: `make test-policy` (opa test, ≥1 test per rule incl. default-deny) in CI; decisions carry the bundle hash; T-SEC-02 negative cases pass end-to-end through the gateway; hard legitimate cases still allowed (no block-everything).
+- notes: from OM-01 review (I5): in compose, OPA runs without --authentication/--authorization and Kafka is PLAINTEXT on the shared default network — any container can PUT /v1/policies or produce to outbox/receipt topics. Before OM-06 puts mcp-adapter/agent on that network: OPA token authz (or a policy-only network the agent can't reach) + separate compose networks; add a T-SEC test that the agent container can't reach OPA's write API.
 
 ### OM-11 · Maker-checker approvals bound to the action digest
 - meta: P0 | M-3 | 2d | mcs | learn | deps: OM-08 | status: todo

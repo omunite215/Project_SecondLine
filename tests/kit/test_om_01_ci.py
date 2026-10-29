@@ -34,7 +34,20 @@ class Workflows(unittest.TestCase):
         main = next(r for r in settings["rulesets"] if r["name"] == "main")
         rule = next(r for r in main["rules"] if r["type"] == "required_status_checks")
         contexts = {c["context"] for c in rule["parameters"]["required_status_checks"]}
-        self.assertEqual(contexts, {"kit", "lint", "java", "stack"})
+        self.assertEqual(contexts, {"kit", "changes", "lint", "java", "stack"})
+
+
+class GateFailsClosed(unittest.TestCase):
+    def test_OM_01_gating_job_is_required(self):
+        # If `changes` fails, gated jobs are skipped and skipped == success; so `changes` itself must be required.
+        text = (ROOT / ".github/workflows/ci.yml").read_text()
+        gates = set(re.findall(r"(?m)^    needs: ([\w-]+)\s*$", text))
+        settings = json.loads((ROOT / ".github/settings.json").read_text())
+        main = next(r for r in settings["rulesets"] if r["name"] == "main")
+        rule = next(r for r in main["rules"] if r["type"] == "required_status_checks")
+        contexts = {c["context"] for c in rule["parameters"]["required_status_checks"]}
+        self.assertTrue(gates)
+        self.assertLessEqual(gates, contexts)
 
 
 class PreCommit(unittest.TestCase):

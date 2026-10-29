@@ -20,8 +20,10 @@ from pathlib import Path
 JOBS: dict[str, tuple[str, ...]] = {
     "java": ("services/ledger/*", "services/gateway/*", "libs/contracts-java/*", "build.gradle.kts",
              "settings.gradle.kts", "gradle.properties", "gradle/*", "gradlew*", "packages/contracts/*"),
-    "stack": ("infra/compose/*", "infra/db/*", "infra/opa/*", "services/*/Dockerfile", ".dockerignore",
-              ".env.example", "Makefile", "scripts/bootstrap_env.py", "tests/infra/*"),
+    # stack builds the Java images and mounts infra configs, so it also runs for everything java does.
+    "stack": ("infra/*", "services/ledger/*", "services/gateway/*", "libs/contracts-java/*", "build.gradle.kts",
+              "settings.gradle.kts", "gradle.properties", "gradle/*", "gradlew*", ".dockerignore", ".env.example",
+              "Makefile", "scripts/bootstrap_env.py", "tests/infra/*"),
 }
 RUN_ALL = (".github/workflows/*", "scripts/ci_changes.py")
 

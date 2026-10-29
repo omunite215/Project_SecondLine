@@ -81,6 +81,10 @@ class Compose(unittest.TestCase):
             if "build" in s:
                 self.assertEqual(s.get("pull_policy"), "build", name)
 
+    def test_OM_01_postgres_healthy_only_after_init(self):
+        # Unix-socket pg_isready answers during the entrypoint's init server; TCP only once init is done.
+        self.assertIn("-h 127.0.0.1", " ".join(self.services["postgres"]["healthcheck"]["test"]))
+
     def test_OM_01_jvm_heap_capped(self):
         for name in ("ledger", "gateway"):
             self.assertIn("-Xmx512m", self.services[name]["environment"]["JAVA_TOOL_OPTIONS"])
@@ -100,6 +104,15 @@ class Dockerfiles(unittest.TestCase):
         lines = (ROOT / ".dockerignore").read_text().split()
         for pattern in (".env", ".git", "**/build", ".gradle"):
             self.assertIn(pattern, lines)
+
+
+class InitScripts(unittest.TestCase):
+    def test_OM_01_passwords_never_in_argv_or_error_log(self):
+        text = (ROOT / "infra/db/init/01-logins.sh").read_text()
+        psql_line = next(l for l in text.splitlines() if l.lstrip().startswith("psql"))
+        self.assertNotIn("PASSWORD", psql_line)
+        self.assertNotRegex(text, r"-v\s+\w+=\S*\$")
+        self.assertIn("log_min_error_statement", text)
 
 
 if __name__ == "__main__":

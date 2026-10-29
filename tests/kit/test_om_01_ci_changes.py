@@ -27,6 +27,13 @@ class Classify(unittest.TestCase):
                   ".env.example", "Makefile"):
             self.assertTrue(ci_changes.classify([p])["stack"], p)
 
+    def test_OM_01_stack_covers_everything_its_images_and_configs_use(self):
+        # The stack job builds the Java images and mounts infra configs: any of these can break `make up`.
+        for p in ("infra/observability/otel-collector.yaml", "infra/toxiproxy/toxiproxy.json",
+                  "services/ledger/src/main/resources/application.yml", "services/gateway/build.gradle.kts",
+                  "build.gradle.kts", "settings.gradle.kts", "gradle/libs.versions.toml", "gradle.properties"):
+            self.assertTrue(ci_changes.classify([p])["stack"], p)
+
     def test_OM_01_docs_only_runs_nothing_but_lint(self):
         self.assertEqual(ci_changes.classify(["docs/x.md", "README.md"]),
                          {"lint": True, "java": False, "stack": False})

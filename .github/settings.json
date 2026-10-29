@@ -1,0 +1,72 @@
+{
+  "repo": {
+    "allow_squash_merge": true,
+    "allow_merge_commit": false,
+    "allow_rebase_merge": false,
+    "delete_branch_on_merge": true,
+    "allow_auto_merge": false
+  },
+  "collaborators": {
+    "omunite215": "admin",
+    "kunalgupta06": "write"
+  },
+  "labels": ["ai-review"],
+  "environments": {
+    "claude-review": {
+      "branch_policies": ["main"],
+      "secrets": ["CLAUDE_CODE_OAUTH_TOKEN"]
+    }
+  },
+  "rulesets": [
+    {
+      "name": "main",
+      "target": "branch",
+      "enforcement": "active",
+      "conditions": {"ref_name": {"include": ["~DEFAULT_BRANCH"], "exclude": []}},
+      "bypass_actors": [],
+      "rules": [
+        {"type": "deletion"},
+        {"type": "non_fast_forward"},
+        {"type": "pull_request", "parameters": {
+          "required_approving_review_count": 1,
+          "dismiss_stale_reviews_on_push": true,
+          "required_reviewers": [],
+          "require_code_owner_review": true,
+          "require_last_push_approval": true,
+          "required_review_thread_resolution": true,
+          "require_extra_approval_for_unattributed_changes": true,
+          "allowed_merge_methods": ["squash"]
+        }},
+        {"type": "required_status_checks", "parameters": {
+          "strict_required_status_checks_policy": true,
+          "do_not_enforce_on_create": false,
+          "required_status_checks": [{"context": "kit", "integration_id": 15368}]
+        }}
+      ]
+    },
+    {
+      "name": "merge-gate",
+      "target": "branch",
+      "enforcement": "active",
+      "conditions": {"ref_name": {"include": ["~DEFAULT_BRANCH"], "exclude": []}},
+      "bypass_actors": [{"actor_id": 5, "actor_type": "RepositoryRole", "bypass_mode": "pull_request"}],
+      "rules": [{"type": "update"}]
+    },
+    {
+      "name": "gate-tags-create",
+      "target": "tag",
+      "enforcement": "active",
+      "conditions": {"ref_name": {"include": ["refs/tags/m*"], "exclude": []}},
+      "bypass_actors": [{"actor_id": 5, "actor_type": "RepositoryRole", "bypass_mode": "always"}],
+      "rules": [{"type": "creation"}]
+    },
+    {
+      "name": "gate-tags-immutable",
+      "target": "tag",
+      "enforcement": "active",
+      "conditions": {"ref_name": {"include": ["refs/tags/m*"], "exclude": []}},
+      "bypass_actors": [],
+      "rules": [{"type": "deletion"}, {"type": "non_fast_forward"}, {"type": "update"}]
+    }
+  ]
+}

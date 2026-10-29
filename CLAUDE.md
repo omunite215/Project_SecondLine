@@ -7,7 +7,7 @@ Synthetic cash-equity trade/position reconciliation for ONE fictional bank (Nort
 
 ## Who is who
 - Your human is named in `CLAUDE.local.md` (`owner:`, machine limits, `learn_mode`). Default to their board.
-- **Om — Authority & Platform (below the tool boundary) + CI/CD owner:** ledger, gateway, MCP adapter, OPA, budgets/halts, outbox→Kafka, receipts, secrets/redaction, observability, chaos/load, review API, console, demo env, agent-facing attack packs. Approves and merges every PR; holds the Explorer HPC account.
+- **Om — Authority & Platform (below the tool boundary) + CI/CD owner:** ledger, gateway, MCP adapter, OPA, budgets/halts, outbox→Kafka, receipts, secrets/redaction, observability, chaos/load, review API, console, demo env, agent-facing attack packs. The only one who merges; approves Kunal's PRs (his own need Kunal's approval); holds the Explorer HPC account.
 - **Kunal — Intelligence & Evidence (above it):** scenario factory + truth, reference data, grader, rules baseline, LangGraph agent, prompts, model serving, supervisor, audit verifier, platform red-team, runner, prereg, pilot, campaigns, stats, replay, eval API, datasheet/model cards. Opens PRs for Om's approval; never merges or pushes to main.
 - Shared `SH-*`: contracts, domain ADRs, vertical slice, report, demo. If a change touches the other person's area, keep it minimal and flag it in the PR.
 - Boards `docs/team/{OM,KUNAL,SHARED}.md` · plan + gates `docs/team/PLAN.md` · decisions `docs/adr/README.md` · skills `docs/team/SKILLS.md`.
@@ -81,7 +81,7 @@ python3 scripts/board.py next | show <ID> | set <ID> doing|review|done --evidenc
 2. Implement test-first in small steps; stay inside the card's scope.
 3. Long or noisy runs → `test-runner` subagent (failures only come back).
 4. Before finishing P0 or boundary work → `contract-guardian`. After touching factory, agent, MCP, gateway responses or prompts → `leakage-auditor`.
-5. `/finish-task` → `/open-pr` (Om reviews with `/review-pr <n>`; Om's own boundary PRs get Kunal as reviewer). The human then runs `/clear`.
+5. `/finish-task` → `/open-pr` (Om reviews with `/review-pr <n>`; every Om PR needs Kunal's approval). The human then runs `/clear`.
 - Cards tagged `learn` are interview-critical: when `learn_mode: on`, explain the design and let the human write the core logic; you review, test and harden it.
 
 ## Token discipline

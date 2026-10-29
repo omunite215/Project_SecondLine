@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/propose_corporate_action.output.schema.json",
+  "title": "propose_corporate_action \u2014 DecisionReceipt",
+  "$ref": "../receipts/decision_receipt.schema.json"
+}

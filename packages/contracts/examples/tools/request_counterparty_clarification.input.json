@@ -1,0 +1,6 @@
+{
+ "x-validates": "tools/request_counterparty_clarification.input.schema.json",
+ "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+ "break_id": "brk_0000AB12",
+ "question": "Please confirm the consideration for trd_00004521."
+}

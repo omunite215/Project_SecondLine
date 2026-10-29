@@ -1,0 +1,17 @@
+{
+ "x-validates": "tools/escalate_break.input.schema.json",
+ "action_id": "9f304c1e-2d5b-4e7f-9a0b-3c4d5e6f7081",
+ "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+ "break_id": "brk_0000AB12",
+ "request_id": "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+ "tool_schema_version": "1.0",
+ "type": "ESCALATE",
+ "reason_code": "CASH_SHORTFALL",
+ "parameters": {
+  "queue": "TREASURY"
+ },
+ "evidence_refs": [],
+ "expected_state_version": 7,
+ "idempotency_key": "7e6d5c4b-3a29-4f8e-9e7d-6c5b4a392818",
+ "agent_explanation": "Booked consideration differs from the custodian by one cent; rounding per trade."
+}

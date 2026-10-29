@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/request_counterparty_clarification.output.schema.json",
+  "title": "Simulated message to a counterparty \u2014 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "request_id",
+    "status",
+    "simulated"
+  ],
+  "properties": {
+    "request_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "status": {
+      "const": "QUEUED"
+    },
+    "simulated": {
+      "const": true
+    }
+  }
+}

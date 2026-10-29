@@ -1,0 +1,21 @@
+# Harness/admin only, local network (ADR-015). Never reachable from the agent or MCP adapter.
+openapi: 3.1.0
+info: {title: Second-Line ledger admin, version: 1.0.0}
+paths:
+  /admin/v1/ns:
+    post:
+      summary: Load a WorldBundle into a fresh namespace (schema in scenario/, Kunal's half)
+      responses:
+        '201': {description: namespace created; body carries ns + state hash}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /admin/v1/ns/{ns}/export:
+    get:
+      summary: Canonical namespace export (state hash = sha256 of its JCS)
+      parameters:
+        - {name: ns, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
+      responses:
+        '200': {description: export}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}

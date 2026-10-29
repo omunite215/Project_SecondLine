@@ -87,8 +87,8 @@ codegen-java: ## Java types
 	$(call todo,OM-02)
 codegen-py: ## Python sl_contracts models
 	$(call todo,KG-01)
-contracts-check: ## Validate schemas + examples
-	$(call todo,SH-02)
+contracts-check: ## Validate schemas + examples (uv fetches pinned jsonschema/pyyaml; no install needed)
+	@uv run -q --with jsonschema==4.26.0 --with pyyaml==6.0.3 python scripts/contracts_check.py
 test-ledger: ## Ledger unit + property tests
 	@$(GRADLE) :services:ledger:test
 test-gateway: ## Gateway tests

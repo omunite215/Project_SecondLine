@@ -1,0 +1,100 @@
+{
+  "version": "1.0.0",
+  "tools": {
+    "escalate_break": {
+      "risk": "restricted",
+      "input": "escalate_break.input.schema.json",
+      "output": "escalate_break.output.schema.json"
+    },
+    "get_action_status": {
+      "risk": "read",
+      "input": "get_action_status.input.schema.json",
+      "output": "get_action_status.output.schema.json"
+    },
+    "get_approval_status": {
+      "risk": "read",
+      "input": "get_approval_status.input.schema.json",
+      "output": "get_approval_status.output.schema.json"
+    },
+    "get_break": {
+      "risk": "read",
+      "input": "get_break.input.schema.json",
+      "output": "get_break.output.schema.json"
+    },
+    "list_breaks": {
+      "risk": "read",
+      "input": "list_breaks.input.schema.json",
+      "output": "list_breaks.output.schema.json"
+    },
+    "propose_adjustment": {
+      "risk": "high",
+      "input": "propose_adjustment.input.schema.json",
+      "output": "propose_adjustment.output.schema.json"
+    },
+    "propose_booking_correction": {
+      "risk": "high",
+      "input": "propose_booking_correction.input.schema.json",
+      "output": "propose_booking_correction.output.schema.json"
+    },
+    "propose_classification": {
+      "risk": "restricted",
+      "input": "propose_classification.input.schema.json",
+      "output": "propose_classification.output.schema.json"
+    },
+    "propose_corporate_action": {
+      "risk": "high",
+      "input": "propose_corporate_action.input.schema.json",
+      "output": "propose_corporate_action.output.schema.json"
+    },
+    "read_bookings": {
+      "risk": "read",
+      "input": "read_bookings.input.schema.json",
+      "output": "read_bookings.output.schema.json"
+    },
+    "read_corporate_actions": {
+      "risk": "read",
+      "input": "read_corporate_actions.input.schema.json",
+      "output": "read_corporate_actions.output.schema.json"
+    },
+    "read_custodian_statement": {
+      "risk": "read",
+      "input": "read_custodian_statement.input.schema.json",
+      "output": "read_custodian_statement.output.schema.json"
+    },
+    "read_evidence": {
+      "risk": "read",
+      "input": "read_evidence.input.schema.json",
+      "output": "read_evidence.output.schema.json"
+    },
+    "read_fx_snapshot": {
+      "risk": "read",
+      "input": "read_fx_snapshot.input.schema.json",
+      "output": "read_fx_snapshot.output.schema.json"
+    },
+    "read_positions": {
+      "risk": "read",
+      "input": "read_positions.input.schema.json",
+      "output": "read_positions.output.schema.json"
+    },
+    "read_reference_data": {
+      "risk": "read",
+      "input": "read_reference_data.input.schema.json",
+      "output": "read_reference_data.output.schema.json"
+    },
+    "read_settlement_status": {
+      "risk": "read",
+      "input": "read_settlement_status.input.schema.json",
+      "output": "read_settlement_status.output.schema.json"
+    },
+    "read_trade": {
+      "risk": "read",
+      "input": "read_trade.input.schema.json",
+      "output": "read_trade.output.schema.json"
+    },
+    "request_counterparty_clarification": {
+      "risk": "restricted",
+      "input": "request_counterparty_clarification.input.schema.json",
+      "output": "request_counterparty_clarification.output.schema.json"
+    }
+  }
+}

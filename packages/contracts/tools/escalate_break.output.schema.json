@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/escalate_break.output.schema.json",
+  "title": "escalate_break \u2014 DecisionReceipt",
+  "$ref": "../receipts/decision_receipt.schema.json"
+}

@@ -1,0 +1,27 @@
+{
+ "x-validates": "actions/proposed_action.schema.json",
+ "action_id": "7d1e2a9c-0b3f-4c5d-9e8f-1a2b3c4d5e6f",
+ "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+ "break_id": "brk_0000AB12",
+ "request_id": "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+ "tool_schema_version": "1.0",
+ "type": "ADJUSTMENT",
+ "reason_code": "ROUNDING_DIFFERENCE",
+ "parameters": {
+  "currency": "USD",
+  "amount": "-0.01",
+  "debit_account": "4100-USD",
+  "credit_account": "1300-USD",
+  "trade_id": "trd_00004521",
+  "purpose": "ROUNDING"
+ },
+ "evidence_refs": [
+  {
+   "record_id": "ev_00000017",
+   "version": 2
+  }
+ ],
+ "expected_state_version": 7,
+ "idempotency_key": "5c4b3a29-1807-4f6e-9d5c-4b3a29180716",
+ "agent_explanation": "Booked consideration differs from the custodian by one cent; rounding per trade."
+}

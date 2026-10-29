@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/actions/proposed_action.schema.json",
+  "title": "ProposedAction (§9, C3/C4)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action_id",
+    "run_id",
+    "break_id",
+    "request_id",
+    "tool_schema_version",
+    "type",
+    "reason_code",
+    "parameters",
+    "evidence_refs",
+    "expected_state_version",
+    "idempotency_key"
+  ],
+  "properties": {
+    "action_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "run_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "break_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "request_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "tool_schema_version": {
+      "const": "1.0"
+    },
+    "type": {
+      "enum": [
+        "CLASSIFY",
+        "BOOKING_CORRECTION",
+        "CORPORATE_ACTION",
+        "ADJUSTMENT",
+        "ESCALATE"
+      ]
+    },
+    "reason_code": {
+      "$ref": "../common.schema.json#/$defs/reason_code"
+    },
+    "parameters": {
+      "type": "object"
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "../common.schema.json#/$defs/evidence_ref"
+      },
+      "maxItems": 50,
+      "uniqueItems": true
+    },
+    "expected_state_version": {
+      "$ref": "../common.schema.json#/$defs/state_version"
+    },
+    "idempotency_key": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "agent_explanation": {
+      "type": "string",
+      "maxLength": 4000,
+      "description": "Untrusted narrative; excluded from action_digest (C6)."
+    }
+  },
+  "description": "Scope, budget, deadline and requires_approval are server-derived and never accepted here (C3).",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "CLASSIFY"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parameters": {
+            "$ref": "parameters/classify.schema.json"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "BOOKING_CORRECTION"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parameters": {
+            "$ref": "parameters/booking_correction.schema.json"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "CORPORATE_ACTION"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parameters": {
+            "$ref": "parameters/corporate_action.schema.json"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "ADJUSTMENT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parameters": {
+            "$ref": "parameters/adjustment.schema.json"
+          },
+          "evidence_refs": {
+            "minItems": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "ESCALATE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "parameters": {
+            "$ref": "parameters/escalate.schema.json"
+          }
+        }
+      }
+    }
+  ]
+}

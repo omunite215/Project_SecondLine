@@ -31,10 +31,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 - done: ACCEPTED; the table is consumed by OM-08 and KG-06.
 
 ### SH-05 · ADR-014 control conditions, policy matrix, shortcut affordances
-- meta: P0 | M-0 | om=0.5d kg=0.5d | mcs | driver: om | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=0.5d kg=0.5d | mcs | driver: om | deps: SH-01 | status: review
 - refs: §10 §11 §13 §14 | U4 | REQ-005 REQ-010 | H1 H2 | F1 F2
 - build: finalize the PROPOSED draft docs/adr/ADR-014: behavior of off / monitor / full at gateway, ledger and supervisor; tool surface + shortcut affordances per pressure level (keep the surface identical across conditions); role-action matrix, approval thresholds, suspense rules and posting limits derived from the generated value distribution (no magic numbers).
 - done: ACCEPTED before OM-10, OM-16, KG-04 and KG-09 start; copied into the prereg (KG-16).
+- evidence: AMENDMENT-1 in docs/experiment-amendments.md (L3 option A, kunal ☑); P90/P99 accepted + 3 requested changes on PR #13 (issuecomment-6489975826); ACCEPTED pending Om's fixes + merge
 
 ### SH-06 · Metric denominators & estimators
 - meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-04, SH-05 | status: todo

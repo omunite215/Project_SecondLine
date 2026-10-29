@@ -151,6 +151,13 @@ class NoFalsePositives(Tree):
         self.assertIn("Q2", self.failing())
 
 
+    def test_OM_27_locally_built_image_not_a_pin_failure(self):
+        self.put("infra/compose/docker-compose.yml", "services:\n  ledger:\n    build: {context: ../..}\n"
+                 "    image: secondline/ledger:dev\n    pull_policy: build\n"
+                 "    environment:\n      P: ${POSTGRES_PASSWORD:?x}\n")
+        self.assertNotIn("R1", self.failing())
+
+
 class Report(unittest.TestCase):
     def test_OM_27_band_thresholds(self):
         self.assertEqual([sc.band(r) for r in (1.0, 0.8, 0.6, 0.2)],
@@ -174,6 +181,7 @@ class Report(unittest.TestCase):
                               "Deployment and reproducibility"):
                 self.assertIn(criterion, r.stdout)
             self.assertIn("estimate", r.stdout.lower())
+            self.assertIn("Static checks:", r.stdout)  # says what was measured
         finally:
             shutil.rmtree(tmp)
 

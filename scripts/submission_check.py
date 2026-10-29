@@ -182,7 +182,10 @@ def run_checks(root: Path, deploy: bool = False, ref: str | None = None) -> list
     unpinned = []
     for f in fs:
         text = (root / f).read_text(errors="replace") if f.endswith((".yml", ".yaml")) or Path(f).name == "Dockerfile" else ""
+        built = set(re.findall(r"(?m)^\s*image:\s*([^\s#]+)\s*\n\s*pull_policy:\s*build", text))  # built here
         for img in re.findall(r"(?m)^\s*(?:image:|FROM)\s+([^\s#]+)", text):
+            if img in built:
+                continue
             tag = img.rsplit(":", 1)[1] if ":" in img.split("/")[-1] else ""
             if not img.startswith("${") and (not re.search(r"\d", tag) or "latest" in tag):
                 unpinned.append(f"{f}: {img}")
@@ -226,8 +229,8 @@ def band(ratio: float) -> str:
             "Approaching standards" if ratio >= 0.5 else "Below standards")
 
 
-def report(checks: list[Check], deploy: bool) -> str:
-    lines = ["| criterion | pts | checks passed | band (estimate) |", "|---|---|---|---|"]
+def report(checks: list[Check], deploy: bool, scope: str = "") -> str:
+    lines = ([scope, ""] if scope else []) + ["| criterion | pts | checks passed | band (estimate) |", "|---|---|---|---|"]
     for key, (name, pts) in CRITERIA.items():
         mine = [c for c in checks if c.id.startswith(key)]
         ok = sum(c.ok for c in mine)
@@ -248,7 +251,8 @@ def main(argv: list[str]) -> int:
     ap.add_argument("--ref", help="branch to clone for --deploy (default: the remote's default branch)")
     a = ap.parse_args(argv)
     checks = run_checks(Path(a.root), deploy=a.deploy, ref=a.ref)
-    print(report(checks, a.deploy))
+    scope = f"Static checks: {Path(a.root).resolve()}" + (f" · deploy: fresh clone of {a.ref or 'the default branch'}" if a.deploy else "")
+    print(report(checks, a.deploy, scope))
     return 0 if all(c.ok for c in checks) else 1
 
 

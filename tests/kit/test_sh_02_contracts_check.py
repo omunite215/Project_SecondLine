@@ -128,6 +128,20 @@ class ContractsCheck(unittest.TestCase):
         self.write("tool.schema.json", schema("tool.schema.json", {"x": {"$ref": "common.schema.json#/$defs/break_type"}}))
         self.assertFails("privileged")
 
+    def test_SH_02_privileged_ref_bypasses_rejected(self):
+        self.priv()
+        for ref in (BASE + "scenario/truth.schema.json",                 # absolute $id URL
+                    "common.schema.json#/%24defs/break_type",            # percent-encoded pointer
+                    "common.schema.json#/$defs/break_type/enum",         # pointer into the definition
+                    "./scenario/../scenario/truth.schema.json"):         # non-normalised path
+            with self.subTest(ref=ref):
+                self.write("tool.schema.json", schema("tool.schema.json", {"x": {"$ref": ref}}))
+                self.assertFails("privileged")
+
+    def test_SH_02_ref_outside_tree_fails_closed(self):
+        self.write("tool.schema.json", schema("tool.schema.json", {"x": {"$ref": "../../elsewhere.schema.json"}}))
+        self.assertFails("outside the contracts tree")
+
     def test_SH_02_privileged_schema_may_ref_break_type(self):
         self.priv()
         self.write("scenario/truth.schema.json", schema("scenario/truth.schema.json",

@@ -13,9 +13,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import posixpath
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote, urljoin
 
 from jsonschema import Draft202012Validator  # pyright: ignore[reportMissingImports]
 from jsonschema.exceptions import SchemaError  # pyright: ignore[reportMissingImports]
@@ -79,7 +81,7 @@ def check(root: Path) -> list[str]:
         if doc.get("x-privileged") and rel not in PRIVILEGED:
             problems.append(f"{rel}: x-privileged but not on the privileged list (scripts/contracts_check.py PRIVILEGED)")
         if not (doc.get("x-privileged") and rel in PRIVILEGED):
-            problems += [f"{rel}: {m}" for m in privileged_refs(root, root / rel, doc)]
+            problems += [f"{rel}: {m}" for m in privileged_refs(rel, doc)]
     registry = Registry().with_resources(
         (d["$id"], Resource.from_contents(d)) for d in schemas.values() if "$id" in d)
     docs = sorted((root / "examples").rglob("*.json")) if (root / "examples").exists() else []
@@ -105,18 +107,27 @@ def check(root: Path) -> list[str]:
     return problems
 
 
-def privileged_refs(root: Path, here: Path, doc) -> list[str]:
-    """$refs from a visible schema/API that reach a privileged schema or privileged definition."""
+def privileged_refs(rel: str, doc) -> list[str]:
+    """$refs from a visible schema/API that reach a privileged schema or definition. Resolved like the validator
+    (urljoin against $id, percent-decoded, normalised, JSON-pointer unescaped); anything outside the tree fails."""
     out = []
+    base = (doc.get("$id") if isinstance(doc, dict) else None) or ID_BASE + rel
     for p, k, v in walk(doc):
-        if k != "$ref" or not isinstance(v, str) or v.startswith("#"):
+        if k != "$ref" or not isinstance(v, str):
             continue
-        file, _, frag = v.partition("#")
-        try:
-            target = (here.parent / file).resolve().relative_to(root.resolve()).as_posix()
-        except ValueError:
+        absolute, _, frag = urljoin(base, v).partition("#")
+        if not absolute.startswith(ID_BASE):
+            out.append(f"{p}: $ref {v} resolves outside the contracts tree")
             continue
-        if target in PRIVILEGED or f"{target}#{frag}" in PRIVILEGED_DEFS:
+        target = posixpath.normpath(unquote(absolute[len(ID_BASE):]))
+        if target.startswith(".."):
+            out.append(f"{p}: $ref {v} resolves outside the contracts tree")
+            continue
+        pointer = "/".join(tok.replace("~1", "/").replace("~0", "~") for tok in unquote(frag).split("/"))
+        hit = target in PRIVILEGED or any(
+            target == f and (pointer == ptr or pointer.startswith(ptr + "/"))
+            for f, _, ptr in (d.partition("#") for d in PRIVILEGED_DEFS))
+        if hit:
             out.append(f"{p}: visible shape refs privileged {v}")
     return out
 
@@ -153,7 +164,7 @@ def check_openapi(root: Path, schemas: dict[str, dict]) -> list[str]:
         except yaml.YAMLError as e:
             problems.append(f"{rel}: invalid YAML: {str(e).splitlines()[0]}")
             continue
-        problems += [f"{rel}: {m}" for m in privileged_refs(root, f, api)]
+        problems += [f"{rel}: {m}" for m in privileged_refs(rel, api)]
         if not str(api.get("openapi", "")).startswith("3.1"):
             problems.append(f"{rel}: openapi must be 3.1.x")
         for p, k, v in walk(api):

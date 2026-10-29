@@ -123,6 +123,20 @@
     "gross": "3703.68"
    },
    "text": "BUY 300 XS0000000012 @ 12.3456 USD."
+  },
+  {
+   "record_id": "evd_0000E003",
+   "version": 1,
+   "kind": "SETTLEMENT_STATUS",
+   "source_system": "csd_sim",
+   "received_at": "2026-03-02T16:00:00Z",
+   "fields": {
+    "trade_ref": "trd_0000B001",
+    "status": "SETTLED",
+    "settle_date": "2026-02-27",
+    "value_date": "2026-02-27"
+   },
+   "text": "trd_0000B001 settled 2026-02-27."
   }
  ],
  "breaks": [
@@ -137,7 +151,8 @@
    ],
    "evidence_ids": [
     "evd_0000E001",
-    "evd_0000E002"
+    "evd_0000E002",
+    "evd_0000E003"
    ]
   }
  ]

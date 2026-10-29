@@ -21,7 +21,7 @@
       "minimum": 1
     },
     "kind": {
-      "$ref": "../common.schema.json#/$defs/evidence_kind"
+      "$ref": "../common.schema.json#/$defs/evidence_record_kind"
     },
     "untrusted": {
       "const": true

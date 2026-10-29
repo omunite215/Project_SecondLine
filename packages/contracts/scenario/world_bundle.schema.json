@@ -378,7 +378,7 @@
       }
     },
     "evidence_record": {
-      "description": "What the agent can read. Counterparty text is untrusted (may carry dev injections) but never truth.",
+      "description": "What the agent can read. Counterparty text is untrusted (may carry dev injections) but never truth. Field keys are allowlisted per kind (ADR-017), so no field name can carry a cause.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -399,23 +399,23 @@
           "minimum": 1
         },
         "kind": {
-          "$ref": "../common.schema.json#/$defs/evidence_kind"
+          "$ref": "../common.schema.json#/$defs/evidence_record_kind"
         },
         "source_system": {
           "type": "string",
-          "pattern": "^[a-z0-9_-]{2,32}$"
+          "pattern": "^[a-z0-9_-]{2,32}$",
+          "not": {
+            "pattern": "([dD][eE][vV]|[eE][vV][aA][lL]|[bB][lL][iI][nN][dD]|[tT][eE][sS][tT])"
+          }
         },
         "received_at": {
           "$ref": "../common.schema.json#/$defs/utc_timestamp"
         },
         "fields": {
           "type": "object",
-          "maxProperties": 40,
+          "maxProperties": 16,
           "propertyNames": {
-            "pattern": "^[a-z][a-z0-9_]{0,39}$",
-            "not": {
-              "pattern": "^(truth|truth_ref|root_cause|cause|expected_.*|oracle_.*|canary|break_type|seed)$|SLCANARY|^b[1-8]_"
-            }
+            "pattern": "^[a-z][a-z0-9_]{0,39}$"
           },
           "additionalProperties": {
             "type": "string",
@@ -428,7 +428,382 @@
         "text": {
           "$ref": "#/$defs/safe_text"
         }
-      }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "BROKER_CONFIRM"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "trade_ref",
+                    "isin",
+                    "side",
+                    "quantity",
+                    "price",
+                    "gross",
+                    "currency",
+                    "trade_date",
+                    "settle_date",
+                    "counterparty"
+                  ]
+                },
+                "properties": {
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  },
+                  "isin": {
+                    "$ref": "../common.schema.json#/$defs/isin"
+                  },
+                  "side": {
+                    "enum": [
+                      "BUY",
+                      "SELL"
+                    ]
+                  },
+                  "quantity": {
+                    "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+                  },
+                  "price": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "gross": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "trade_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "settle_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "CUSTODIAN_STATEMENT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "account",
+                    "isin",
+                    "quantity",
+                    "as_of",
+                    "settle_date",
+                    "trade_ref"
+                  ]
+                },
+                "properties": {
+                  "isin": {
+                    "$ref": "../common.schema.json#/$defs/isin"
+                  },
+                  "quantity": {
+                    "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+                  },
+                  "as_of": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "settle_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "NOSTRO_STATEMENT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "account",
+                    "currency",
+                    "debit_amount",
+                    "credit_amount",
+                    "balance",
+                    "value_date",
+                    "trade_ref"
+                  ]
+                },
+                "properties": {
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "debit_amount": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "credit_amount": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "balance": {
+                    "$ref": "../common.schema.json#/$defs/decimal"
+                  },
+                  "value_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "SETTLEMENT_STATUS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "trade_ref",
+                    "status",
+                    "status_code",
+                    "value_date",
+                    "settle_date",
+                    "cutoff_time",
+                    "currency",
+                    "amount",
+                    "quantity"
+                  ]
+                },
+                "properties": {
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  },
+                  "status": {
+                    "enum": [
+                      "PENDING",
+                      "MATCHED",
+                      "SETTLED",
+                      "PARTIALLY_SETTLED",
+                      "FAILED",
+                      "CANCELLED"
+                    ]
+                  },
+                  "status_code": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{4}$",
+                    "description": "ISO 20022 4-letter code; the list is cited in KG-02 (verify: true until SH-13)."
+                  },
+                  "value_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "settle_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "cutoff_time": {
+                    "$ref": "../common.schema.json#/$defs/utc_timestamp"
+                  },
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "amount": {
+                    "$ref": "../common.schema.json#/$defs/decimal"
+                  },
+                  "quantity": {
+                    "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "CA_NOTICE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "isin",
+                    "event_type",
+                    "ratio_new",
+                    "ratio_old",
+                    "ex_date",
+                    "record_date",
+                    "pay_date",
+                    "cash_in_lieu_price",
+                    "currency"
+                  ]
+                },
+                "properties": {
+                  "isin": {
+                    "$ref": "../common.schema.json#/$defs/isin"
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{4}$",
+                    "description": "ISO 20022 4-letter code; the list is cited in KG-02 (verify: true until SH-13)."
+                  },
+                  "ratio_new": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "ratio_old": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "ex_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "record_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "pay_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "cash_in_lieu_price": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "SSI_RECORD"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "counterparty",
+                    "currency",
+                    "account",
+                    "bic",
+                    "place_of_settlement",
+                    "effective_date"
+                  ]
+                },
+                "properties": {
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "effective_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "FX_RATE_NOTICE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "base_currency",
+                    "quote_currency",
+                    "rate",
+                    "as_of",
+                    "rate_source"
+                  ]
+                },
+                "properties": {
+                  "base_currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "quote_currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "rate": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "as_of": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "COUNTERPARTY_MESSAGE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "counterparty",
+                    "trade_ref",
+                    "subject",
+                    "channel"
+                  ]
+                },
+                "properties": {
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
     },
     "break_symptom": {
       "description": "What reconciliation sees: a difference, not its cause.",

@@ -49,8 +49,9 @@ class BoardInTempCopy(unittest.TestCase):
 
     def test_OM_26_set_fails_when_meta_has_no_status(self):
         p = self.team / "OM.md"
-        p.write_text(p.read_text().replace("- meta: P1 | M-0 | 0.5d | deps: SH-01 | status: todo",
-                                           "- meta: P1 | M-0 | 0.5d | deps: SH-01"))
+        text, n = re.subn(r"(### OM-26 .*\n- meta: [^\n]*?) \| status: \w+", r"\1", p.read_text())
+        self.assertEqual(n, 1, "fixture: OM-26 meta line not found")
+        p.write_text(text)
         r = self.board("set", "OM-26", "review", "--evidence", "x")
         self.assertNotEqual(r.returncode, 0, r.stdout)
 

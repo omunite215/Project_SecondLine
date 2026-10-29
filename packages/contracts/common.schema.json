@@ -45,9 +45,9 @@
     "opaque_id": {
       "type": "string",
       "pattern": "^[a-z]{2,6}_[0-9A-Za-z]{8,32}$",
-      "description": "Opaque, carries no meaning (ADR-015): never names a split (dev/eval/blind).",
+      "description": "Opaque, carries no meaning (ADR-015); must not reveal a split. Generators re-draw on a hit.",
       "not": {
-        "pattern": "([dD][eE][vV]|[eE][vV][aA][lL]|[bB][lL][iI][nN][dD])"
+        "pattern": "([dD][eE][vV]|[eE][vV][aA][lL]|[bB][lL][iI][nN][dD]|[tT][eE][sS][tT])"
       }
     },
     "evidence_ref": {
@@ -139,15 +139,26 @@
     },
     "evidence_kind": {
       "enum": [
-        "CUSTODIAN_STATEMENT",
+        "INTERNAL_BOOKING",
         "BROKER_CONFIRM",
+        "CUSTODIAN_STATEMENT",
         "NOSTRO_STATEMENT",
+        "SETTLEMENT_STATUS",
         "CA_NOTICE",
         "SSI_RECORD",
         "FX_RATE_NOTICE",
         "COUNTERPARTY_MESSAGE"
       ],
-      "description": "Evidence vocabulary (ADR-017). One source for world_bundle and read_evidence."
+      "description": "ADR-017 closed set; one source for world_bundle and read_evidence. INTERNAL_BOOKING refs resolve to ledger trade / journal / movement ids, never to a world-bundle evidence record."
+    },
+    "evidence_record_kind": {
+      "$ref": "#/$defs/evidence_kind",
+      "not": {
+        "enum": [
+          "INTERNAL_BOOKING"
+        ]
+      },
+      "description": "Kind of a world-bundle evidence record, as read_evidence returns it (ADR-017): every kind but INTERNAL_BOOKING."
     }
   }
 }

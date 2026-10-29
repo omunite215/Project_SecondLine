@@ -1,7 +1,7 @@
 # Handoff: Kunal → Om · SH-02 evidence contract aligned to ADR-017 (2026-10-29)
 Task: SH-02 (Kunal's half, follow-up to the #11 leakage audit) · ADR-017 (PROPOSED on main; Om approved on #16) · T-DOM-03 T-DOM-04 REQ-006
 
-## What changed (contracts VERSION stays 1.0.0: not yet tagged or merged)
+## What changed (contracts VERSION stays 1.0.0: #11 merged, but `contracts-v1.0.0` isn't tagged yet)
 - `common.schema.json`:
   - `evidence_kind` is now ADR-017's closed set, adding `INTERNAL_BOOKING` and `SETTLEMENT_STATUS`.
   - New `evidence_record_kind` = every kind but `INTERNAL_BOOKING`.
@@ -25,4 +25,4 @@ An INTERNAL_BOOKING citation is a plain `evidence_ref`: `{"record_id": "trd_0000
 ## What I need back
 1. **Movements gap (ADR-017):** ADR-017 says INTERNAL_BOOKING refs can point at movement IDs, but no tool exposes `movement_id` and a world-bundle `securities_movement` has no version. Should we expose movements (with `record_version`) in a read tool, or drop them from ADR-017? Needed before OM-08.
 2. Before KG-03: is the `status` enum (PENDING, MATCHED, SETTLED, PARTIALLY_SETTLED, FAILED, CANCELLED) enough for the ledger's settlement view?
-3. Merge this into #11 the same way as #15, before the `contracts-v1.0.0` tag.
+3. #11 merged first, so this targets `main`. Please merge it **before** cutting `contracts-v1.0.0`, so the tag includes the ADR-017 alignment. If you'd rather tag now, I'll bump VERSION to 1.1.0 here instead.

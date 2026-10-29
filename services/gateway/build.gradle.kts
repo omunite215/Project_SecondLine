@@ -6,3 +6,7 @@ dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.actuator)
 }
+
+tasks.bootJar {
+    archiveFileName = "app.jar"
+}

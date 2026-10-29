@@ -50,6 +50,18 @@ class GateFailsClosed(unittest.TestCase):
         self.assertLessEqual(gates, contexts)
 
 
+class SecretScan(unittest.TestCase):
+    def test_OM_01_ci_scans_full_history_for_secrets(self):
+        # The pre-commit gitleaks hook runs `--staged`: in CI (`--all-files`, nothing staged) it scans nothing.
+        # So the lint job must also run a pinned, checksum-verified gitleaks over the whole history.
+        text = (ROOT / ".github/workflows/ci.yml").read_text()
+        lint = text.split("\n  lint:\n", 1)[1].split("\n  java:\n", 1)[0]
+        self.assertIn("fetch-depth: 0", lint)
+        self.assertRegex(lint, r"GITLEAKS_SHA256: [0-9a-f]{64}")
+        self.assertIn("sha256sum -c", lint)
+        self.assertRegex(lint, r"gitleaks git --redact[^\n]*--config \.gitleaks\.toml")
+
+
 class PreCommit(unittest.TestCase):
     def test_OM_01_precommit_hooks_pinned(self):
         text = (ROOT / ".pre-commit-config.yaml").read_text()

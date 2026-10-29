@@ -25,7 +25,7 @@ The driver owns the outcome and schedules the session; the other person contribu
 - evidence: ADR-016 ACCEPTED: Kunal approved PR #10 2026-10-29 confirming (a)-(d) + B1-B8 deltas; U1 resolved; make kit-check green
 
 ### SH-04 · ADR-017 evidence semantics & detection gap
-- meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-01 | status: doing
 - refs: §5 §8 §25 | U5 | REQ-006 | I5 | T-DOM-04 | F3
 - build: per break type: which record is authoritative (custodian statement vs internal booking vs settlement status), which evidence_refs a valid action must cite, which wrong outcomes the runtime verifier can detect synchronously (no truth access) vs only the oracle — list the detection-gap cases explicitly.
 - done: ACCEPTED; the table is consumed by OM-08 and KG-06.

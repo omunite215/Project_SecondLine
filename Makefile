@@ -2,8 +2,12 @@
 # Recipes are TAB-indented. Works with GNU make 3.81 (macOS default) and 4.x (WSL/CI).
 SHELL := /bin/bash
 PY ?= python3
+GRADLE ?= ./gradlew --no-daemon -q
 PROFILES ?= core
-# Intended (OM-01): COMPOSE = docker compose -f infra/compose/docker-compose.yml $(foreach p,$(PROFILES),--profile $(p))
+ENV_FILE ?= .env
+ALL_PROFILES := core app events obs ui chaos
+COMPOSE = docker compose -f infra/compose/docker-compose.yml --env-file $(ENV_FILE)
+need_env = @[ -f $(ENV_FILE) ] || { echo "$(ENV_FILE) missing: run make bootstrap"; exit 1; }
 
 define todo
 @echo "TODO($(1)): '$@' is not built yet -> python3 scripts/board.py show $(1)"; exit 1
@@ -50,35 +54,43 @@ hpc-help: ## Explorer vLLM runbook pointer
 
 # ---- platform / stack (Om) -----------------------------------------------------
 bootstrap: ## One-time dependency install (OM-01 + KG-01)
-	$(call todo,OM-01)
+	@docker compose version --short | awk -F. '{ if ($$1 < 2 || ($$1 == 2 && $$2 < 17)) { print "need docker compose >= 2.17"; exit 1 } }'
+	@$(PY) scripts/bootstrap_env.py
+	@if [ ! -f .pre-commit-config.yaml ]; then :; elif command -v uv >/dev/null; then uvx pre-commit install --allow-missing-config; else echo "install uv, then: uvx pre-commit install --allow-missing-config"; fi
 up: ## Start profiles, e.g. make up PROFILES="core app" (core app events obs ui chaos)
-	$(call todo,OM-01)
+	$(need_env)
+	$(COMPOSE) $(foreach p,$(PROFILES),--profile $(p)) up -d --wait --wait-timeout 120
 down: ## Stop the stack
-	$(call todo,OM-01)
+	$(need_env)
+	$(COMPOSE) $(foreach p,$(ALL_PROFILES),--profile $(p)) down
 ps: ## Service health
-	$(call todo,OM-01)
+	$(need_env)
+	@$(COMPOSE) $(foreach p,$(ALL_PROFILES),--profile $(p)) ps --format 'table {{.Service}}\t{{.Status}}'
 logs: ## Tail one service: make logs SVC=ledger TAIL=50
-	$(call todo,OM-01)
+	$(need_env)
+	@$(COMPOSE) $(foreach p,$(ALL_PROFILES),--profile $(p)) logs --tail $(or $(TAIL),50) $(SVC)
 reset: ## Drop + reload a namespace: make reset NS=<id>
 	$(call todo,OM-04)
 db-shell: ## psql into the dev database
-	$(call todo,OM-01)
-lint: ## All linters
-	$(call todo,OM-01)
-test: ## All unit suites (quiet)
-	$(call todo,OM-01)
+	$(need_env)
+	$(COMPOSE) exec postgres sh -c 'psql -U postgres -d "$$POSTGRES_DB"'
+lint: ## All linters: pre-commit (gitleaks, EOF, LF) on every file
+	@if command -v uv >/dev/null; then uvx pre-commit run --all-files; else pre-commit run --all-files; fi
+test: ## All unit suites (quiet): Java + kit (Python suites: make test-py)
+	@$(GRADLE) test
+	@$(MAKE) --no-print-directory kit-test
 codegen: ## Regenerate Java + Python (+ TS) types from packages/contracts
 	$(call todo,SH-02)
 codegen-java: ## Java types
 	$(call todo,OM-02)
 codegen-py: ## Python sl_contracts models
 	$(call todo,KG-01)
-contracts-check: ## Validate schemas + examples
-	$(call todo,SH-02)
+contracts-check: ## Validate schemas + examples (uv fetches pinned jsonschema/pyyaml; no install needed)
+	@uv run -q --with jsonschema==4.26.0 --with pyyaml==6.0.3 python scripts/contracts_check.py
 test-ledger: ## Ledger unit + property tests
-	$(call todo,OM-03)
+	@$(GRADLE) :services:ledger:test
 test-gateway: ## Gateway tests
-	$(call todo,OM-05)
+	@$(GRADLE) :services:gateway:test
 test-mcp: ## MCP adapter contract tests
 	$(call todo,OM-06)
 test-policy: ## opa test

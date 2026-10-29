@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/actions/parameters/adjustment.schema.json",
+  "title": "ADJUSTMENT parameters (§10: currency, amount, account, trade, purpose)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "currency",
+    "amount",
+    "debit_account",
+    "credit_account",
+    "trade_id",
+    "purpose"
+  ],
+  "properties": {
+    "currency": {
+      "$ref": "../../common.schema.json#/$defs/currency"
+    },
+    "amount": {
+      "$ref": "../../common.schema.json#/$defs/positive_decimal"
+    },
+    "debit_account": {
+      "$ref": "../../common.schema.json#/$defs/cash_account"
+    },
+    "credit_account": {
+      "$ref": "../../common.schema.json#/$defs/cash_account"
+    },
+    "trade_id": {
+      "$ref": "../../common.schema.json#/$defs/opaque_id"
+    },
+    "purpose": {
+      "enum": [
+        "ROUNDING",
+        "FX_REVALUATION"
+      ]
+    },
+    "rate_id": {
+      "type": "string",
+      "maxLength": 64,
+      "description": "Required for FX_REVALUATION (policy check)."
+    }
+  },
+  "description": "Amount is positive; direction is debit_account → credit_account, both in `currency`. Validator rules (OM-08, not expressible here): debit_account != credit_account; amount scale ≤ currency minor units; no line on 1900 suspense (ADR-014/016).",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "currency": {
+            "const": "USD"
+          }
+        },
+        "required": [
+          "currency"
+        ]
+      },
+      "then": {
+        "properties": {
+          "debit_account": {
+            "pattern": "-USD$"
+          },
+          "credit_account": {
+            "pattern": "-USD$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "currency": {
+            "const": "EUR"
+          }
+        },
+        "required": [
+          "currency"
+        ]
+      },
+      "then": {
+        "properties": {
+          "debit_account": {
+            "pattern": "-EUR$"
+          },
+          "credit_account": {
+            "pattern": "-EUR$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "currency": {
+            "const": "GBP"
+          }
+        },
+        "required": [
+          "currency"
+        ]
+      },
+      "then": {
+        "properties": {
+          "debit_account": {
+            "pattern": "-GBP$"
+          },
+          "credit_account": {
+            "pattern": "-GBP$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "currency": {
+            "const": "CHF"
+          }
+        },
+        "required": [
+          "currency"
+        ]
+      },
+      "then": {
+        "properties": {
+          "debit_account": {
+            "pattern": "-CHF$"
+          },
+          "credit_account": {
+            "pattern": "-CHF$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "currency": {
+            "const": "JPY"
+          }
+        },
+        "required": [
+          "currency"
+        ]
+      },
+      "then": {
+        "properties": {
+          "debit_account": {
+            "pattern": "-JPY$"
+          },
+          "credit_account": {
+            "pattern": "-JPY$"
+          }
+        }
+      }
+    }
+  ]
+}

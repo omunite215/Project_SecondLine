@@ -1,0 +1,25 @@
+{
+ "x-validates": "tools/read_bookings.output.schema.json",
+ "entries": [
+  {
+   "entry_id": "jen_00000901",
+   "entry_type": "TRADE_BUY",
+   "effective_date": "2026-03-02",
+   "lines": [
+    {
+     "account": "1300-USD",
+     "currency": "USD",
+     "amount": "12370.37",
+     "side": "DEBIT"
+    },
+    {
+     "account": "1210-USD",
+     "currency": "USD",
+     "amount": "12370.37",
+     "side": "CREDIT"
+    }
+   ],
+   "record_version": 1
+  }
+ ]
+}

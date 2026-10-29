@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/approvals/approval_request.schema.json",
+  "title": "ApprovalRequest (§8 step 4, ADR-011)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "approval_id",
+    "action_id",
+    "action_digest",
+    "evidence_versions",
+    "state_version",
+    "maker_id",
+    "requested_at",
+    "expires_at"
+  ],
+  "properties": {
+    "approval_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "action_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "action_digest": {
+      "$ref": "../common.schema.json#/$defs/sha256_ref"
+    },
+    "evidence_versions": {
+      "type": "array",
+      "items": {
+        "$ref": "../common.schema.json#/$defs/evidence_ref"
+      },
+      "minItems": 1
+    },
+    "state_version": {
+      "$ref": "../common.schema.json#/$defs/state_version"
+    },
+    "maker_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "requested_at": {
+      "$ref": "../common.schema.json#/$defs/utc_timestamp"
+    },
+    "expires_at": {
+      "$ref": "../common.schema.json#/$defs/utc_timestamp"
+    }
+  }
+}

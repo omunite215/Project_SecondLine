@@ -12,10 +12,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 - evidence: merged PR #6 (2026-10-29, rule suite 4785959665: all main rules pass); U12 resolved; both skills gates GREEN; kit merged via PR #1
 
 ### SH-02 · Contracts v1: schemas, errors, OpenAPI skeletons
-- meta: P0 | M-0 | om=1d kg=1d | mcs | driver: om | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=1d kg=1d | mcs | driver: om | deps: SH-01 | status: review
 - refs: §9 §10 §8 §12 §4 | REQ-004 REQ-005 REQ-007 | T-DOM-03 | ADR-005 ADR-013 ADR-015 | U3 U10
 - build: packages/contracts: tools/<tool>.{input,output}.schema.json for every §10 tool; actions/proposed_action; receipts/decision_receipt; scenario/{manifest, world_bundle, truth (x-privileged)}; attacks/attack_pack; events/envelope (§12 fields); errors.json (§8 codes); openapi/{gateway-tools, ledger-internal, ledger-admin, review, eval}.yaml skeletons; examples/ (§9 documents, minimal world bundle, minimal ns export); VERSION 1.0.0; scripts/contracts_check.py. Om drafts gateway / ledger / receipt / event / errors; Kunal drafts world_bundle / truth / manifest / attack_pack. One API v1 with idempotency + reason codes; the legacy v1/v2 deprecation demo is skipped and recorded (U10). Pin MCP SDK + spec revision in ADR-013 (U3).
 - done: `make contracts-check` passes; both approve; git tag contracts-v1.0.0; ADR-013 and ADR-015 ACCEPTED.
+- evidence: Kunal's half (scenario manifest/run_manifest/world_bundle/ns_export/truth, attack_pack, openapi/eval.yaml): make contracts-check OK; tests/kit/test_sh_02_scenario.py 13/13; make kit-check exit 0; 16 invalid examples rejected; contract-guardian 5 findings fixed; leakage-auditor no leaks. Pending: both approve, ADR-013/015 ACCEPTED, tag contracts-v1.0.0 (Om), make codegen-py after KG-01 #14.
 
 ### SH-03 · ADR-016 accounting model & precision
 - meta: P0 | M-0 | om=0.75d kg=0.25d | mcs | driver: om | deps: SH-01 | status: review
@@ -25,10 +26,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 - evidence: ADR-016 ACCEPTED: Kunal approved PR #10 2026-10-29 confirming (a)-(d) + B1-B8 deltas; U1 resolved; make kit-check green
 
 ### SH-04 · ADR-017 evidence semantics & detection gap
-- meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-01 | status: review
 - refs: §5 §8 §25 | U5 | REQ-006 | I5 | T-DOM-04 | F3
 - build: per break type: which record is authoritative (custodian statement vs internal booking vs settlement status), which evidence_refs a valid action must cite, which wrong outcomes the runtime verifier can detect synchronously (no truth access) vs only the oracle — list the detection-gap cases explicitly.
 - done: ACCEPTED; the table is consumed by OM-08 and KG-06.
+- evidence: ADR-017 PROPOSED: tests/kit/test_sh_04_adr017.py 10/10 (table shape B1-B8, closed evidence vocabulary, typed error triggers, DG-1..DG-6 mapping; 3 mutation checks go red); make kit-check exit 0; contract-guardian 3 findings fixed. Pending: ACCEPTED by both on the PR; OM-08/KG-06 consumption is downstream.
 
 ### SH-05 · ADR-014 control conditions, policy matrix, shortcut affordances
 - meta: P0 | M-0 | om=0.5d kg=0.5d | mcs | driver: om | deps: SH-01 | status: review

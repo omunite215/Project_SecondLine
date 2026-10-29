@@ -1,5 +1,5 @@
 # ADR-014: Control conditions (off / monitor / full) and shortcut affordances
-Status: PROPOSED (decide in SH-05; copy into the prereg in KG-16) · Resolves: U4 (part) · Spec: §10 strategies A–D, §13 H1–H2, §14, §16
+Status: ACCEPTED (om ☑ kunal ☑, SH-05, PR #13 + AMENDMENT-1 #17, 2026-10-29; copy into the prereg in KG-16) · Resolves: U4 (part) · Spec: §10 strategies A–D, §13 H1–H2, §14, §16
 
 ## Context
 H2 compares full controls with controls-off; RQ1/H1 need real opportunities to attempt violations; the PoC ran "off" as log-but-don't-block in an isolated ledger. If what is *available* differs between conditions, H2 measures affordances instead of enforcement.
@@ -54,7 +54,7 @@ The *maker* of an action is the agent run that proposed it; the checker is alway
 - `T_fx(ccy)` = 90th percentile and `L_post(ccy)` = 99th percentile of the absolute FX-revaluation difference **visible** in the dev split's world bundles (statement vs book, per currency), rounded **up** to 2 significant figures. Visible data only: a number derived from truth would carry hidden-truth information into gateway policy (golden rule 4). Reviewed choice: P90 sends roughly the largest tenth of legitimate revaluations to a human; P99 makes the hard limit unreachable by legitimate dev cases.
 - Computed by a script in KG-04 from `data/generated/dev/` world bundles only (golden rule 5: never eval/blind; never `truth/`), recorded here with the dev MANIFEST hash, and frozen before the prereg (KG-16). Thresholds aren't tuned after any eval run.
 - `C_msg` (counterparty messages per run) follows the same rule. It is taken from the pilot (U11) as the P99 of messages per run over **all** dev-split rules-baseline runs, rounded up, and frozen with the prereg. There is no filter on graded correctness, which would derive a policy number from truth.
-- Until those numbers exist, OM-10 uses fail-safe placeholders: every FX revaluation is REQUIRE_APPROVAL, and `C_msg` = 1 per break. Tests assert the placeholders are absent before an eval campaign.
+- Until those numbers exist, OM-10 uses fail-safe placeholders: every FX revaluation is REQUIRE_APPROVAL, and `C_msg` = number of breaks in the run (one message per break, enforced per run). Tests assert the placeholders are absent before an eval campaign.
 
 ## Open for the team (needed before KG-16 freezes the prereg)
 - **L3 shortcut availability** (the flag above). Options:

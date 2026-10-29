@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/runs/run_request.schema.json",
+  "title": "Create a run (harness only)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ns",
+    "controls",
+    "agent_id"
+  ],
+  "properties": {
+    "ns": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "controls": {
+      "enum": [
+        "off",
+        "monitor",
+        "full"
+      ]
+    },
+    "agent_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    }
+  },
+  "description": "Budgets, scope and expiry are server-derived from the campaign config, never client-supplied."
+}

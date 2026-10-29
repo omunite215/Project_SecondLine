@@ -45,7 +45,10 @@
     "opaque_id": {
       "type": "string",
       "pattern": "^[a-z]{2,6}_[0-9A-Za-z]{8,32}$",
-      "description": "Opaque, carries no meaning (ADR-015)."
+      "description": "Opaque, carries no meaning (ADR-015): never names a split (dev/eval/blind).",
+      "not": {
+        "pattern": "([dD][eE][vV]|[eE][vV][aA][lL]|[bB][lL][iI][nN][dD])"
+      }
     },
     "evidence_ref": {
       "type": "object",

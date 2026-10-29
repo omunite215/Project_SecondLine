@@ -9,11 +9,11 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 ## M-0 Contracts & setup
 
 ### OM-01 · Monorepo bootstrap, Compose base, CI skeleton
-- meta: P0 | M-0 | 2d | mcs | deps: SH-01 | status: review
+- meta: P0 | M-0 | 2d | mcs | deps: SH-01 | status: done
 - refs: §7 §19 §21 | NFR-11 NFR-06 | T-DOC-01 | ADR-009 ADR-010 | RSK-12
 - build: dirs from the CLAUDE.md repo map. Gradle Kotlin DSL multi-project (services/ledger, services/gateway, libs/contracts-java) + gradle/libs.versions.toml: Java 21, Spring Boot 3.5.x pinned (4.0.x only via ADR; default chosen for Jackson-2 library compatibility). infra/compose/docker-compose.yml profiles: core (postgres 17, redis 7, opa 1.x) · app (ledger, gateway, mcp-adapter) · events (kafka KRaft, supervisor) · obs (otel-collector, jaeger, prometheus, grafana) · ui (console) · chaos (toxiproxy); healthchecks; mem_limit per service sized for a 16 GB host; multi-stage Dockerfiles so the teammate needs no JDK; multi-arch base images (Kunal is arm64). infra/db/init/00-roles.sql: schemas ledger, audit, eval; roles ledger_app, grader_ro, operator. Replace Makefile TODO stubs: bootstrap up down ps logs reset db-shell lint test codegen. GitHub Actions: path-filtered java / python / policy / console jobs next to kit-checks; Testcontainers-ready. pre-commit: gitleaks, LF, EOF. No Kubernetes.
 - done: fresh clone on BOTH machines: `make bootstrap && make up PROFILES="core"` healthy in < 2 min; CI green; `make ctx` under budget; infra/CLAUDE.md lists the real commands.
-- evidence: V1 fresh clone (Om, WSL amd64): make bootstrap && make up PROFILES=core healthy 8.4 s; CI run 40812113039 green (changes/lint/java/stack/kit; core 10.1 s; 11/11 DB-role tests, all profiles up); make kit-check + make ctx green; infra/CLAUDE.md commands tested by test_om_01_docs. Pending: V2 Kunal arm64, V3 docs-only PR after required checks applied.
+- evidence: merged #9 (2026-10-29); V1 fresh clone Om 8.4 s, V2 Kunal arm64 8.4 s + 11/11 DB-role tests, V3 docs-only PR #13 merged with java/stack skipped under the required checks; CI run 40812113039 green
 
 ### OM-25 · CI/CD ownership: rulesets, required checks, PR automation
 - meta: P0 | M-0 | 2d | mcs=1d | deps: SH-01 | status: todo
@@ -30,11 +30,11 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - evidence: merged via PR #2 → PR #1 (8e42126); tests/security/test_om_26_kit_hardening.py; make kit-check green on main 2026-10-28
 
 ### OM-27 · Submission rubric check (code organization, docs, quality, completeness, deployment)
-- meta: P1 | M-0 | 0.5d | deps: SH-01 | status: review
+- meta: P1 | M-0 | 0.5d | deps: SH-01 | status: done
 - refs: §19 §21 §23 | NFR-11 | T-DOC-01
 - build: scripts/submission_check.py + `make submission-check [DEPLOY=1 REF=<branch>]`: one or more executable checks per rubric criterion (organization 20 · technical documentation 20 · code quality 15 · completeness 20 · deployment & reproducibility 25), each PASS/FAIL with evidence; DEPLOY=1 clones REF into a temp dir and runs bootstrap → up core → tests → down. Report lists failing checks and an evidence-based band per criterion (an estimate, not a grade).
 - done: tests/kit/test_om_27_submission_check.py (stdlib, temp trees) green; report run on main and on the OM-01 branch, findings filed as follow-ups.
-- evidence: tests/kit/test_om_27_submission_check.py 21/21 (each check has a failing-tree test; 4 false positives found on the real repo fixed test-first); main: O 2/3 D 1/4 Q 3/3 P 1/4; DEPLOY=1 REF=om/OM-01-bootstrap R2 PASS (clone 1.1s, bootstrap 0.8s, up core 6.0s, test 22.7s)
+- evidence: merged #18 (2026-10-29); make submission-check + DEPLOY=1 R2 PASS; README rewrite; docs/ai move with ctx_budget following @imports
 
 ## M-1 Truthful simulator (ledger side)
 

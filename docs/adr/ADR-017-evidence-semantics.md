@@ -1,5 +1,5 @@
 # ADR-017: Evidence semantics & detection gap
-Status: PROPOSED
+Status: ACCEPTED (om ☑ kunal ☑, PR #16)
 Date: 2026-10-29 · Resolves: U5 (§25) · Spec: §5 §8 §15 §19 · REQ-006, I5, T-DOM-04, F3 · Tasks affected: OM-08 (pre-commit verifier), KG-03/KG-04 (factory evidence), KG-06 (grader), KG-14 (red team)
 
 ## Context

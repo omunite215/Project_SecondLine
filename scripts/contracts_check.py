@@ -70,11 +70,12 @@ def check(root: Path) -> list[str]:
                 problems.append(f"{rel}{p}: JSON number is float money/quantity; use common decimal string")
             if doc.get("x-privileged") and rel in PRIVILEGED:
                 continue
-            names = list(v) if k == "properties" and isinstance(v, dict) else []
-            names += [x for x in v if isinstance(x, str)] if k in ("required", "enum") and isinstance(v, list) else []
-            names += [v] if k == "const" and isinstance(v, str) else []
+            exempt = {d.partition("#/$defs/")[2] for d in PRIVILEGED_DEFS if d.startswith(rel + "#")}
+            names = [n for n in schema_names(k, v) if not (k == "$defs" and n in exempt)]
             problems += [f"{rel}{p}/{k}: truth field {n!r} outside an x-privileged schema" for n in names
                          if TRUTH_NAMES.search(n)]
+            if k in ("$dynamicRef", "$anchor", "$dynamicAnchor") or (k == "$id" and p):
+                problems.append(f"{rel}{p}/{k}: not allowed in visible schemas (only plain $ref is resolved and guarded)")
         schemas[rel] = doc
 
     for rel, doc in schemas.items():
@@ -105,6 +106,22 @@ def check(root: Path) -> list[str]:
     problems += check_openapi(root, schemas)
     problems += check_canaries(root, schemas)
     return problems
+
+
+def schema_names(k: str, v) -> list[str]:
+    """Names and values a schema/API keyword can carry that would expose truth: property-like keys
+    (properties, patternProperties, dependentSchemas, dependentRequired, $defs), required entries,
+    dependentRequired targets, enum and const values. Prose (description, title) is not scanned."""
+    names: list[str] = []
+    if k in ("properties", "patternProperties", "dependentSchemas", "dependentRequired", "$defs") and isinstance(v, dict):
+        names += list(v)
+    if k == "dependentRequired" and isinstance(v, dict):
+        names += [x for xs in v.values() if isinstance(xs, list) for x in xs if isinstance(x, str)]
+    if k in ("required", "enum") and isinstance(v, list):
+        names += [x for x in v if isinstance(x, str)]
+    if k == "const" and isinstance(v, str):
+        names.append(v)
+    return names
 
 
 def privileged_refs(rel: str, doc) -> list[str]:
@@ -173,8 +190,8 @@ def check_openapi(root: Path, schemas: dict[str, dict]) -> list[str]:
                 target = (f.parent / target).resolve().relative_to(root.resolve()).as_posix() if target else ""
                 if target not in schemas:
                     problems.append(f"{rel}{p}: unresolved $ref {v}")
-            if k == "properties" and isinstance(v, dict):
-                problems += [f"{rel}{p}/properties/{n}: truth field in an API" for n in v if TRUTH_NAMES.search(n)]
+            names = schema_names(k, v) + ([v] if k == "name" and isinstance(v, str) else [])
+            problems += [f"{rel}{p}/{k}: truth field {n!r} in an API" for n in names if TRUTH_NAMES.search(n)]
         for path, ops in (api.get("paths") or {}).items():
             for method, op in (ops or {}).items():
                 for code, resp in ((op or {}).get("responses") or {}).items():

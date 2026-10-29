@@ -81,7 +81,7 @@ MCS = cards tagged `mcs` (`mcs=Xd` = reduced scope); totals in §3. Cut in this 
 - One Claude Code task per session; `/clear` between tasks.
 
 ## 9. Machine roles
-| | Om — Vivobook Pro 15 (Windows 11 + WSL2) | Kunal — MacBook Pro 14" (Apple Silicon) |
+| | Om — Vivobook Pro 15 (Windows 11 + WSL2) | Kunal — MacBook Air (Apple M4, 16 GB) |
 |---|---|---|
 | daily dev | Java/Spring, console, infra inside WSL2 (≤10 GB) | Python natively; agent loop with a local model |
 | local LLM | ≤4B smoke model (4 GB VRAM) | 7–14B via Ollama/Metal, by RAM tier |
@@ -93,9 +93,9 @@ MCS = cards tagged `mcs` (`mcs=Xd` = reduced scope); totals in §3. Cut in this 
 ## 10. Calendar (fill in during SH-01)
 | item | value |
 |---|---|
-| Module 7 final submission | ______ |
-| Weekly sync slot | ______ |
-| M-0 … M-5 target dates | ______ |
-| Kunal's Mac chip / unified memory | ______ |
+| Module 7 final submission | TBD (not yet announced) |
+| Weekly sync slot | TBD |
+| M-0 … M-5 target dates | TBD (set once the submission date is known) |
+| Kunal's Mac chip / unified memory | Apple M4 / 16 GB |
 | Kunal's GitHub handle | @kunalgupta06 (Write, added 2026-10-24) |
-| Kunal's Explorer account status | requested ☐ approved ☐ |
+| Kunal's Explorer account status | approved ☑ |

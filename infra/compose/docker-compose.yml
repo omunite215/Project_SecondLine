@@ -24,7 +24,7 @@ services:
       retries: 30
 
   redis:
-    image: redis:7.4.12-alpine
+    image: redis:8.10.0-alpine
     profiles: [core]
     command: ["redis-server", "--save", "", "--appendonly", "no"]
     ports: ["127.0.0.1:6379:6379"]

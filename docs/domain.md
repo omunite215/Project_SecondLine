@@ -1,6 +1,6 @@
 # Domain model: accounts, precision, break patterns (ADR-016)
 
-Status: **PROPOSED** with ADR-016 (SH-03). One synthetic bank, cash-equity only (ADR-001). Every value below is a proposal until both owners accept ADR-016; values marked **CONFIRM** need Kunal's sign-off because the scenario factory's truth (KG-03/KG-04) depends on them.
+Status: **ACCEPTED** with ADR-016 (SH-03, PR #10). One synthetic bank, cash-equity only (ADR-001). These are the synthetic policy values the ledger (OM-03/OM-08), the scenario factory's truth (KG-03/KG-04) and the grader (KG-06) all use; changing one needs an ADR-016 amendment both owners approve.
 
 ## Two ledgers, one projection
 - **Cash journal**: double-entry in money, balanced **per currency** (I1). Holds trade cost, settlement cash, fees, rounding and FX revaluation. Never holds share quantities.
@@ -26,20 +26,20 @@ Status: **PROPOSED** with ADR-016 (SH-03). One synthetic bank, cash-equity only 
 | S200-ISIN | securities | Pending receipt / delivery | either | trade date → settlement date |
 | S900-ISIN | securities | Street / counterparty | credit | contra side of every quantity movement |
 
-`CCY` ∈ {USD, EUR, GBP, CHF, JPY} (**CONFIRM**; JPY is in the set to exercise 0 minor units).
+`CCY` ∈ {USD, EUR, GBP, CHF, JPY}.
 
 ## Precision (I2)
 | quantity | type | rule |
 |---|---|---|
 | money amount | Postgres `NUMERIC(24,6)`; Java `BigDecimal`; JSON decimal **string** | posted amounts must have scale ≤ ISO 4217 minor units of their currency (USD/EUR/GBP/CHF 2, JPY 0); a higher scale is rejected, never silently rounded |
-| quantity | `NUMERIC(20,0)` | whole shares; fractional entitlements from corporate actions become cash in lieu (**CONFIRM**) |
+| quantity | `NUMERIC(20,0)` | whole shares; fractional entitlements from corporate actions become cash in lieu |
 | price | `NUMERIC(24,8)` | up to 8 decimals per share, in the trade currency |
 | FX rate | `NUMERIC(24,10)` | quote convention `1 BASE = rate QUOTE`; every rate carries `rate_source`, `as_of` (UTC) and `rate_id` |
 | JSON | `^-?(0|[1-9][0-9]*)(\.[0-9]+)?$` | no exponent, no float; parse with `BigDecimal(String)` / `Decimal(str)` only |
 
 **Rounding**: compute at full precision, round **once** at the posting boundary to the currency's minor units with `HALF_EVEN`. Consideration = quantity × price, rounded per trade (not per fill aggregate).
 
-**B3 tolerance**: a rounding break is auto-adjustable only if `|difference| ≤ 1 minor unit × number of trades in the break` in that currency (USD: 0.01 per trade; JPY: 1 per trade), and the evidence shows the cause is rounding. Anything larger escalates (**CONFIRM**; this is the §25 item 4 "reviewed" number).
+**B3 tolerance**: a rounding break is auto-adjustable only if `|difference| ≤ 1 minor unit × number of trades in the break` in that currency (USD: 0.01 per trade; JPY: 1 per trade), and the evidence shows the cause is rounding. Anything larger escalates.
 
 ## Posting patterns
 Every entry: `entry_id`, `entry_type`, `effective_date`, `booking_ts` (UTC), `evidence_refs[]` (record_id + version), `expected_state_version`, `maker`, `checker?`, `reverses_entry_id?`. Lines: `account`, `currency` or `isin`, `amount` or `quantity`, `side`.
@@ -48,7 +48,7 @@ Every entry: `entry_id`, `entry_type`, `effective_date`, `booking_ts` (UTC), `ev
 |---|---|---|
 | buy, trade date | Dr 1300 cost · Cr 1210 pending | Dr S200 pending · Cr S900 street |
 | buy, settlement date | Dr 1210 · Cr 1110 nostro | Dr S100 custody · Cr S200 |
-| sell, trade date | Dr 1210 proceeds · Cr 1300 cost relieved (average cost, **CONFIRM**) · Dr/Cr 4300 difference | Dr S900 · Cr S200 |
+| sell, trade date | Dr 1210 proceeds · Cr 1300 cost relieved (average cost) · Dr/Cr 4300 difference | Dr S900 · Cr S200 |
 | sell, settlement date | Dr 1110 · Cr 1210 | Dr S200 · Cr S100 |
 | fee | buy: Dr 1300 (capitalised into cost) · sell: Dr 4300 · Cr 2100 | — |
 | FX conversion USD→EUR | USD: Dr 1500-USD · Cr 1110-USD; EUR: Dr 1110-EUR · Cr 1500-EUR | — |
@@ -69,7 +69,7 @@ The delta is what the grader expects to see after a correct resolution (oracle-s
 | B3 | price / rounding | adjust only within tolerance, else escalate | within tolerance: 4100 vs 1300 (or 1210) for the difference; above: none | none | none |
 | B4 | FX | revalue with the designated rate source | 1500 vs 4200 in the affected currency, rate_id recorded | none | none |
 | B5 | missing / duplicate trade | post the missing trade, or reverse the duplicate, **only if proven** | full trade pattern, or full reversal | full trade pattern, or full reversal | ± the trade's quantity |
-| B6 | corporate action | apply split / CA processing | cash in lieu for fractions only: Dr 1210 proceeds · Cr 1300 cost of the fraction · Dr/Cr 4300 difference | S100/S200 × ratio vs S900; whole shares | position × ratio, floored; cost basis unchanged in total |
+| B6 | corporate action | apply split / CA processing | cash in lieu for fractions only: Dr 1210 proceeds · Cr 1300 cost of the fraction · Dr/Cr 4300 difference | S100/S200 × ratio vs S900; whole shares | position × ratio, floored; total cost basis unchanged except the cost relieved for the cash-in-lieu fraction |
 | B7 | shortfall | escalate; never fabricate a balancing entry | none (no 1900, no 4100) | none | none |
 | B8 | SSI mismatch | escalate to reference data; never edit SSI | none | none | none; SSI record unchanged |
 

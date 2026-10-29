@@ -1,5 +1,5 @@
 # ADR-016: Accounting model & precision
-Status: PROPOSED (om ☐ kunal ☐, PR #)
+Status: ACCEPTED (om ☑ kunal ☑, PR #10)
 Date: 2026-10-29 · Resolves: U1 (§25 item 1) / §5 §8 §9 · Tasks affected: OM-03, OM-08, OM-02, SH-02, KG-03, KG-04, KG-06
 
 ## Context
@@ -35,11 +35,12 @@ Option 2, with the concrete tables in **docs/domain.md**:
 - **Reversals:** a full negating entry with `reverses_entry_id`, then a rebook. Never an edit, delete or partial reversal.
 - **B1–B8:** permitted action and expected cash / securities / position delta per pattern, as in the docs/domain.md table. B7 and B8 have no mutation at all.
 
-To confirm before ACCEPTED (Kunal, because the factory's truth uses them):
+Confirmed by Kunal on PR #10 (2026-10-29) for KG-03/KG-04 truth and KG-06 grading:
 - (a) the currency set {USD, EUR, GBP, CHF, JPY};
 - (b) the B3 tolerance;
 - (c) cash in lieu for fractional CA entitlements;
-- (d) average-cost relief on sells.
+- (d) average-cost relief on sells;
+- the B1–B8 delta table.
 
 ## Consequences (tests, tasks, risks)
 - **OM-03** builds both ledgers and the projection. Property tests (jqwik):

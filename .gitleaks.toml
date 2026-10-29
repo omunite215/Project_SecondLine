@@ -1,8 +1,11 @@
-# Gitleaks config (OM-01 pre-commit + CI lint). Default rules stay on; this only allowlists one exact line shape.
+# Gitleaks config (OM-01 pre-commit + CI full-history scan). Default rules stay on; one narrow exception only.
 [extend]
 useDefault = true
 
 [[allowlists]]
-description = "Contract examples: an idempotency_key is a random request UUID (ADR-011), not a secret"
+# A line holding ONLY an idempotency_key UUID (ADR-011) is a request id, not a secret. Anchored to the whole line,
+# so a secret sharing the line is still flagged. No `paths` entry: gitleaks treats a path match alone as an
+# exemption (verified 2026-10-29), which would blank out every file under that path.
+description = "Line holding only an idempotency_key UUID"
 regexTarget = "line"
-regexes = ['''"idempotency_key":\s*"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"''']
+regexes = ['''^\s*"idempotency_key":\s*"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",?\s*$''']

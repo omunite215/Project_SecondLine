@@ -105,6 +105,30 @@ def check(root: Path) -> list[str]:
             problems.append(f"{rel}: invalid against {target}: {errors[0].message[:160]}")
     problems += check_openapi(root, schemas)
     problems += check_canaries(root, schemas)
+    problems += check_receipt_hash(schemas)
+    return problems
+
+
+RECEIPT_HASH_EXCLUDABLE = {"receipt_hash", "signature", "signature_key_id"}
+
+
+def check_receipt_hash(schemas: dict[str, dict]) -> list[str]:
+    """x-receipt-hash (SH-08, ADR-012): only receipt_hash and the optional signature fields may sit outside
+    the hash. Excluding a required field (e.g. action_digest) would let it change without breaking the chain."""
+    problems = []
+    for rel, doc in schemas.items():
+        ann = doc.get("x-receipt-hash")
+        if ann is None:
+            continue
+        exclude = ann.get("exclude")
+        if not isinstance(exclude, list) or "receipt_hash" not in exclude:
+            problems.append(f"{rel}: x-receipt-hash.exclude must be a list that contains receipt_hash")
+            continue
+        props = doc.get("properties", {})
+        problems += [f"{rel}: x-receipt-hash.exclude {f!r} is not a property" for f in exclude if f not in props]
+        # Allowlist, not "not required": optional fields like error_code must still be tamper-evident.
+        problems += [f"{rel}: x-receipt-hash.exclude {f!r} must be hashed (only {sorted(RECEIPT_HASH_EXCLUDABLE)})"
+                     for f in exclude if f in props and f not in RECEIPT_HASH_EXCLUDABLE]
     return problems
 
 

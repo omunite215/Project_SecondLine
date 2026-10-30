@@ -45,7 +45,7 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - done: every §9 example validates; JCS matches SH-08 vectors once they exist; `make codegen` deterministic (CI fails on diff).
 
 ### OM-03 · Ledger core: schema, journal, positions, immutability
-- meta: P0 | M-1 | 4d | mcs | deps: OM-01, OM-02, SH-03 | status: todo
+- meta: P0 | M-1 | 4d | mcs | deps: OM-01, OM-02, SH-03 | status: doing
 - refs: §5 §9 | REQ-002 | T-DOM-01 T-DOM-05 | I1 I2 | ADR-002 | NFR-02 | SEC-12
 - build: Flyway V001+: institutions, counterparties, instruments, trades, bookings, allocations, settlement_instructions, settlement_events, custodian_records, positions (projection), cash_accounts, journal_headers/journal_lines (NUMERIC + CHAR(3) currency), reference_data_versions, corporate_actions, fx_snapshots, evidence_records, breaks (state_version); every table keyed (ns, id). PostingService enforces Σdebit = Σcredit per currency inside the transaction; trigger blocks UPDATE/DELETE of committed journal rows; corrections = reversing entry with reverses_id; quantity/position changes are domain transactions, never cash entries; ArchUnit rule bans float/double in domain packages.
 - done: jqwik property tests T-DOM-01 (valid postings stay balanced, unbalanced rejected, per-currency precision); T-DOM-05 reversal keeps the original row; migrations apply cleanly in CI on Testcontainers.

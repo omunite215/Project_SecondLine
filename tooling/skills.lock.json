@@ -1,0 +1,15 @@
+{
+  "note": "Pinned upstream commits for vendored skills. Re-pin with `make skills-update` and open a PR.",
+  "skills": {
+    "langgraph-fundamentals": {
+      "repo": "langchain-ai/langchain-skills",
+      "commit": "126c384d8552dcb476b226c244172186cc3f4328",
+      "path": "config/skills/langgraph-fundamentals"
+    },
+    "langgraph-persistence": {
+      "repo": "langchain-ai/langchain-skills",
+      "commit": "126c384d8552dcb476b226c244172186cc3f4328",
+      "path": "config/skills/langgraph-persistence"
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_evidence.output.schema.json",
+  "title": "An evidence record; its content is untrusted — output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "record_id",
+    "version",
+    "kind",
+    "untrusted",
+    "content",
+    "content_sha256"
+  ],
+  "properties": {
+    "record_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "kind": {
+      "$ref": "../common.schema.json#/$defs/evidence_record_kind"
+    },
+    "untrusted": {
+      "const": true
+    },
+    "content": {
+      "type": "string",
+      "maxLength": 20000
+    },
+    "content_sha256": {
+      "$ref": "../common.schema.json#/$defs/sha256_ref"
+    }
+  }
+}

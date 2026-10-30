@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_reference_data.input.schema.json",
+  "title": "Read-only security or SSI record \u2014 input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "record_id"
+  ],
+  "properties": {
+    "run_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "record_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    }
+  }
+}

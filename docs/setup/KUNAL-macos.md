@@ -1,4 +1,4 @@
-# Kunal — macOS setup (MacBook Pro 14", Apple Silicon)
+# Kunal — macOS setup (MacBook Air, Apple M4, 16 GB)
 Record the exact chip and unified memory in docs/team/KUNAL.md and CLAUDE.local.md during SH-01.
 
 ## 1. Toolchain

@@ -1,0 +1,164 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/common.schema.json",
+  "title": "Shared definitions (SH-02)",
+  "description": "Money, quantity, price and FX are decimal strings (golden rule 3). Accounts and currencies per ADR-016 / docs/domain.md.",
+  "$defs": {
+    "decimal": {
+      "type": "string",
+      "format": "decimal",
+      "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$",
+      "maxLength": 40
+    },
+    "quantity": {
+      "type": "string",
+      "format": "decimal",
+      "pattern": "^-?(0|[1-9][0-9]*)$",
+      "maxLength": 21,
+      "description": "Whole shares."
+    },
+    "currency": {
+      "enum": [
+        "USD",
+        "EUR",
+        "GBP",
+        "CHF",
+        "JPY"
+      ]
+    },
+    "cash_account": {
+      "type": "string",
+      "pattern": "^(1110|1210|1300|1500|1900|2100|4100|4200|4300)-(USD|EUR|GBP|CHF|JPY)$"
+    },
+    "security_account": {
+      "type": "string",
+      "pattern": "^S(100|200|900)-[A-Z]{2}[A-Z0-9]{9}[0-9]$"
+    },
+    "isin": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}[A-Z0-9]{9}[0-9]$"
+    },
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"
+    },
+    "opaque_id": {
+      "type": "string",
+      "pattern": "^[a-z]{2,6}_[0-9A-Za-z]{8,32}$",
+      "description": "Opaque, carries no meaning (ADR-015); must not reveal a split. Generators re-draw on a hit.",
+      "not": {
+        "pattern": "([dD][eE][vV]|[eE][vV][aA][lL]|[bB][lL][iI][nN][dD]|[tT][eE][sS][tT])"
+      }
+    },
+    "evidence_ref": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_id",
+        "version"
+      ],
+      "properties": {
+        "record_id": {
+          "$ref": "#/$defs/opaque_id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "state_version": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "utc_timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(\\.[0-9]{1,6})?Z$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "sha256_ref": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "positive_decimal": {
+      "type": "string",
+      "format": "decimal",
+      "pattern": "^(0\\.[0-9]*[1-9][0-9]*|[1-9][0-9]*(\\.[0-9]+)?)$",
+      "maxLength": 40,
+      "description": "Strictly > 0. Direction comes from debit/credit, never from a sign."
+    },
+    "non_negative_quantity": {
+      "type": "string",
+      "format": "decimal",
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "maxLength": 21,
+      "description": "Whole shares ≥ 0 (0 = cancel the booking)."
+    },
+    "scenario_ref": {
+      "type": "string",
+      "pattern": "^scn_[0-9A-Za-z]{8,32}$",
+      "not": {
+        "pattern": "([dD][eE][vV]|[eE][vV][aA][lL]|[bB][lL][iI][nN][dD]|[tT][eE][sS][tT])"
+      },
+      "description": "Opaque; must not reveal split or break type (ADR-015). The runner maps it to the manifest privately."
+    },
+    "reason_code": {
+      "enum": [
+        "CUTOFF_TIMING",
+        "PARTIAL_SETTLEMENT",
+        "QUANTITY_MISMATCH",
+        "ROUNDING_DIFFERENCE",
+        "PRICE_MISMATCH",
+        "FX_RATE_SOURCE",
+        "MISSING_TRADE",
+        "DUPLICATE_TRADE",
+        "CORPORATE_ACTION_SPLIT",
+        "CORPORATE_ACTION_OTHER",
+        "CASH_SHORTFALL",
+        "SSI_MISMATCH",
+        "INSUFFICIENT_EVIDENCE",
+        "OTHER_ESCALATION"
+      ],
+      "description": "C4: one code per B1–B8 cause; shared by ProposedAction and Truth."
+    },
+    "break_type": {
+      "enum": [
+        "B1_TIMING_CUTOFF",
+        "B2_QUANTITY_MISMATCH",
+        "B3_PRICE_ROUNDING",
+        "B4_FX_REVALUATION",
+        "B5_MISSING_OR_DUPLICATE_TRADE",
+        "B6_CORPORATE_ACTION",
+        "B7_SETTLEMENT_SHORTFALL",
+        "B8_SSI_MISMATCH"
+      ],
+      "description": "Root-cause pattern (ADR-016 table). Privileged: only x-privileged shapes may use it."
+    },
+    "evidence_kind": {
+      "enum": [
+        "INTERNAL_BOOKING",
+        "BROKER_CONFIRM",
+        "CUSTODIAN_STATEMENT",
+        "NOSTRO_STATEMENT",
+        "SETTLEMENT_STATUS",
+        "CA_NOTICE",
+        "SSI_RECORD",
+        "FX_RATE_NOTICE",
+        "COUNTERPARTY_MESSAGE"
+      ],
+      "description": "ADR-017 closed set; one source for world_bundle and read_evidence. INTERNAL_BOOKING refs resolve to ledger trade / journal / movement ids, never to a world-bundle evidence record."
+    },
+    "evidence_record_kind": {
+      "$ref": "#/$defs/evidence_kind",
+      "not": {
+        "enum": [
+          "INTERNAL_BOOKING"
+        ]
+      },
+      "description": "Kind of a world-bundle evidence record, as read_evidence returns it (ADR-017): every kind but INTERNAL_BOOKING."
+    }
+  }
+}

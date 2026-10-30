@@ -1,0 +1,14 @@
+{
+ "x-validates": "tools/read_corporate_actions.output.schema.json",
+ "events": [
+  {
+   "ca_event_id": "cae_00000003",
+   "isin": "XS0000000017",
+   "type": "SPLIT",
+   "ex_date": "2026-03-03",
+   "ratio_numerator": 2,
+   "ratio_denominator": 1,
+   "record_version": 1
+  }
+ ]
+}

@@ -67,9 +67,34 @@ def always_on_pr_contexts(text: str) -> set[str]:
     out = set()
     for job, lines in sub_blocks(top_block(text, "jobs")).items():
         keys = {m.group(1): m.group(2).strip() for l in lines if (m := re.match(r"^    ([\w-]+):(.*)$", l))}
-        if "if" not in keys:
+        gated = re.fullmatch(r"needs\.changes\.outputs\.[\w-]+ == 'true'", keys.get("if", ""))
+        if "if" not in keys or (gated and keys.get("needs") == "changes"):
             out.add(keys.get("name") or job)
     return out
+
+
+BUILD_FILES = {"build.gradle.kts": {"gradle"}, "pyproject.toml": {"uv", "pip"}, "package.json": {"npm"}}
+
+
+def dependabot_entries(text: str) -> set[tuple[str, str]]:
+    return set(re.findall(r'package-ecosystem:\s*"?([\w-]+)"?\s*\n\s*directory:\s*"?([^"\n]+)"?', text))
+
+
+def dependabot_gaps(text: str, files: list[str]) -> list[str]:
+    """Build files (repo-relative) without a Dependabot entry. A root gradle entry covers every Gradle
+    subproject when the root settings.gradle.kts exists (one multi-project build)."""
+    entries, gaps = dependabot_entries(text), []
+    for f in files:
+        name, rel = Path(f).name, Path(f).parent.as_posix()
+        if name not in BUILD_FILES:
+            continue
+        d = "/" if rel == "." else f"/{rel}"
+        covered = any((e, d) in entries for e in BUILD_FILES[name])
+        if name == "build.gradle.kts" and "settings.gradle.kts" in files and ("gradle", "/") in entries:
+            covered = True
+        if not covered:
+            gaps.append(f"{f}: add a dependabot entry ({'|'.join(sorted(BUILD_FILES[name]))}, {d})")
+    return gaps
 
 
 def tracked(name: str) -> list[Path]:
@@ -144,6 +169,31 @@ class WorkflowParser(unittest.TestCase):
     def test_OM_25_plain_job_is_always_on(self):
         self.assertEqual(always_on_pr_contexts(self.WF.format(filters="", name="")), {"java"})
 
+    def test_OM_01_changes_gated_job_is_always_on(self):
+        # A job skipped by this exact `if:` reports "skipped", which satisfies a required check (OM-01 D1).
+        gated = "    needs: changes\n    if: needs.changes.outputs.java == 'true'\n"
+        self.assertEqual(always_on_pr_contexts(self.WF.format(filters="", name=gated)), {"java"})
+
+    def test_OM_01_other_if_still_excluded(self):
+        for cond in ("    needs: changes\n    if: needs.changes.outputs.java == 'true' || false\n",
+                     "    if: needs.changes.outputs.java == 'true'\n",  # no needs: changes → skipped forever
+                     "    needs: changes\n    if: always()\n"):
+            self.assertEqual(always_on_pr_contexts(self.WF.format(filters="", name=cond)), set(), cond)
+
+
+class DependabotGaps(unittest.TestCase):
+    ROOT_GRADLE = 'updates:\n  - package-ecosystem: gradle\n    directory: "/"\n'
+
+    def test_OM_01_gradle_root_entry_covers_subprojects(self):
+        files = ["settings.gradle.kts", "build.gradle.kts", "services/ledger/build.gradle.kts"]
+        self.assertEqual(dependabot_gaps(self.ROOT_GRADLE, files), [])
+
+    def test_OM_01_gradle_subproject_without_root_settings_is_a_gap(self):
+        self.assertEqual(len(dependabot_gaps(self.ROOT_GRADLE, ["services/ledger/build.gradle.kts"])), 1)
+
+    def test_OM_01_npm_needs_its_own_directory(self):
+        self.assertEqual(len(dependabot_gaps(self.ROOT_GRADLE, ["apps/console/package.json"])), 1)
+
 
 class CiConsistency(unittest.TestCase):
     def test_OM_25_required_checks_are_pr_jobs(self):
@@ -167,15 +217,10 @@ class CiConsistency(unittest.TestCase):
 
     def test_OM_25_dependabot_covers_build_files(self):
         text = (ROOT / ".github/dependabot.yml").read_text()
-        entries = set(re.findall(r'package-ecosystem:\s*"?([\w-]+)"?\s*\n\s*directory:\s*"?([^"\n]+)"?', text))
-        self.assertIn(("github-actions", "/"), entries)
-        wanted = {"build.gradle.kts": {"gradle"}, "pyproject.toml": {"uv", "pip"}, "package.json": {"npm"}}
-        for name, ecosystems in wanted.items():
-            for f in tracked(name):
-                rel = f.parent.relative_to(ROOT).as_posix()
-                d = "/" if rel == "." else f"/{rel}"
-                self.assertTrue(any((e, d) in entries for e in ecosystems),
-                                f"{f.relative_to(ROOT)}: add a dependabot entry ({'|'.join(ecosystems)}, {d})")
+        self.assertIn(("github-actions", "/"), dependabot_entries(text))
+        files = [f.relative_to(ROOT).as_posix() for name in BUILD_FILES for f in tracked(name)]
+        files += [p for p in ("settings.gradle.kts",) if (ROOT / p).exists()]
+        self.assertEqual(dependabot_gaps(text, files), [])
 
     def test_OM_25_kit_runs_every_kit_test(self):
         mk = (ROOT / "Makefile").read_text()
@@ -187,11 +232,12 @@ class CiConsistency(unittest.TestCase):
 
 class DocsMatchSettings(unittest.TestCase):
     def test_OM_25_only_the_author_updates_a_branch(self):
-        # last-push approval: if Om updates Kunal's branch, Om is the last pusher and nobody can approve it.
         gh = (ROOT / "docs/setup/GITHUB.md").read_text()
+        # Verified on PR #16: a merge-only update keeps approvals even when the reviewer does it; pushing
+        # *changes* to the other person's PR still deadlocks (last-push approval).
         line = next(l for l in gh.splitlines() if "update-branch" in l)
-        self.assertIn("author", line)
-        self.assertIn("never", line.lower())
+        self.assertIn("merge-only update keeps", line)
+        self.assertIn("never push **changes**", line.lower())
 
     def test_OM_25_docs_name_every_ruleset(self):
         gh = (ROOT / "docs/setup/GITHUB.md").read_text()

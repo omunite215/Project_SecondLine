@@ -235,7 +235,7 @@ def cmd_brief(args: list[str]) -> int:
         cards, _ = load()
         owner = detect_owner(opt(args, "--owner"))
         if not owner:
-            print("[board] Owner unknown — copy CLAUDE.local.md.om.example or CLAUDE.local.md.kunal.example to CLAUDE.local.md (or set SL_OWNER).")
+            print("[board] Owner unknown — copy docs/ai/CLAUDE.local.md.om.example or docs/ai/CLAUDE.local.md.kunal.example to CLAUDE.local.md (or set SL_OWNER).")
             return 0
         cs = mine(cards, owner)
         doing = [c for c in cs if c.status == "doing"]

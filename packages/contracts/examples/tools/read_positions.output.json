@@ -1,0 +1,13 @@
+{
+ "x-validates": "tools/read_positions.output.schema.json",
+ "positions": [
+  {
+   "isin": "XS0000000017",
+   "trading_position": "300",
+   "settled_position": "0",
+   "cost": "12370.37",
+   "currency": "USD"
+  }
+ ],
+ "state_version": 7
+}

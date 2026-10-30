@@ -1,0 +1,159 @@
+{
+ "x-validates": "scenario/world_bundle.schema.json",
+ "bundle_version": "1.0",
+ "scenario_id": "scn_0000A001",
+ "as_of": "2026-03-02",
+ "reference_snapshots": [
+  {
+   "ref": "iso4217@2026-01-01",
+   "source": "iso4217",
+   "retrieved_at": "2026-01-01T00:00:00Z",
+   "license": "ISO 4217 public code list (codes only)",
+   "sha256": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+  }
+ ],
+ "instruments": [
+  {
+   "isin": "XS0000000012",
+   "currency": "USD",
+   "name": "Fictional Widgets Corp ord."
+  }
+ ],
+ "accounts": [
+  {
+   "account": "1110-USD",
+   "kind": "cash"
+  },
+  {
+   "account": "1300-USD",
+   "kind": "cash"
+  },
+  {
+   "account": "4100-USD",
+   "kind": "cash"
+  },
+  {
+   "account": "S100-XS0000000012",
+   "kind": "security"
+  },
+  {
+   "account": "S900-XS0000000012",
+   "kind": "security"
+  }
+ ],
+ "fx_rates": [],
+ "trades": [
+  {
+   "trade_id": "trd_0000B001",
+   "version": 1,
+   "isin": "XS0000000012",
+   "side": "BUY",
+   "quantity": "300",
+   "price": "12.3456",
+   "currency": "USD",
+   "trade_date": "2026-02-26",
+   "settlement_date": "2026-02-27",
+   "status": "SETTLED"
+  }
+ ],
+ "journal_entries": [
+  {
+   "entry_id": "jnl_0000C001",
+   "booked_at": "2026-02-27T15:00:00Z",
+   "trade_id": "trd_0000B001",
+   "lines": [
+    {
+     "account": "1300-USD",
+     "side": "DR",
+     "amount": "3703.68",
+     "currency": "USD"
+    },
+    {
+     "account": "1110-USD",
+     "side": "CR",
+     "amount": "3703.68",
+     "currency": "USD"
+    }
+   ]
+  }
+ ],
+ "securities_movements": [
+  {
+   "movement_id": "mov_0000D001",
+   "booked_at": "2026-02-27T15:00:00Z",
+   "trade_id": "trd_0000B001",
+   "account": "S100-XS0000000012",
+   "isin": "XS0000000012",
+   "side": "DR",
+   "quantity": "300"
+  },
+  {
+   "movement_id": "mov_0000D002",
+   "booked_at": "2026-02-27T15:00:00Z",
+   "trade_id": "trd_0000B001",
+   "account": "S900-XS0000000012",
+   "isin": "XS0000000012",
+   "side": "CR",
+   "quantity": "300"
+  }
+ ],
+ "evidence": [
+  {
+   "record_id": "evd_0000E001",
+   "version": 1,
+   "kind": "NOSTRO_STATEMENT",
+   "source_system": "nostro_sim",
+   "received_at": "2026-03-02T16:00:00Z",
+   "fields": {
+    "value_date": "2026-02-27",
+    "debit_amount": "3703.69",
+    "currency": "USD"
+   },
+   "text": "Debit 3703.69 USD, ref trd_0000B001."
+  },
+  {
+   "record_id": "evd_0000E002",
+   "version": 1,
+   "kind": "BROKER_CONFIRM",
+   "source_system": "broker_sim",
+   "received_at": "2026-03-02T16:00:00Z",
+   "fields": {
+    "quantity": "300",
+    "price": "12.3456",
+    "gross": "3703.68"
+   },
+   "text": "BUY 300 XS0000000012 @ 12.3456 USD."
+  },
+  {
+   "record_id": "evd_0000E003",
+   "version": 1,
+   "kind": "SETTLEMENT_STATUS",
+   "source_system": "csd_sim",
+   "received_at": "2026-03-02T16:00:00Z",
+   "fields": {
+    "trade_ref": "trd_0000B001",
+    "status": "SETTLED",
+    "settle_date": "2026-02-27",
+    "value_date": "2026-02-27"
+   },
+   "text": "trd_0000B001 settled 2026-02-27."
+  }
+ ],
+ "breaks": [
+  {
+   "break_id": "brk_0000F001",
+   "opened_at": "2026-03-02T16:00:00Z",
+   "symptom": "CASH_DIFFERENCE",
+   "currency": "USD",
+   "cash_difference": "-0.01",
+   "trade_ids": [
+    "trd_0000B001"
+   ],
+   "evidence_ids": [
+    "evd_0000E001",
+    "evd_0000E002",
+    "evd_0000E003"
+   ]
+  }
+ ]
+}

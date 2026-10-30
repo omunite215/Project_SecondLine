@@ -26,7 +26,7 @@ public class CashPostingService {
     public UUID post(CashEntry entry) {
         UUID id = UUID.randomUUID();
         Db.domain(() -> tx.execute(s -> {
-            repo.insertCash(id, entry, null);
+            repo.insertCash(id, entry, null, null);
             return id;
         }));
         return id;

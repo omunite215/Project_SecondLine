@@ -12,6 +12,8 @@ CREATE TABLE ledger.journal_headers (
     business_date     date NOT NULL,
     posted_at         timestamptz NOT NULL DEFAULT now(),
     reverses_entry_id uuid NULL CHECK (reverses_entry_id <> entry_id),
+    reason            text NULL,
+    CHECK (reverses_entry_id IS NULL OR length(btrim(reason)) > 0),  -- a reversal says why
     PRIMARY KEY (ns, entry_id),
     UNIQUE (ns, reverses_entry_id),
     FOREIGN KEY (ns, reverses_entry_id) REFERENCES ledger.journal_headers (ns, entry_id)
@@ -36,6 +38,8 @@ CREATE TABLE ledger.securities_entries (
     business_date     date NOT NULL,
     posted_at         timestamptz NOT NULL DEFAULT now(),
     reverses_entry_id uuid NULL CHECK (reverses_entry_id <> entry_id),
+    reason            text NULL,
+    CHECK (reverses_entry_id IS NULL OR length(btrim(reason)) > 0),  -- a reversal says why
     PRIMARY KEY (ns, entry_id),
     UNIQUE (ns, reverses_entry_id),
     FOREIGN KEY (ns, reverses_entry_id) REFERENCES ledger.securities_entries (ns, entry_id)

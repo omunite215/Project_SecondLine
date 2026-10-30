@@ -69,6 +69,24 @@ public final class LedgerDb {
         return applied;
     }
 
+    /** Runs one statement; SQLExceptions propagate so tests can assert the SQLState. */
+    public static void exec(DataSource ds, String sql, Object... args) throws java.sql.SQLException {
+        try (var c = ds.getConnection(); var st = c.prepareStatement(sql)) {
+            for (int i = 0; i < args.length; i++) st.setObject(i + 1, args[i]);
+            st.execute();
+        }
+    }
+
+    /** First column of the first row, as text (null if no row). */
+    public static String query(DataSource ds, String sql, Object... args) throws java.sql.SQLException {
+        try (var c = ds.getConnection(); var st = c.prepareStatement(sql)) {
+            for (int i = 0; i < args.length; i++) st.setObject(i + 1, args[i]);
+            try (var rs = st.executeQuery()) {
+                return rs.next() ? rs.getString(1) : null;
+            }
+        }
+    }
+
     public static UUID newNamespace() {
         if (!migrated) migrate();
         UUID ns = UUID.randomUUID();

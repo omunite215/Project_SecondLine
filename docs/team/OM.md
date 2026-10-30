@@ -45,10 +45,11 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - done: every §9 example validates; JCS matches SH-08 vectors once they exist; `make codegen` deterministic (CI fails on diff).
 
 ### OM-03 · Ledger core: schema, journal, positions, immutability
-- meta: P0 | M-1 | 4d | mcs | deps: OM-01, OM-02, SH-03 | status: doing
+- meta: P0 | M-1 | 4d | mcs | deps: OM-01, OM-02, SH-03 | status: review
 - refs: §5 §9 | REQ-002 | T-DOM-01 T-DOM-05 | I1 I2 | ADR-002 | NFR-02 | SEC-12
 - build: Flyway V001+: institutions, counterparties, instruments, trades, bookings, allocations, settlement_instructions, settlement_events, custodian_records, positions (projection), cash_accounts, journal_headers/journal_lines (NUMERIC + CHAR(3) currency), reference_data_versions, corporate_actions, fx_snapshots, evidence_records, breaks (state_version); every table keyed (ns, id). PostingService enforces Σdebit = Σcredit per currency inside the transaction; trigger blocks UPDATE/DELETE of committed journal rows; corrections = reversing entry with reverses_id; quantity/position changes are domain transactions, never cash entries; ArchUnit rule bans float/double in domain packages.
 - done: jqwik property tests T-DOM-01 (valid postings stay balanced, unbalanced rejected, per-currency precision); T-DOM-05 reversal keeps the original row; migrations apply cleanly in CI on Testcontainers.
+- evidence: PR (this); 54 ledger tests green on Testcontainers postgres:17.11 with the shipped infra/db/init: T-DOM-01 jqwik (10k-try pure balance/precision/cross-currency, 200-try DB balance), T-DOM-05 reversals keep the original (6 tests + 200-try property), OM_03_projectionEqualsIncremental (200 tries), DB-enforced balance (P0002/P0003) + immutability (P0001, no UPDATE/DELETE grant), ArchUnit no float/double; migrations apply cleanly (V001–V004; fresh compose volume: ledger-migrate exit 0, 22 tables owned by ledger_migrator); ADR-019 PROPOSED; ErrorCode swap pending #32
 
 ### OM-04 · Ledger reads, scenario loader, namespaces, export & state hash
 - meta: P0 | M-1 | 3d | mcs | deps: OM-03 | status: todo

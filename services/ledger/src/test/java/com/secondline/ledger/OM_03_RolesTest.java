@@ -60,6 +60,15 @@ class OM_03_RolesTest {
     }
 
     @Test
+    void OM_03_appCannotForgeMigrationHistory() {
+        // A forged "applied" row would make Flyway skip a later (e.g. hardening) migration.
+        assertThatThrownBy(() -> exec(LedgerDb.app(),
+                "INSERT INTO ledger.flyway_schema_history (installed_rank, version, description, type, script,"
+                        + " installed_by, execution_time, success) VALUES (999, '999', 'x', 'SQL', 'x', 'x', 0, true)"))
+                .isInstanceOf(SQLException.class).extracting("SQLState").isEqualTo("42501");
+    }
+
+    @Test
     void OM_03_appCanReadAndInsertNamespaces() {
         assertThat(LedgerDb.newNamespace()).isNotNull();
     }

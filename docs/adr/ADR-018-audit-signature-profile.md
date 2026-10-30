@@ -1,5 +1,5 @@
 # ADR-018: Audit threat model & receipt signature profile
-Status: PROPOSED (om ☐ kunal ☐, PR #)
+Status: PROPOSED (om ☐ kunal ☐, PR #34)
 Date: 2026-10-30 · Resolves: U9 (§25) · Spec: §11 (SEC-09) §12 · ADR-012 · REQ-009 · T-SEC-05 · RSK-09 · Tasks affected: SH-08 part 2 (signature + checkpoint vectors), OM-14 (receipts), KG-12 (audit-verifier)
 
 ## Context

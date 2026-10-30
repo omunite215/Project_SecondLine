@@ -29,7 +29,7 @@ This leaves ~6 GB for Windows and the VS Code UI. Docker Desktop's WSL2 backend 
 2. VS Code on Windows → "WSL" extension → *Connect to WSL* → open `~/code/Project_SecondLine` → accept the recommended extensions (including Claude Code).
 3. Personal files:
    ```bash
-   cp CLAUDE.local.md.om.example CLAUDE.local.md
+   cp docs/ai/CLAUDE.local.md.om.example CLAUDE.local.md
    cp .claude/settings.local.json.om.example .claude/settings.local.json
    ```
 4. `gh auth login` — in your terminal, never through Claude.

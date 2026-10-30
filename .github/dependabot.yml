@@ -1,4 +1,6 @@
 version: 2
+# Major versions of pinned components need a decision (ADR or planned bump), so Dependabot only proposes
+# patch/minor for them. Decided 2026-10-29 (OM-01 card + D3; declined #19-#24). To revisit: remove the ignore.
 updates:
   - package-ecosystem: github-actions
     directory: "/"
@@ -11,16 +13,32 @@ updates:
     groups:
       spring-boot:
         patterns: ["org.springframework.boot*"]
+    ignore:
+      - dependency-name: "org.springframework.boot*"   # 4.x only via ADR (Jackson-2 compatibility)
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "gradle-wrapper"              # 8.14.x pinned for Spring Boot 3.5 (OM-01 D3)
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: docker
     directory: "/services/ledger"
     schedule:
       interval: weekly
+    ignore:
+      - dependency-name: "eclipse-temurin"             # Java 21 LTS pinned (toolchain 21)
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: docker
     directory: "/services/gateway"
     schedule:
       interval: weekly
+    ignore:
+      - dependency-name: "eclipse-temurin"             # Java 21 LTS pinned (toolchain 21)
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: docker-compose
     directory: "/infra/compose"
     schedule:
       interval: weekly
+    ignore:
+      - dependency-name: "postgres"                    # 17 pinned; a major needs pg_upgrade of data volumes
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "redis"                       # 7 pinned; 8 changed the license (AGPL/SSPL/RSAL)
+        update-types: ["version-update:semver-major"]
 # KG-01 adds uv; OM-21 adds npm. tests/kit enforces coverage.

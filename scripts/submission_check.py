@@ -32,7 +32,7 @@ CRITERIA = {"O": ("Code organization", 20), "D": ("Technical documentation", 20)
 SKIP = {".git", "build", ".gradle", "node_modules", ".venv", ".next", "__pycache__", "_generated", ".superpowers",
         ".mypy_cache", ".ruff_cache", ".pytest_cache"}
 SKIP_PATHS = ("data/generated", "experiments/runs")
-ROOT_FILES = {"README.md", "CLAUDE.md", "LICENSE", "Makefile", ".gitignore", ".gitattributes",
+ROOT_FILES = {"README.md", "CLAUDE.md", ".gitleaks.toml", "LICENSE", "Makefile", ".gitignore", ".gitattributes",
               ".dockerignore", ".env.example", ".pre-commit-config.yaml", ".python-version", "pyproject.toml",
               "uv.lock", "settings.gradle.kts", "build.gradle.kts", "gradle.properties", "gradlew", "gradlew.bat",
               }

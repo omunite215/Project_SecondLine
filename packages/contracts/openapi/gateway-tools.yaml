@@ -1,16 +1,23 @@
 # Agent-facing tool API (gateway, OM-05). Generated from ../tools/INDEX.json: one typed path per §10 tool.
 # The MCP adapter (OM-06) forwards here; the run token binds run → ns.
 openapi: 3.1.0
-info: {title: Second-Line gateway tools, version: 1.0.0}
+info:
+  title: Second-Line gateway tools
+  version: 1.0.0
+  description: "Every tool body's run_id must match the run bound to the bearer token (taken from the token); a mismatch is PERMISSION_DENIED (fail closed, golden rule 7)."
 components:
   parameters:
+    idempotencyKey: {name: Idempotency-Key, in: header, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
     runId: {name: runId, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
 paths:
   /v1/runs:
     post:
-      summary: Create a run and issue its short-lived token (harness only)
+      summary: Create a run and issue its short-lived token (harness only). Same Idempotency-Key + same body returns the first token.
+      parameters: [{$ref: '#/components/parameters/idempotencyKey'}]
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '../runs/run_request.schema.json'}}}}
       responses:
-        '201': {description: created}
+        '201': {description: created, content: {application/json: {schema: {$ref: '../runs/run_token.schema.json'}}}}
+        '409': {description: '409', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '403': {description: '403', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: '503', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /v1/runs/{runId}/tools/escalate_break:

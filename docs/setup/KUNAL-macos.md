@@ -13,7 +13,7 @@ Record the exact chip and unified memory in docs/team/KUNAL.md and CLAUDE.local.
 3. VS Code: start it from a terminal (`code .`) so Homebrew/uv paths reach Claude Code, and accept the recommended extensions.
 4. Personal files:
    ```bash
-   cp CLAUDE.local.md.kunal.example CLAUDE.local.md
+   cp docs/ai/CLAUDE.local.md.kunal.example CLAUDE.local.md
    cp .claude/settings.local.json.kunal.example .claude/settings.local.json
    ```
    Then fill in your chip and RAM.

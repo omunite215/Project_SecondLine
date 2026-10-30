@@ -87,6 +87,31 @@ public final class LedgerDb {
         }
     }
 
+    /** Runs statements in ONE transaction and commits, so deferred constraint triggers fire at commit. */
+    public static void tx(DataSource ds, Stmt... stmts) throws java.sql.SQLException {
+        try (var c = ds.getConnection()) {
+            c.setAutoCommit(false);
+            try {
+                for (Stmt s : stmts) {
+                    try (var st = c.prepareStatement(s.sql())) {
+                        for (int i = 0; i < s.args().length; i++) st.setObject(i + 1, s.args()[i]);
+                        st.execute();
+                    }
+                }
+                c.commit();
+            } catch (java.sql.SQLException e) {
+                c.rollback();
+                throw e;
+            }
+        }
+    }
+
+    public record Stmt(String sql, Object... args) {}
+
+    public static Stmt stmt(String sql, Object... args) {
+        return new Stmt(sql, args);
+    }
+
     public static UUID newNamespace() {
         if (!migrated) migrate();
         UUID ns = UUID.randomUUID();

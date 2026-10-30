@@ -68,10 +68,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 ## M-3 Audit
 
 ### SH-08 · Receipt canonicalization test vectors
-- meta: P1 | M-3 | om=0.5d kg=0.25d | driver: om | deps: SH-02 | status: todo
+- meta: P1 | M-3 | om=0.5d kg=0.25d | driver: om | deps: SH-02 | status: doing
 - refs: §9 §12 | REQ-009 | T-SEC-05 | SEC-09 | ADR-012
 - build: packages/contracts/test-vectors/receipts: RFC 8785 inputs/outputs, sha256 digests, a test-only Ed25519 keypair, signatures, a 5-receipt chain incl. one DENY.
 - done: Java (OM-14) and Python (KG-12) both pass the same vectors in CI.
+- evidence: part 1 PR: x-receipt-hash + test-vectors/receipts/{jcs,chain}.json; 14 kit test_SH_08_* (vectors current, RFC 8785 expectations pinned, 9 hand-written tamper verdicts, schema-valid chain incl. DENY, guard); Java CanonicalJson (#32) 14/14 + 10/10 rejects POC-REPORTED; part 2 (Ed25519 + checkpoint vectors) waits for ADR-018 (SH-09)
 
 ### SH-09 · ADR-018 audit threat model
 - meta: P1 | M-3 | om=0.5d kg=0.25d | driver: om | deps: SH-02 | status: todo

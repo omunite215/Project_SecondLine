@@ -4,6 +4,10 @@
   "title": "DecisionReceipt (§9, C1/C2/C5/C9)",
   "type": "object",
   "additionalProperties": false,
+  "x-receipt-hash": {
+    "$comment": "SH-08 / ADR-012: receipt_hash = sha256 over the JCS (RFC 8785) of the receipt minus these fields; previous_receipt_hash chains from GENESIS. Signature fields are outside the hash because ADR-018 (PROPOSED) signs receipt_hash; VERIFY: provisional until ADR-018 is ACCEPTED (signature_key_id is then unauthenticated, so verifiers resolve keys only from the pinned key list, never from the receipt). Vectors: test-vectors/receipts/.",
+    "exclude": ["receipt_hash", "signature", "signature_key_id"]
+  },
   "required": [
     "receipt_version",
     "receipt_id",

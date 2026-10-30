@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/testonly/dangling_ref.schema.json",
+  "$ref": "no_such_sibling.schema.json"
+}

@@ -4,6 +4,11 @@
   "title": "ProposedAction (§9, C3/C4)",
   "type": "object",
   "additionalProperties": false,
+  "x-action-digest": {
+    "$comment": "ADR-011: action_digest = sha256 over the JCS (RFC 8785) form of exactly these fields, evidence_refs sorted by (record_id, version). Excluded: action_id, request_id (per request, so retries digest the same), idempotency_key (it indexes the digest), agent_explanation (C6). Implementations: libs/contracts-java ActionDigest, packages/audit-verifier.",
+    "include": ["run_id", "break_id", "tool_schema_version", "type", "reason_code", "parameters", "evidence_refs", "expected_state_version"],
+    "sort": {"evidence_refs": ["record_id", "version"]}
+  },
   "required": [
     "action_id",
     "run_id",

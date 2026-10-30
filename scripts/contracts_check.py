@@ -105,6 +105,29 @@ def check(root: Path) -> list[str]:
             problems.append(f"{rel}: invalid against {target}: {errors[0].message[:160]}")
     problems += check_openapi(root, schemas)
     problems += check_canaries(root, schemas)
+    problems += check_action_digest(schemas)
+    return problems
+
+
+def check_action_digest(schemas: dict[str, dict]) -> list[str]:
+    """x-action-digest (ADR-011, OM-02): the Java library and the audit-verifier digest exactly these
+    fields, so each must be a required property, listed once; sort keys must name included fields."""
+    problems = []
+    for rel, doc in schemas.items():
+        ann = doc.get("x-action-digest")
+        if ann is None:
+            continue
+        include, sort = ann.get("include"), ann.get("sort", {})
+        if not isinstance(include, list) or not include or len(set(include)) != len(include):
+            problems.append(f"{rel}: x-action-digest.include must be a non-empty list without duplicates")
+            continue
+        required, props = set(doc.get("required", [])), doc.get("properties", {})
+        problems += [f"{rel}: x-action-digest.include {f!r} is not a required property" for f in include
+                     if f not in props or f not in required]
+        if not isinstance(sort, dict):
+            problems.append(f"{rel}: x-action-digest.sort must be an object")
+            continue
+        problems += [f"{rel}: x-action-digest.sort {f!r} is not in include" for f in sort if f not in include]
     return problems
 
 

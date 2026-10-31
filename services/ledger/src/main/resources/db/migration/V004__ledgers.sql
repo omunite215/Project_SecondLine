@@ -164,6 +164,9 @@ END $$;
 -- Lines may only be added in the transaction that inserted their header (same xmin), so a committed entry
 -- can never gain lines, balanced or not (T-DOM-05), and a reversal can't race a late addition. Inserting
 -- the header and its lines in different (sub)transactions is rejected: fail closed, not a bypass.
+-- Races: a header (or reversal target) another transaction hasn't committed is invisible here, so this
+-- trigger can't judge it; the foreign key can't see it either and rejects with 23503 in READ COMMITTED and
+-- REPEATABLE READ (OM_03_LedgerRaceTest pins both).
 CREATE FUNCTION ledger.lines_only_with_their_header() RETURNS trigger LANGUAGE plpgsql AS $$
 DECLARE
     hx xid;

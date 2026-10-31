@@ -25,9 +25,11 @@ public class JournalRepository {
     }
 
     void insertCash(UUID entryId, CashEntry e, UUID reversesEntryId, String reason) {
-        jdbc.sql("INSERT INTO ledger.journal_headers (ns, entry_id, entry_type, business_date, reverses_entry_id, reason)"
-                        + " VALUES (?, ?, ?, ?, ?, ?)")
-                .params(e.ns(), entryId, e.entryType(), e.businessDate(), reversesEntryId, reason).update();
+        insertCash(entryId, e, reversesEntryId, reason, null);
+    }
+
+    void insertCash(UUID entryId, CashEntry e, UUID reversesEntryId, String reason, BookingRef ref) {
+        header("journal_headers", e.ns(), entryId, e.entryType(), e.businessDate(), reversesEntryId, reason, ref);
         int no = 1;
         for (CashLine l : e.lines()) {
             jdbc.sql("INSERT INTO ledger.journal_lines (ns, entry_id, line_no, account_code, currency, side, amount)"
@@ -60,9 +62,11 @@ public class JournalRepository {
     }
 
     void insertSecurities(UUID entryId, SecuritiesEntry e, UUID reversesEntryId, String reason) {
-        jdbc.sql("INSERT INTO ledger.securities_entries (ns, entry_id, entry_type, business_date, reverses_entry_id, reason)"
-                        + " VALUES (?, ?, ?, ?, ?, ?)")
-                .params(e.ns(), entryId, e.entryType(), e.businessDate(), reversesEntryId, reason).update();
+        insertSecurities(entryId, e, reversesEntryId, reason, null);
+    }
+
+    void insertSecurities(UUID entryId, SecuritiesEntry e, UUID reversesEntryId, String reason, BookingRef ref) {
+        header("securities_entries", e.ns(), entryId, e.entryType(), e.businessDate(), reversesEntryId, reason, ref);
         int no = 1;
         for (SecuritiesLine l : e.lines()) {
             jdbc.sql("INSERT INTO ledger.securities_lines (ns, entry_id, line_no, account_code, isin, side, quantity)"
@@ -98,4 +102,18 @@ public class JournalRepository {
     }
 
     record Header(LocalDate businessDate, UUID reversesEntryId) {}
+
+    /** One header row; with a BookingRef its ref, trade_id and posted_at are explicit, otherwise DB defaults. */
+    private void header(String table, UUID ns, UUID entryId, String type, java.time.LocalDate date, UUID reverses,
+                        String reason, BookingRef ref) {
+        if (ref == null) {
+            jdbc.sql("INSERT INTO ledger." + table + " (ns, entry_id, entry_type, business_date, reverses_entry_id, reason)"
+                            + " VALUES (?, ?, ?, ?, ?, ?)")
+                    .params(ns, entryId, type, date, reverses, reason).update();
+        } else {
+            jdbc.sql("INSERT INTO ledger." + table + " (ns, entry_id, entry_type, business_date, reverses_entry_id, reason,"
+                            + " ref, trade_id, posted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, coalesce(?, now()))")
+                    .params(ns, entryId, type, date, reverses, reason, ref.ref(), ref.tradeId(), ref.postedAt()).update();
+        }
+    }
 }

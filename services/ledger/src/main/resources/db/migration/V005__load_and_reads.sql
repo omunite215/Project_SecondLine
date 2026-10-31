@@ -8,7 +8,7 @@ ALTER TABLE ledger.namespaces
     ADD COLUMN state_version bigint NOT NULL DEFAULT 0 CHECK (state_version >= 0),
     ADD COLUMN status text NOT NULL DEFAULT 'EMPTY' CHECK (status IN ('EMPTY', 'LOADED', 'RETIRED')),
     ADD COLUMN loaded_at timestamptz NULL,
-    ADD CHECK (status = 'EMPTY' OR snapshot_id IS NOT NULL);
+    ADD CHECK (status <> 'LOADED' OR snapshot_id IS NOT NULL);
 GRANT UPDATE (snapshot_id, status, loaded_at, state_version) ON ledger.namespaces TO ledger_app;
 
 CREATE FUNCTION ledger.namespace_guard() RETURNS trigger LANGUAGE plpgsql AS $$

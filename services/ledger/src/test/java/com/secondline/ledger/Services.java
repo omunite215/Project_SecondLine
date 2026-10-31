@@ -1,6 +1,9 @@
 package com.secondline.ledger;
 
 import com.secondline.ledger.journal.CashPostingService;
+import com.secondline.ledger.load.BundleGuard;
+import com.secondline.ledger.load.WorldBundleLoader;
+import com.secondline.ledger.ns.NamespaceRepository;
 import com.secondline.ledger.journal.JournalRepository;
 import com.secondline.ledger.journal.ReversalService;
 import com.secondline.ledger.journal.SecuritiesPostingService;
@@ -33,5 +36,15 @@ public final class Services {
 
     public static ReversalService reversals() {
         return new ReversalService(REPO, positions(), TX);
+    }
+
+    public static NamespaceRepository namespaces() {
+        return new NamespaceRepository(JdbcClient.create(DS));
+    }
+
+    private static final BundleGuard GUARD = new BundleGuard();  // loads the schemas once per JVM
+
+    public static WorldBundleLoader loader() {
+        return new WorldBundleLoader(JdbcClient.create(DS), GUARD, namespaces(), cash(), securities(), TX);
     }
 }

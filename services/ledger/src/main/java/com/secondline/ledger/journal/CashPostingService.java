@@ -24,9 +24,14 @@ public class CashPostingService {
     }
 
     public UUID post(CashEntry entry) {
+        return post(entry, null);
+    }
+
+    /** As {@link #post(CashEntry)}, with explicit provenance (the WorldBundle loader, OM-08 actions). */
+    public UUID post(CashEntry entry, BookingRef ref) {
         UUID id = UUID.randomUUID();
         Db.domain(() -> tx.execute(s -> {
-            repo.insertCash(id, entry, null, null);
+            repo.insertCash(id, entry, null, null, ref);
             return id;
         }));
         return id;

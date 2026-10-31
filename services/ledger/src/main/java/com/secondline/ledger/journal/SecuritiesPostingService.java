@@ -20,9 +20,14 @@ public class SecuritiesPostingService {
     }
 
     public UUID post(SecuritiesEntry entry) {
+        return post(entry, null);
+    }
+
+    /** As {@link #post(SecuritiesEntry)}, with explicit provenance (the WorldBundle loader, OM-08 actions). */
+    public UUID post(SecuritiesEntry entry, BookingRef ref) {
         UUID id = UUID.randomUUID();
         Db.domain(() -> tx.execute(s -> {
-            repo.insertSecurities(id, entry, null, null);
+            repo.insertSecurities(id, entry, null, null, ref);
             positions.apply(entry.ns(), entry.lines());
             return id;
         }));

@@ -13,14 +13,14 @@ import org.springframework.transaction.TransactionException;
  * by a deferred trigger surfaces at COMMIT as a TransactionException (TransactionSystemException), not a
  * DataAccessException, with either JdbcTransactionManager or DataSourceTransactionManager.
  */
-final class Db {
+public final class Db {
     /** V004: P0002/P0003 unbalanced · P0004 lines added to an old entry · P0005 reversal of a reversal ·
      *  P0006 reversal isn't the mirror. Plus 23503 FK (unknown ns/entry) · 23505 unique · 23514 check. */
     private static final Set<String> DOMAIN = Set.of("P0002", "P0003", "P0004", "P0005", "P0006", "23503", "23505", "23514");
 
     private Db() {}
 
-    static <T> T domain(Supplier<T> work) {
+    public static <T> T domain(Supplier<T> work) {
         try {
             return work.get();
         } catch (DataAccessException | TransactionException e) {

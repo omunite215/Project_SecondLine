@@ -1,5 +1,6 @@
 package com.secondline.ledger.journal;
 
+import com.secondline.contracts.generated.ErrorCode;
 import com.secondline.ledger.LedgerException;
 import java.sql.SQLException;
 import java.util.Set;
@@ -25,7 +26,7 @@ final class Db {
         } catch (DataAccessException | TransactionException e) {
             String state = sqlState(e);
             if (state != null && DOMAIN.contains(state)) {
-                throw new LedgerException("DOMAIN_INVALID", "rejected by the ledger DB (" + state + ")", e);
+                throw new LedgerException(ErrorCode.DOMAIN_INVALID, "rejected by the ledger DB (" + state + ")", e);
             }
             throw e;
         }

@@ -3,6 +3,7 @@ package com.secondline.ledger.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.secondline.contracts.generated.ErrorCode;
 import com.secondline.ledger.LedgerException;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -13,7 +14,7 @@ class OM_03_DomainTest {
 
     static void invalid(Runnable r) {
         assertThatThrownBy(r::run).isInstanceOf(LedgerException.class)
-                .extracting(e -> ((LedgerException) e).code()).isEqualTo("DOMAIN_INVALID");
+                .extracting(e -> ((LedgerException) e).code()).isEqualTo(ErrorCode.DOMAIN_INVALID);
     }
 
     @Test

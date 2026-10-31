@@ -2,6 +2,7 @@ package com.secondline.ledger.journal;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.secondline.contracts.generated.ErrorCode;
 import com.secondline.ledger.LedgerDb;
 import com.secondline.ledger.LedgerException;
 import java.util.UUID;
@@ -41,7 +42,7 @@ class OM_03_DbErrorMappingTest {
                     + " VALUES (?, ?, 2, '1210', 'USD', 'C', 9.99)").params(ns, e).update();
             return null;
         }))).isInstanceOf(LedgerException.class)
-                .extracting(x -> ((LedgerException) x).code()).isEqualTo("DOMAIN_INVALID");
+                .extracting(x -> ((LedgerException) x).code()).isEqualTo(ErrorCode.DOMAIN_INVALID);
     }
 
     @Test

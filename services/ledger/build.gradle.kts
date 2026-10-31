@@ -3,6 +3,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":libs:contracts-java"))
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.jdbc)
@@ -23,4 +24,5 @@ tasks.bootJar {
 // LedgerDb starts Postgres with the shipped infra/db/init scripts (ADR-019).
 tasks.test {
     systemProperty("repo.root", rootProject.projectDir.absolutePath)
+    systemProperty("contracts.root", rootProject.file("packages/contracts").absolutePath)
 }

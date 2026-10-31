@@ -1,27 +1,26 @@
 package com.secondline.ledger;
 
-/**
- * A typed ledger failure: no mutation happened (golden rule 7). The code is an errors.json code; it
- * becomes the contracts ErrorCode enum once OM-02 (#32) is on main.
- */
-public class LedgerException extends RuntimeException {
-    private final String code;
+import com.secondline.contracts.generated.ErrorCode;
 
-    public LedgerException(String code, String message) {
-        super(code + ": " + message);
-        this.code = code;
+/** A typed ledger failure: no mutation happened (golden rule 7). Codes come only from errors.json (OM-02). */
+public class LedgerException extends RuntimeException {
+    private final ErrorCode code;
+
+    public LedgerException(ErrorCode code, String message) {
+        this(code, message, null);
     }
 
-    public LedgerException(String code, String message, Throwable cause) {
-        super(code + ": " + message, cause);
+    public LedgerException(ErrorCode code, String message, Throwable cause) {
+        super(code.name() + ": " + message, cause);
+        if (code.graderOnly()) throw new IllegalArgumentException(code + " is grader-only; runtime services never raise it");
         this.code = code;
     }
 
     public static LedgerException domainInvalid(String message) {
-        return new LedgerException("DOMAIN_INVALID", message);
+        return new LedgerException(ErrorCode.DOMAIN_INVALID, message);
     }
 
-    public String code() {
+    public ErrorCode code() {
         return code;
     }
 }

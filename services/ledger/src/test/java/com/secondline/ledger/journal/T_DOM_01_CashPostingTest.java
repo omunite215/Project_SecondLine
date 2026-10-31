@@ -11,6 +11,7 @@ import static com.secondline.ledger.journal.Side.D;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.secondline.contracts.generated.ErrorCode;
 import com.secondline.ledger.LedgerDb;
 import com.secondline.ledger.LedgerException;
 import com.secondline.ledger.Services;
@@ -37,7 +38,7 @@ class T_DOM_01_CashPostingTest {
 
     static void invalid(Runnable r) {
         assertThatThrownBy(r::run).isInstanceOf(LedgerException.class)
-                .extracting(e -> ((LedgerException) e).code()).isEqualTo("DOMAIN_INVALID");
+                .extracting(e -> ((LedgerException) e).code()).isEqualTo(ErrorCode.DOMAIN_INVALID);
     }
 
     @Test

@@ -94,10 +94,10 @@ class OM_03_SchemaTest {
     @Test
     void OM_03_evidenceKindsAreTheVisibleSet() throws SQLException {
         UUID ns = LedgerDb.newNamespace();
-        exec(app(), "INSERT INTO ledger.evidence_records (ns, id, version, kind, fields, observed_at)"
-                + " VALUES (?, 'ev_00000001', 1, 'CUSTODIAN_STATEMENT', '{}'::jsonb, now())", ns);
-        sqlState("23514", () -> exec(app(), "INSERT INTO ledger.evidence_records (ns, id, version, kind, fields, observed_at)"
-                + " VALUES (?, 'ev_00000002', 1, 'INTERNAL_BOOKING', '{}'::jsonb, now())", ns));
+        exec(app(), "INSERT INTO ledger.evidence_records (ns, id, version, kind, fields, observed_at, source_system, text)"
+                + " VALUES (?, 'ev_00000001', 1, 'CUSTODIAN_STATEMENT', '{}'::jsonb, now(), 'custody_sim', '')", ns);
+        sqlState("23514", () -> exec(app(), "INSERT INTO ledger.evidence_records (ns, id, version, kind, fields, observed_at, source_system, text)"
+                + " VALUES (?, 'ev_00000002', 1, 'INTERNAL_BOOKING', '{}'::jsonb, now(), 'custody_sim', '')", ns));
     }
 
     @Test
@@ -114,7 +114,8 @@ class OM_03_SchemaTest {
         exec(app(), TRADE, ns, "trd_A0000009", "100", "10.50", "2026-10-01", "2026-10-03");
         sqlState("42501", () -> exec(app(), "UPDATE ledger.trades SET price = 11 WHERE ns = ?", ns));
         sqlState("42501", () -> exec(app(), "DELETE FROM ledger.trades WHERE ns = ?", ns));
-        exec(app(), "INSERT INTO ledger.breaks (ns, id, status) VALUES (?, 'brk_A0000001', 'OPEN')", ns);
+        exec(app(), "INSERT INTO ledger.breaks (ns, id, status, opened_at, symptom)"
+                + " VALUES (?, 'brk_A0000001', 'OPEN', now(), 'UNMATCHED_TRADE')", ns);
         exec(app(), "UPDATE ledger.breaks SET state_version = state_version + 1, status = 'ESCALATED' WHERE ns = ?", ns);
         assertThat(query(app(), "SELECT state_version FROM ledger.breaks WHERE ns = ?", ns)).isEqualTo("1");
         sqlState("42501", () -> exec(app(), "UPDATE ledger.breaks SET id = 'brk_Z0000001' WHERE ns = ?", ns));

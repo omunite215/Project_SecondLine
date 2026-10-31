@@ -73,10 +73,74 @@ class OM_03_LedgerDbTest {
     }
 
     @Test
-    void OM_03_linesAddedLaterToAnOldEntryMustStillBalance() throws SQLException {
+    void OM_03_linesAddedLaterToAnOldEntryAreRejected() throws SQLException {
+        // Stronger than "must still balance": a committed entry takes no more lines at all (P0004).
         UUID ns = LedgerDb.newNamespace();
         UUID e = balancedUsd(ns);
-        sqlState("P0002", () -> tx(app(), stmt(LINE, ns, e, 3, "4100", "USD", "D", "0.01")));
+        sqlState("P0004", () -> tx(app(), stmt(LINE, ns, e, 3, "4100", "USD", "D", "0.01")));
+    }
+
+    @Test
+    void T_DOM_05_committedEntryCannotGainLinesEvenBalanced() throws SQLException {
+        UUID ns = LedgerDb.newNamespace();
+        UUID e = balancedUsd(ns);
+        sqlState("P0004", () -> tx(app(),
+                stmt(LINE, ns, e, 3, "1300", "USD", "D", "500.00"),
+                stmt(LINE, ns, e, 4, "1210", "USD", "C", "500.00")));
+        assertThat(query(app(), "SELECT count(*) FROM ledger.journal_lines WHERE ns = ? AND entry_id = ?", ns, e)).isEqualTo("2");
+    }
+
+    static final String REVERSAL = "INSERT INTO ledger.journal_headers (ns, entry_id, entry_type, business_date, reverses_entry_id, reason)"
+            + " VALUES (?, ?, 'REVERSAL', '2026-10-01', ?, 'raw')";
+
+    @Test
+    void OM_03_dbRejectsReversalOfAReversal() throws SQLException {
+        UUID ns = LedgerDb.newNamespace();
+        UUID a = balancedUsd(ns);
+        UUID r1 = UUID.randomUUID();
+        tx(app(), stmt(REVERSAL, ns, r1, a),
+                stmt(LINE, ns, r1, 1, "1300", "USD", "C", "1000.50"),
+                stmt(LINE, ns, r1, 2, "1210", "USD", "D", "1000.50"));
+        UUID r2 = UUID.randomUUID();
+        sqlState("P0005", () -> tx(app(), stmt(REVERSAL, ns, r2, r1),
+                stmt(LINE, ns, r2, 1, "1300", "USD", "D", "1000.50"),
+                stmt(LINE, ns, r2, 2, "1210", "USD", "C", "1000.50")));
+    }
+
+    @Test
+    void OM_03_dbRejectsReversalThatIsNotTheMirror() throws SQLException {
+        UUID ns = LedgerDb.newNamespace();
+        UUID a = balancedUsd(ns);
+        UUID squat = UUID.randomUUID(); // balanced, but not A's lines with sides swapped
+        sqlState("P0006", () -> tx(app(), stmt(REVERSAL, ns, squat, a),
+                stmt(LINE, ns, squat, 1, "1300", "USD", "C", "1.00"),
+                stmt(LINE, ns, squat, 2, "1210", "USD", "D", "1.00")));
+        UUID same = UUID.randomUUID(); // same sides as the original: not a reversal either
+        sqlState("P0006", () -> tx(app(), stmt(REVERSAL, ns, same, a),
+                stmt(LINE, ns, same, 1, "1300", "USD", "D", "1000.50"),
+                stmt(LINE, ns, same, 2, "1210", "USD", "C", "1000.50")));
+    }
+
+    @Test
+    void OM_03_reversalReferencingAnotherNamespaceFailsTheForeignKey() throws SQLException {
+        UUID a = LedgerDb.newNamespace();
+        UUID b = LedgerDb.newNamespace();
+        UUID original = balancedUsd(a);
+        UUID r = UUID.randomUUID();
+        sqlState("23503", () -> tx(app(), stmt(REVERSAL, b, r, original),
+                stmt(LINE, b, r, 1, "1300", "USD", "C", "1000.50"),
+                stmt(LINE, b, r, 2, "1210", "USD", "D", "1000.50")));
+    }
+
+    @Test
+    void OM_03_dbRejectsScaleAboveMinorUnits() {
+        UUID ns = LedgerDb.newNamespace();
+        for (String[] bad : new String[][] {{"USD", "1.234"}, {"JPY", "1.5"}, {"EUR", "0.001"}}) {
+            UUID e = UUID.randomUUID();
+            sqlState("23514", () -> tx(app(), stmt(HEADER, ns, e),
+                    stmt(LINE, ns, e, 1, "1300", bad[0], "D", bad[1]),
+                    stmt(LINE, ns, e, 2, "1210", bad[0], "C", bad[1])));
+        }
     }
 
     @Test

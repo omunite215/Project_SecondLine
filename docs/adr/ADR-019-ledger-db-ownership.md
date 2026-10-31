@@ -13,6 +13,7 @@ OM-01's `00-roles.sql` made `ledger_app` the owner of schema `ledger`, and the r
 ## Decision
 - `ledger_migrator` (NOLOGIN group) owns schema `ledger` and every object in it. Its login `ledger_migrator_svc` (secret `LEDGER_MIGRATOR_PASSWORD`, created by `make bootstrap`) is used **only** by Flyway, through `SET ROLE ledger_migrator`.
 - Flyway runs in the one-shot compose service `ledger-migrate`: the ledger image with profile `migrate`, no web server, exiting after the migration. The running `ledger` waits on `service_completed_successfully` and is never given the migrator password. `spring.flyway.enabled` is false by default.
+- The OM-01 default that gave `ledger_app` full DML on tables created by `postgres` in `ledger` is removed. A superuser-created table there gives the app nothing.
 - `ledger_app` gets:
   - `USAGE` on the schema;
   - `SELECT, INSERT` on all tables and `USAGE` on sequences, via default privileges;
@@ -30,5 +31,10 @@ OM-01's `00-roles.sql` made `ledger_app` the owner of schema `ledger`, and the r
 - Risk: a superuser (`postgres`) can still rewrite anything. That is ADR-018's A3/A4 attacker, which checkpoints address. This ADR doesn't claim otherwise.
 
 ## Verification (how we'll know it holds)
-- `OM_03_RolesTest` and the T-DOM-05 tests (OM-03 Tasks 3 and 6) are green in CI.
-- With `make up PROFILES="core app"` on a fresh volume, `ledger-migrate` exits 0, `ledger` is healthy, `pg_tables.tableowner` = `ledger_migrator` for every ledger table, and the ledger container's environment holds no migrator secret. This was checked on 2026-10-30 in a throwaway compose project.
+- SCRIPTED, in CI on every ledger change (`make test-ledger`, Testcontainers `postgres:17.11-alpine` initialised with the shipped `infra/db/init`):
+  - `OM_03_RolesTest` covers the schema owner, no DROP/DISABLE TRIGGER/CREATE for the app, no forged Flyway history, and no UPDATE/DELETE even on a table `postgres` creates in `ledger`;
+  - `OM_03_LedgerDbTest` covers the ledgers: append-only, closed once committed, reversal rules.
+- VERIFY (local run, 2026-10-30, not yet in CI): on a fresh volume, `make up PROFILES="core app"` ends with `ledger-migrate` exiting 0 after applying V001–V004, `ledger` healthy, every `ledger` table owned by `ledger_migrator`, and no migrator secret in the `ledger` container's environment. To reproduce:
+  - `docker compose -p <scratch> … up -d --wait postgres ledger-migrate ledger`;
+  - then `SELECT tableowner FROM pg_tables WHERE schemaname='ledger'`;
+  - then `docker compose -p <scratch> down -v`.

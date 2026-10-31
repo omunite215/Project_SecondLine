@@ -61,6 +61,17 @@ class T_DOM_01_CashPostingTest {
     }
 
     @Test
+    void T_DOM_01_dbRejectionRollsBackTheWholeEntry() throws Exception {
+        // Valid for Java, too large for the ledger.money domain (< 1e18): the header is written, the first
+        // line fails, and the whole transaction must roll back as one typed error.
+        UUID ns = LedgerDb.newNamespace();
+        invalid(() -> cash.post(new CashEntry(ns, "TOO_BIG", TD, List.of(
+                line(SECURITIES_AT_COST, D, "1000000000000000000.00", USD),
+                line(PENDING_SETTLEMENT, C, "1000000000000000000.00", USD)))));
+        assertThat(LedgerDb.query(LedgerDb.app(), "SELECT count(*) FROM ledger.journal_headers WHERE ns = ?", ns)).isEqualTo("0");
+    }
+
+    @Test
     void T_DOM_01_entryNeedsTwoLines() {
         UUID ns = LedgerDb.newNamespace();
         invalid(() -> new CashEntry(ns, "ONE", TD, List.of(line(NOSTRO, D, "1", USD))));

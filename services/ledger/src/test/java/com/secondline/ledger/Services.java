@@ -7,14 +7,15 @@ import com.secondline.ledger.journal.SecuritiesPostingService;
 import com.secondline.ledger.positions.PositionProjection;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.support.JdbcTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 /** Real services wired to the app role (ledger_svc), the way Spring wires them, without booting a context. */
 public final class Services {
     public static final DataSource DS = LedgerDb.app();
     public static final JournalRepository REPO = new JournalRepository(JdbcClient.create(DS));
-    public static final TransactionTemplate TX = new TransactionTemplate(new DataSourceTransactionManager(DS));
+    // JdbcTransactionManager is what Spring Boot auto-configures.
+    public static final TransactionTemplate TX = new TransactionTemplate(new JdbcTransactionManager(DS));
 
     private Services() {}
 

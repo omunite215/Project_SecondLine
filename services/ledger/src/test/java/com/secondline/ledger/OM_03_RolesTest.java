@@ -69,6 +69,20 @@ class OM_03_RolesTest {
     }
 
     @Test
+    void OM_03_tablesCreatedBySuperuserGiveTheAppNoUpdateOrDelete() throws SQLException {
+        // ADR-019 "never DELETE" must hold even for a table someone creates as postgres in schema ledger.
+        exec(LedgerDb.superuser(), "CREATE TABLE ledger.om03_superuser_probe (ns uuid PRIMARY KEY)");
+        try {
+            assertThatThrownBy(() -> exec(LedgerDb.app(), "DELETE FROM ledger.om03_superuser_probe"))
+                    .isInstanceOf(SQLException.class).extracting("SQLState").isEqualTo("42501");
+            assertThatThrownBy(() -> exec(LedgerDb.app(), "UPDATE ledger.om03_superuser_probe SET ns = ns"))
+                    .isInstanceOf(SQLException.class).extracting("SQLState").isEqualTo("42501");
+        } finally {
+            exec(LedgerDb.superuser(), "DROP TABLE ledger.om03_superuser_probe");
+        }
+    }
+
+    @Test
     void OM_03_appCanReadAndInsertNamespaces() {
         assertThat(LedgerDb.newNamespace()).isNotNull();
     }

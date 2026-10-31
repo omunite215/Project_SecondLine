@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/tools/get_break.output.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/tools/get_break.output.schema.json",
   "title": "One break with its linked records \u2014 output",
   "type": "object",
   "additionalProperties": false,

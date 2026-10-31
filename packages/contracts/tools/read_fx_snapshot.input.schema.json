@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/tools/read_fx_snapshot.input.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/tools/read_fx_snapshot.input.schema.json",
   "title": "Designated FX rate (information-only source, synthetic use) \u2014 input",
   "type": "object",
   "additionalProperties": false,

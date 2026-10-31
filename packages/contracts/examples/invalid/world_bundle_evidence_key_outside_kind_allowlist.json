@@ -1,6 +1,6 @@
 {
  "x-validates": "scenario/world_bundle.schema.json",
- "bundle_version": "1.0",
+ "bundle_version": "2.0",
  "scenario_id": "scn_0000A001",
  "as_of": "2026-03-02",
  "reference_snapshots": [
@@ -10,6 +10,18 @@
    "retrieved_at": "2026-01-01T00:00:00Z",
    "license": "ISO 4217 public code list (codes only)",
    "sha256": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+  }
+ ],
+ "institutions": [
+  {
+   "institution_id": "ins_0000G001",
+   "name": "Fictional Broker AG"
+  }
+ ],
+ "counterparties": [
+  {
+   "counterparty_id": "cpt_0000H001",
+   "institution_id": "ins_0000G001"
   }
  ],
  "instruments": [
@@ -46,6 +58,7 @@
   {
    "trade_id": "trd_0000B001",
    "version": 1,
+   "counterparty_id": "cpt_0000H001",
    "isin": "XS0000000012",
    "side": "BUY",
    "quantity": "300",

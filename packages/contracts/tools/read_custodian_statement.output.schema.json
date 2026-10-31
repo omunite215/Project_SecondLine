@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/tools/read_custodian_statement.output.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/tools/read_custodian_statement.output.schema.json",
   "title": "Synthetic custodian statement \u2014 output",
   "type": "object",
   "additionalProperties": false,

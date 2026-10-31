@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/scenario/truth.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/scenario/truth.schema.json",
   "title": "Truth",
   "description": "Hidden oracle truth (§5). Grader/runner only; files under data/generated/<split>/truth/ (ADR-015). Delta values follow the ADR-016 B1–B8 table.",
   "x-privileged": true,

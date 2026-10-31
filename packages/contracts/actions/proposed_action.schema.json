@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/actions/proposed_action.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/actions/proposed_action.schema.json",
   "title": "ProposedAction (§9, C3/C4)",
   "type": "object",
   "additionalProperties": false,

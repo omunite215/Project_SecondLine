@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-KEYS = ("POSTGRES_PASSWORD", "LEDGER_SVC_PASSWORD", "GRADER_SVC_PASSWORD", "OPERATOR_SVC_PASSWORD",
+KEYS = ("POSTGRES_PASSWORD", "LEDGER_SVC_PASSWORD", "LEDGER_MIGRATOR_PASSWORD", "GRADER_SVC_PASSWORD", "OPERATOR_SVC_PASSWORD",
         "GRAFANA_ADMIN_PASSWORD")
 
 
@@ -43,7 +43,26 @@ class BootstrapEnv(unittest.TestCase):
         p = self.tmp / ".env"
         p.write_text("POSTGRES_PASSWORD=mine\n")
         self.assertEqual(self.run_bootstrap(p).returncode, 0)
-        self.assertEqual(p.read_text(), "POSTGRES_PASSWORD=mine\n")
+        self.assertTrue(p.read_text().startswith("POSTGRES_PASSWORD=mine\n"))
+        self.assertEqual(env_file(p)["POSTGRES_PASSWORD"], "mine")
+
+    def test_OM_03_bootstrap_appends_missing_secret_keys(self):
+        # A key added later (LEDGER_MIGRATOR_PASSWORD, ADR-019) reaches an existing .env without a reset.
+        p = self.tmp / ".env"
+        p.write_text("POSTGRES_PASSWORD=mine\n")
+        os.chmod(p, 0o600)
+        r = self.run_bootstrap(p)
+        self.assertEqual(r.returncode, 0)
+        env = env_file(p)
+        self.assertEqual(env["POSTGRES_PASSWORD"], "mine")
+        for k in KEYS:
+            self.assertGreaterEqual(len(env[k]), 4, k)
+        self.assertGreaterEqual(len(env["LEDGER_MIGRATOR_PASSWORD"]), 24)
+        self.assertNotIn(env["LEDGER_MIGRATOR_PASSWORD"], r.stdout + r.stderr)  # never printed
+        self.assertEqual(stat.S_IMODE(p.stat().st_mode), 0o600)
+        before = p.read_text()
+        self.run_bootstrap(p)
+        self.assertEqual(p.read_text(), before)  # second run: nothing missing, nothing changes
 
     def test_OM_01_env_example_has_no_values(self):
         env = env_file(ROOT / ".env.example")

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/tools/list_breaks.output.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/tools/list_breaks.output.schema.json",
   "title": "List the run's breaks \u2014 output",
   "type": "object",
   "additionalProperties": false,

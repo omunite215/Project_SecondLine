@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/scenario/ns_export.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/scenario/ns_export.schema.json",
   "title": "NamespaceExport",
   "description": "Canonical ns state export (ADR-015, T-EVAL-03). State hash = sha256(JCS(this export without \"ns\")): ns is a fresh UUID per load, so the same state hashes the same across loads and machines. Arrays sorted by account, then currency/isin; zero balances omitted.",
   "type": "object",

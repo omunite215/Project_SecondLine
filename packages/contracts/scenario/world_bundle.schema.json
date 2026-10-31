@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/scenario/world_bundle.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/scenario/world_bundle.schema.json",
   "title": "WorldBundle",
   "description": "Initial state the ledger loads into a fresh ns (ADR-015). Symptoms only, never causes; truth-named evidence keys and SLCANARY- in any free-text field fail validation. Values per ADR-016 / docs/domain.md.",
   "type": "object",
@@ -23,7 +23,7 @@
   ],
   "properties": {
     "bundle_version": {
-      "const": "1.0"
+      "const": "2.0"
     },
     "scenario_id": {
       "$ref": "../common.schema.json#/$defs/opaque_id"

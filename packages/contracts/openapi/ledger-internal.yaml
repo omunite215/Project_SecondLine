@@ -35,8 +35,8 @@ paths:
         - {name: status, in: query, required: false, schema: {$ref: '../tools/list_breaks.input.schema.json#/properties/status'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/list_breaks.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/breaks/{break_id}:
     get:
@@ -47,8 +47,8 @@ paths:
         - {name: break_id, in: path, required: true, schema: {$ref: '../tools/get_break.input.schema.json#/properties/break_id'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/get_break.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/trades/{trade_id}:
     get:
@@ -60,8 +60,8 @@ paths:
         - {name: as_of_version, in: query, required: false, schema: {$ref: '../tools/read_trade.input.schema.json#/properties/as_of_version'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_trade.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter or as_of_version outside 0..current', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/trades/{trade_id}/bookings:
     get:
@@ -73,8 +73,8 @@ paths:
         - {name: as_of_version, in: query, required: false, schema: {$ref: '../tools/read_bookings.input.schema.json#/properties/as_of_version'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_bookings.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter or as_of_version outside 0..current', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/trades/{trade_id}/settlement:
     get:
@@ -85,8 +85,8 @@ paths:
         - {name: trade_id, in: path, required: true, schema: {$ref: '../tools/read_settlement_status.input.schema.json#/properties/trade_id'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_settlement_status.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/positions:
     get:
@@ -98,8 +98,8 @@ paths:
         - {name: as_of_version, in: query, required: false, schema: {$ref: '../tools/read_positions.input.schema.json#/properties/as_of_version'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_positions.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter or as_of_version outside 0..current', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/custodian-statement:
     get:
@@ -111,8 +111,8 @@ paths:
         - {name: isin, in: query, required: false, schema: {$ref: '../tools/read_custodian_statement.input.schema.json#/properties/isin'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_custodian_statement.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/corporate-actions:
     get:
@@ -123,8 +123,8 @@ paths:
         - {name: isin, in: query, required: true, schema: {$ref: '../tools/read_corporate_actions.input.schema.json#/properties/isin'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_corporate_actions.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/evidence/{record_id}:
     get:
@@ -135,8 +135,8 @@ paths:
         - {name: record_id, in: path, required: true, schema: {$ref: '../tools/read_evidence.input.schema.json#/properties/record_id'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_evidence.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/reference-data/{record_id}:
     get:
@@ -147,8 +147,8 @@ paths:
         - {name: record_id, in: path, required: true, schema: {$ref: '../tools/read_reference_data.input.schema.json#/properties/record_id'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_reference_data.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /internal/v1/ns/{ns}/fx:
     get:
@@ -161,6 +161,6 @@ paths:
         - {name: as_of_date, in: query, required: true, schema: {$ref: '../tools/read_fx_snapshot.input.schema.json#/properties/as_of_date'}}
       responses:
         '200': {description: ok, content: {application/json: {schema: {$ref: '../tools/read_fx_snapshot.output.schema.json'}}}}
-        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
-        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: malformed parameter', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}

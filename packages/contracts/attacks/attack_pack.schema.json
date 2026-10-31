@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/attacks/attack_pack.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/attacks/attack_pack.schema.json",
   "title": "AttackPack",
   "description": "Adversarial cases (§15) the runner injects; the agent sees only the carrier text, never this pack or its expectations.",
   "x-privileged": true,

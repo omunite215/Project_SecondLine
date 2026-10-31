@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/tools/get_approval_status.output.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/tools/get_approval_status.output.schema.json",
   "title": "Status of a held action (idempotent) \u2014 output",
   "type": "object",
   "additionalProperties": false,

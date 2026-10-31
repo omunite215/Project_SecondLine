@@ -69,6 +69,14 @@ class LedgerPaths(unittest.TestCase):
         self.assertIn("'../scenario/world_bundle.schema.json'", paths["/admin/v1/ns/{ns}:load"])
         self.assertIn("'../scenario/ns_export.schema.json'", paths["/admin/v1/ns/{ns}/export"])
 
+    def test_OM_04_load_errors_are_typed(self):
+        # Rule 7: every rejection names its errors.json code; a different bundle in a loaded ns is IDEMPOTENCY_CONFLICT.
+        load_block = blocks((C / "openapi/ledger-admin.yaml").read_text())["/admin/v1/ns/{ns}:load"]
+        codes = {e["code"] for e in load("errors.json")["errors"]}
+        for status, code in (("409", "IDEMPOTENCY_CONFLICT"), ("422", "DOMAIN_INVALID"), ("403", "PERMISSION_DENIED")):
+            self.assertIn(code, codes)
+            self.assertRegex(load_block, rf"'{status}': {{description: '{code}:", status)
+
 
 class BundleCounterparties(unittest.TestCase):
     def test_OM_04_trades_name_a_counterparty(self):
@@ -100,7 +108,18 @@ class StateHashScope(unittest.TestCase):
         # ns is a fresh UUID per load (ADR-015), so a hash over it could never match across loads.
         desc = load("scenario/ns_export.schema.json")["description"]
         self.assertIn('without "ns"', desc)
-        self.assertIn('without "ns"', (ROOT / "docs/adr/ADR-015-namespaces-truth-isolation.md").read_text())
+        adr = (ROOT / "docs/adr/ADR-015-namespaces-truth-isolation.md").read_text()
+        amendment = adr.split("## Amendment 1", 1)[1]  # an ACCEPTED ADR changes by amendment, not in place
+        self.assertIn('without "ns"', amendment)
+
+
+class MajorVersion(unittest.TestCase):
+    def test_OM_04_breaking_change_is_major(self):
+        # Required bundle fields + a renamed enum value break 1.x producers/consumers (.claude/rules/contracts.md).
+        self.assertEqual((C / "VERSION").read_text().strip(), "2.0.0")
+        self.assertEqual(load("scenario/world_bundle.schema.json")["properties"]["bundle_version"]["const"], "2.0")
+        self.assertTrue(load("scenario/world_bundle.schema.json")["$id"].startswith(
+            "https://secondline.invalid/contracts/2/"))
 
 
 if __name__ == "__main__":

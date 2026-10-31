@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/tools/read_reference_data.output.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/tools/read_reference_data.output.schema.json",
   "title": "Read-only security or SSI record \u2014 output",
   "type": "object",
   "additionalProperties": false,

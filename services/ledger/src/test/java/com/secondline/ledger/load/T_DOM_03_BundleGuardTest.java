@@ -1,5 +1,7 @@
 package com.secondline.ledger.load;
 
+import static com.secondline.ledger.Bundles.minimal;
+import static com.secondline.ledger.Bundles.with;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -9,8 +11,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.secondline.contracts.Contracts;
 import com.secondline.contracts.generated.ErrorCode;
 import com.secondline.ledger.LedgerException;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
@@ -22,29 +22,12 @@ import org.junit.jupiter.params.provider.MethodSource;
 class T_DOM_03_BundleGuardTest {
     static final BundleGuard GUARD = new BundleGuard();
 
-    static ObjectNode minimal() {
-        try {
-            ObjectNode b = (ObjectNode) Contracts.MAPPER.readTree(
-                    Path.of(System.getProperty("contracts.root"), "examples/scenario/world_bundle_minimal.json").toFile());
-            b.remove("x-validates");
-            return b;
-        } catch (IOException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
     static LedgerException rejected(ObjectNode bundle) {
         Throwable t = org.assertj.core.api.Assertions.catchThrowable(() -> GUARD.check(bundle));
         assertThat(t).isInstanceOf(LedgerException.class);
         LedgerException e = (LedgerException) t;
         assertThat(e.code()).isEqualTo(ErrorCode.DOMAIN_INVALID);
         return e;
-    }
-
-    static ObjectNode with(Consumer<ObjectNode> edit) {
-        ObjectNode b = minimal();
-        edit.accept(b);
-        return b;
     }
 
     @Test

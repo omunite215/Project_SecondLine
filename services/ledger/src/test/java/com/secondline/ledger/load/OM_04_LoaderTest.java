@@ -2,8 +2,8 @@ package com.secondline.ledger.load;
 
 import static com.secondline.ledger.LedgerDb.app;
 import static com.secondline.ledger.LedgerDb.query;
-import static com.secondline.ledger.load.T_DOM_03_BundleGuardTest.minimal;
-import static com.secondline.ledger.load.T_DOM_03_BundleGuardTest.with;
+import static com.secondline.ledger.Bundles.minimal;
+import static com.secondline.ledger.Bundles.with;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 

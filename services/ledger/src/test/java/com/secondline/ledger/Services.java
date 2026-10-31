@@ -1,6 +1,7 @@
 package com.secondline.ledger;
 
 import com.secondline.ledger.journal.CashPostingService;
+import com.secondline.ledger.export.NamespaceExporter;
 import com.secondline.ledger.load.BundleGuard;
 import com.secondline.ledger.load.WorldBundleLoader;
 import com.secondline.ledger.ns.NamespaceRepository;
@@ -46,5 +47,9 @@ public final class Services {
 
     public static WorldBundleLoader loader() {
         return new WorldBundleLoader(JdbcClient.create(DS), GUARD, namespaces(), cash(), securities(), TX);
+    }
+
+    public static NamespaceExporter exporter() {
+        return new NamespaceExporter(JdbcClient.create(DS), namespaces(), TX);
     }
 }

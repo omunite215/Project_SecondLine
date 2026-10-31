@@ -52,7 +52,7 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - evidence: PR (this). SCRIPTED (make test-ledger, Testcontainers postgres:17.11 + shipped infra/db/init): 64 ledger tests — T-DOM-01 jqwik (10k-try pure balance / precision / cross-currency; 200-try DB balance), T-DOM-05 (reversal keeps original; committed entries take no more lines; reversal must mirror, never of a reversal; 200-try history property), OM_03_projectionEqualsIncremental (200 tries), DB-enforced balance + immutability + per-currency scale, typed DOMAIN_INVALID incl. commit-time rejections, ArchUnit no float/double. VERIFY (local, not CI): fresh compose volume, ledger-migrate applies V001–V004, ledger healthy. ADR-019 PROPOSED. ErrorCode enum swap pending #32.
 
 ### OM-04 · Ledger reads, scenario loader, namespaces, export & state hash
-- meta: P0 | M-1 | 3d | mcs | deps: OM-03 | status: todo
+- meta: P0 | M-1 | 3d | mcs | deps: OM-03 | status: doing
 - refs: §5 §9 §12 | REQ-001 REQ-002 REQ-011 | T-EVAL-03 T-DOM-03 | ADR-007 ADR-015
 - build: /internal/v1/ns/{ns}/… read endpoints backing every §10 read tool (as-of params, record versions, provenance); /admin/v1/ns (create), …/{ns}:load (WorldBundle → rows, idempotent by bundle hash, rejects any truth-schema field), …/export (canonical JSON), …/state-hash (sha256 of the JCS export), DELETE; agent_runs registry (run_id, ns, controls, manifest_ref).
 - done: load → export → hash identical across two loads and both machines; a bundle containing a truth field is rejected; read endpoints contract-tested against openapi/ledger-internal.yaml; KG-06 consumes the export.

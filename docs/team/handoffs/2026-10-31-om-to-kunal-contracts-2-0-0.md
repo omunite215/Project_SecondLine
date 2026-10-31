@@ -7,6 +7,8 @@ Branch `om/OM-04-contracts-2-0-0` · §5 §9 §10 §12 · ADR-015 (Amendment 1),
 - `openapi/ledger-admin.yaml`: `POST /admin/v1/ns`, `POST …/{ns}:load`, `GET …/export`, `GET …/state-hash`, `DELETE …/{ns}` (retire) and `POST /admin/v1/runs`.
 - **Your half:**
   - `scenario/world_bundle.schema.json`: `bundle_version` "2.0", plus required `institutions[]` and `counterparties[]`, and `trade.counterparty_id`.
+  - `journal_entry` and `securities_movement`: required `entry_type` (closed enum: TRADE, SETTLEMENT, FEE, FX_CONVERSION, FX_REVALUATION, CORPORATE_ACTION) and `effective_date`. docs/domain.md requires both, and a business date is never derived from `booked_at`.
+  - `securities_movement`: required `entry_id`. Lines that share it form one entry, balanced per ISIN.
   - `ns_export` description: the state hash excludes `ns`.
 - `tools/read_settlement_status.output.schema.json`: the status enum is now the evidence enum.
 
@@ -23,3 +25,4 @@ Branch `om/OM-04-contracts-2-0-0` · §5 §9 §10 §12 · ADR-015 (Amendment 1),
 ## What I need back
 1. Approve the WorldBundle changes (your shape) and ADR-015 Amendment 1 (tick `kunal ☐`).
 2. Is one institution per counterparty enough for B8 (SSI), or do you want SSI records keyed by counterparty in the bundle now?
+3. Leakage audit (OM-04): `opaque_id` bans only split words, so `brk_shortfall1` is legal. Should the factory also re-draw ids containing cause words (`dup`, `shortfall`, …) and should `common.schema.json` enforce it? The ledger already rejects `B[1-8]_…` label values.

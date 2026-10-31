@@ -10,6 +10,8 @@
     "scenario_id",
     "as_of",
     "reference_snapshots",
+    "institutions",
+    "counterparties",
     "instruments",
     "accounts",
     "fx_rates",
@@ -33,6 +35,18 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/reference_snapshot"
+      }
+    },
+    "institutions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/institution"
+      }
+    },
+    "counterparties": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/counterparty"
       }
     },
     "instruments": {
@@ -135,6 +149,47 @@
         }
       }
     },
+    "institution": {
+      "description": "Synthetic institution (golden rule 2); an LEI, if present, is synthetic too.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "institution_id",
+        "name"
+      ],
+      "properties": {
+        "institution_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 80,
+          "not": {
+            "pattern": "SLCANARY-"
+          }
+        },
+        "lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{18}[0-9]{2}$"
+        }
+      }
+    },
+    "counterparty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "counterparty_id",
+        "institution_id"
+      ],
+      "properties": {
+        "counterparty_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "institution_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        }
+      }
+    },
     "instrument": {
       "type": "object",
       "additionalProperties": false,
@@ -227,6 +282,7 @@
       "required": [
         "trade_id",
         "version",
+        "counterparty_id",
         "isin",
         "side",
         "quantity",
@@ -243,6 +299,9 @@
         "version": {
           "type": "integer",
           "minimum": 1
+        },
+        "counterparty_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
         },
         "isin": {
           "$ref": "../common.schema.json#/$defs/isin"

@@ -1,21 +1,104 @@
-# Harness/admin only, local network (ADR-015). Never reachable from the agent or MCP adapter.
+# Harness/admin only, local network (ADR-015). Never reachable from the agent or MCP adapter; never published on a host port.
+# Lifecycle (OM-04): create an empty ns → :load a WorldBundle (idempotent by bundle hash) → export / state-hash → retire.
+# Retire never deletes ledger rows (ADR-019: the ledgers are immutable); a retired ns answers 403 everywhere.
 openapi: 3.1.0
-info: {title: Second-Line ledger admin, version: 1.0.0}
+info: {title: Second-Line ledger admin, version: 1.2.0}
 paths:
   /admin/v1/ns:
     post:
-      summary: Load a WorldBundle into a fresh namespace (schema in scenario/, Kunal's half)
+      summary: Create an empty namespace
+      operationId: create_namespace
       responses:
-        '201': {description: namespace created; body carries ns + state hash}
+        '201': {description: created, content: {application/json: {schema: {$ref: '#/components/schemas/Namespace'}}}}
         '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /admin/v1/ns/{ns}:load:
+    post:
+      summary: Load a WorldBundle in one transaction; same bundle again is a no-op, a different one is STATE_CONFLICT
+      operationId: load_namespace
+      parameters:
+        - {name: ns, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '../scenario/world_bundle.schema.json'}}}}
+      responses:
+        '201': {description: loaded, content: {application/json: {schema: {$ref: '#/components/schemas/LoadResult'}}}}
+        '200': {description: already loaded with this bundle, content: {application/json: {schema: {$ref: '#/components/schemas/LoadResult'}}}}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '409': {description: 409, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
   /admin/v1/ns/{ns}/export:
     get:
-      summary: Canonical namespace export (state hash = sha256 of its JCS)
+      summary: Canonical namespace export (state hash = sha256 of its JCS without "ns")
+      operationId: export_namespace
       parameters:
         - {name: ns, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
       responses:
-        '200': {description: export}
+        '200': {description: export, content: {application/json: {schema: {$ref: '../scenario/ns_export.schema.json'}}}}
         '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /admin/v1/ns/{ns}/state-hash:
+    get:
+      summary: Current state hash and state version
+      operationId: namespace_state_hash
+      parameters:
+        - {name: ns, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
+      responses:
+        '200': {description: hash, content: {application/json: {schema: {$ref: '#/components/schemas/StateHash'}}}}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /admin/v1/ns/{ns}:
+    delete:
+      summary: Retire a namespace (rows are kept; every route for it then answers 403)
+      operationId: retire_namespace
+      parameters:
+        - {name: ns, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
+      responses:
+        '204': {description: retired}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  /admin/v1/runs:
+    post:
+      summary: Register a run against a loaded namespace (agent_runs registry)
+      operationId: register_run
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '#/components/schemas/RunRegistration'}}}}
+      responses:
+        '201': {description: registered, content: {application/json: {schema: {$ref: '#/components/schemas/Run'}}}}
+        '403': {description: 403, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 422, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+components:
+  schemas:
+    Namespace:
+      type: object
+      additionalProperties: false
+      required: [ns]
+      properties:
+        ns: {$ref: '../common.schema.json#/$defs/uuid'}
+    LoadResult:
+      type: object
+      additionalProperties: false
+      required: [ns, snapshot_hash, state_hash, state_version]
+      properties:
+        ns: {$ref: '../common.schema.json#/$defs/uuid'}
+        snapshot_hash: {$ref: '../common.schema.json#/$defs/sha256_ref'}
+        state_hash: {$ref: '../common.schema.json#/$defs/sha256_ref'}
+        state_version: {$ref: '../common.schema.json#/$defs/state_version'}
+    StateHash:
+      $ref: '#/components/schemas/LoadResult'
+    RunRegistration:
+      type: object
+      additionalProperties: false
+      required: [ns, controls, agent_id, manifest_ref]
+      properties:
+        ns: {$ref: '../runs/run_request.schema.json#/properties/ns'}
+        controls: {$ref: '../runs/run_request.schema.json#/properties/controls'}
+        agent_id: {$ref: '../runs/run_request.schema.json#/properties/agent_id'}
+        manifest_ref: {type: string, pattern: '^[A-Za-z0-9_][A-Za-z0-9_./-]{0,199}$', not: {pattern: '\.\.'}, description: 'Reference to the run manifest (a path or id), never its contents.'}
+    Run:
+      type: object
+      additionalProperties: false
+      required: [run_id, ns, controls]
+      properties:
+        run_id: {$ref: '../common.schema.json#/$defs/uuid'}
+        ns: {$ref: '../common.schema.json#/$defs/uuid'}
+        controls: {$ref: '../runs/run_request.schema.json#/properties/controls'}

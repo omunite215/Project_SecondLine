@@ -17,9 +17,11 @@
     "status": {
       "enum": [
         "PENDING",
+        "MATCHED",
         "SETTLED",
-        "PARTIAL",
-        "FAILED"
+        "PARTIALLY_SETTLED",
+        "FAILED",
+        "CANCELLED"
       ]
     },
     "settled_quantity": {

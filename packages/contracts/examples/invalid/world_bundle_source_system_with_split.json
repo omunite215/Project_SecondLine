@@ -12,6 +12,18 @@
    "sha256": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
   }
  ],
+ "institutions": [
+  {
+   "institution_id": "ins_0000G001",
+   "name": "Fictional Broker AG"
+  }
+ ],
+ "counterparties": [
+  {
+   "counterparty_id": "cpt_0000H001",
+   "institution_id": "ins_0000G001"
+  }
+ ],
  "instruments": [
   {
    "isin": "XS0000000012",
@@ -46,6 +58,7 @@
   {
    "trade_id": "trd_0000B001",
    "version": 1,
+   "counterparty_id": "cpt_0000H001",
    "isin": "XS0000000012",
    "side": "BUY",
    "quantity": "300",

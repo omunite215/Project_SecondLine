@@ -3,7 +3,7 @@ Status: ACCEPTED (om ☑ kunal ☑, SH-02, PR #11, 2026-10-29) · Spec: §5 §7 
 
 ## Decision (proposed)
 - Every run executes in a fresh namespace `ns` (UUID). All ledger rows carry `ns`; keys are (ns, id); run tokens bind run → ns and the ledger checks token ns against path ns. Optional hardening: Postgres row-level security keyed on `app.ns`.
-- Reset = a new ns loaded from the WorldBundle (no in-place rollback). Snapshot id = bundle sha256. State hash = sha256(JCS(canonical ns export)), verified after load and stored in the run manifest (T-EVAL-03).
+- Reset = a new ns loaded from the WorldBundle (no in-place rollback). Snapshot id = bundle sha256. State hash = sha256(JCS(canonical ns export without "ns")), verified after load and stored in the run manifest (T-EVAL-03). The ns UUID is left out because it differs on every load; the hash names the state, not the run (OM-04, contracts 1.2.0).
 - Truth stays in files under `data/generated/<split>/truth/`, readable only by grader/runner processes; never mounted into agent, mcp-adapter, gateway, ledger, supervisor or console containers. Each truth file carries a `SLCANARY-<hex>` canary that CI scans for (KG-05).
 - The ledger loader rejects bundles containing any Truth-schema field. Visible ids are opaque; visible records show symptoms, not root causes.
 - The console shows outcomes only via the eval API after grading.

@@ -23,6 +23,8 @@ public class BundleGuard {
     static final String SCHEMA = "scenario/world_bundle.schema.json";
     static final int MAX_DEPTH = 64;
     private static final String CANARY = "slcanary-";
+    /** A B1–B8 root-cause label (common.schema.json break_type) is truth; it is never a visible value. */
+    private static final java.util.regex.Pattern LABEL = java.util.regex.Pattern.compile("(?i)\\bB[1-8]_[A-Z]");
 
     private final SchemaRegistry schemas = SchemaRegistry.load();
     private final Set<String> truthKeys = TruthKeys.load();
@@ -39,7 +41,11 @@ public class BundleGuard {
         new References(bundle).check();
     }
 
-    /** Truth keys (any case) and canaries (any string), anywhere in the tree; iterative with a depth cap. */
+    /**
+     * Truth keys (any case), canaries (in any key or string) and root-cause labels (in any string), anywhere in
+     * the tree; iterative with a depth cap. A key is checked before it becomes part of a pointer, so no message
+     * built from a pointer can carry a canary.
+     */
     private void scan(JsonNode root) {
         record Node(JsonNode n, String ptr, int depth) {}
         Deque<Node> todo = new ArrayDeque<>();
@@ -50,6 +56,9 @@ public class BundleGuard {
             JsonNode n = cur.n();
             if (n.isObject()) {
                 for (Map.Entry<String, JsonNode> e : n.properties()) {
+                    if (e.getKey().toLowerCase(Locale.ROOT).contains(CANARY)) {
+                        throw LedgerException.domainInvalid("canary in a key under " + (cur.ptr().isEmpty() ? "/" : cur.ptr()));
+                    }
                     String ptr = cur.ptr() + "/" + e.getKey();
                     if (truthKeys.contains(e.getKey().toLowerCase(Locale.ROOT))) {
                         throw LedgerException.domainInvalid("truth field in bundle at " + ptr);
@@ -58,8 +67,13 @@ public class BundleGuard {
                 }
             } else if (n.isArray()) {
                 for (int i = 0; i < n.size(); i++) todo.push(new Node(n.get(i), cur.ptr() + "/" + i, cur.depth() + 1));
-            } else if (n.isTextual() && n.asText().toLowerCase(Locale.ROOT).contains(CANARY)) {
-                throw LedgerException.domainInvalid("canary in bundle at " + cur.ptr());
+            } else if (n.isTextual()) {
+                if (n.asText().toLowerCase(Locale.ROOT).contains(CANARY)) {
+                    throw LedgerException.domainInvalid("canary in bundle at " + cur.ptr());
+                }
+                if (LABEL.matcher(n.asText()).find()) {
+                    throw LedgerException.domainInvalid("root-cause label in bundle at " + cur.ptr());
+                }
             }
         }
     }

@@ -55,11 +55,12 @@ CREATE TRIGGER securities_entries_stamp BEFORE INSERT ON ledger.securities_entri
     FOR EACH ROW EXECUTE FUNCTION ledger.stamp_version();
 
 -- Reference + operational records, as the WorldBundle 2.0 carries them.
-ALTER TABLE ledger.instruments ADD COLUMN name text NULL CHECK (length(name) <= 80);
+-- Defence in depth behind BundleGuard: visible free text never stores a canary (ADR-015).
+ALTER TABLE ledger.instruments ADD COLUMN name text NULL CHECK (length(name) <= 80 AND name !~* 'slcanary-');
 ALTER TABLE ledger.trades
     ADD COLUMN status text NOT NULL DEFAULT 'BOOKED' CHECK (status IN ('BOOKED', 'SETTLED', 'FAILED', 'CANCELLED'));
 ALTER TABLE ledger.reference_data_versions
-    ADD COLUMN ref text NOT NULL,
+    ADD COLUMN ref text NOT NULL CHECK (ref !~* 'slcanary-'),
     ADD COLUMN retrieved_at timestamptz NOT NULL,
     ADD UNIQUE (ns, ref);
 
@@ -67,7 +68,7 @@ ALTER TABLE ledger.reference_data_versions
 ALTER TABLE ledger.evidence_records
     ADD COLUMN source_system text NOT NULL
         CHECK (source_system ~ '^[a-z0-9_-]{2,32}$' AND source_system !~* '(dev|eval|blind|test)'),
-    ADD COLUMN text text NOT NULL CHECK (length(text) <= 4000),
+    ADD COLUMN text text NOT NULL CHECK (length(text) <= 4000 AND text !~* 'slcanary-'),
     ADD COLUMN content_sha256 text NOT NULL DEFAULT '';
 CREATE FUNCTION ledger.hash_evidence() RETURNS trigger LANGUAGE plpgsql AS $$
 BEGIN
@@ -106,13 +107,14 @@ CREATE TABLE ledger.break_evidence (
     FOREIGN KEY (ns, break_id) REFERENCES ledger.breaks (ns, id)
 );
 
--- Run registry (harness only). manifest_ref is stored, never dereferenced.
+-- Run registry (harness only). manifest_ref is stored, never dereferenced, and can't point into truth.
 CREATE TABLE ledger.agent_runs (
     ns           uuid NOT NULL REFERENCES ledger.namespaces,
     run_id       uuid NOT NULL UNIQUE,
     controls     text NOT NULL CHECK (controls IN ('off', 'monitor', 'full')),
     agent_id     ledger.oid NOT NULL,
-    manifest_ref text NOT NULL CHECK (manifest_ref ~ '^[A-Za-z0-9_][A-Za-z0-9_./-]{0,199}$' AND manifest_ref !~ '\.\.'),
+    manifest_ref text NOT NULL CHECK (manifest_ref ~ '^[A-Za-z0-9_][A-Za-z0-9_./-]{0,199}$' AND manifest_ref !~ '\.\.'
+                         AND manifest_ref !~* '(^|/)(truth|generated)(/|$)' AND manifest_ref !~* 'slcanary-'),
     created_at   timestamptz NOT NULL DEFAULT now(),
     PRIMARY KEY (ns, run_id)
 );

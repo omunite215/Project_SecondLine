@@ -108,6 +108,18 @@ class OM_04_SchemaTest {
     }
 
     @Test
+    void OM_04_dbRejectsCanariesInVisibleTextEvenPastTheGuard() throws SQLException {
+        UUID ns = LedgerDb.newNamespace();
+        sqlState("23514", () -> exec(app(), "INSERT INTO ledger.evidence_records (ns, id, version, kind, fields, observed_at,"
+                + " source_system, text) VALUES (?, 'evd_00000003', 1, 'NOSTRO_STATEMENT', '{}'::jsonb, now(), 'nostro_sim',"
+                + " 'ref slcanary-00ff')", ns));
+        sqlState("23514", () -> exec(app(), "INSERT INTO ledger.instruments (ns, id, isin, currency, name)"
+                + " VALUES (?, 'ins_C0000009', 'US0000000009', 'USD', 'SLCANARY-1 Corp')", ns));
+        sqlState("23514", () -> exec(app(), "INSERT INTO ledger.agent_runs (run_id, ns, controls, agent_id, manifest_ref)"
+                + " VALUES (?, ?, 'off', 'agt_00000001', 'data/generated/eval/truth/x.json')", UUID.randomUUID(), ns));
+    }
+
+    @Test
     void OM_04_breaksCarrySymptomsNotTypes() throws SQLException {
         assertThat(query(superuser(), "SELECT count(*) FROM information_schema.columns WHERE table_schema = 'ledger'"
                 + " AND table_name = 'breaks' AND column_name = 'break_type_visible'")).isEqualTo("0");

@@ -71,7 +71,7 @@ class T_DOM_03_BundleGuardTest {
     @Test
     void T_DOM_03_truthKeysAreTheHiddenOnesNotTheShared() {
         assertThat(TruthKeys.load()).contains("root_cause", "expected_state_delta", "allowed_outcomes",
-                "required_evidence_ids", "truth_ref", "canary", "break_type");
+                "required_evidence_ids", "truth_ref", "canary", "break_type", "explanation");
         assertThat(TruthKeys.load()).doesNotContain("break_id", "breaks", "isin", "currency", "account", "scenario_id");
     }
 
@@ -84,6 +84,25 @@ class T_DOM_03_BundleGuardTest {
     void T_DOM_03_canaryRejectedAndNeverEchoed() {
         LedgerException e = rejected(with(b -> ((ObjectNode) b.at("/evidence/0")).put("text", "see SLCANARY-9f2c01")));
         assertThat(e).hasMessageContaining("/evidence/0/text").hasMessageNotContaining("SLCANARY-");
+    }
+
+    @Test
+    void T_DOM_03_canaryInAKeyRejectedAndNeverEchoed() {
+        LedgerException top = rejected(with(b -> b.putObject("SLCANARY-abc").put("root_cause", "x")));
+        assertThat(top.getMessage().toLowerCase()).doesNotContain("slcanary");
+        LedgerException field = rejected(with(b -> ((ObjectNode) b.at("/evidence/0/fields")).put("SLCANARY-x", "1")));
+        assertThat(field).hasMessageContaining("/evidence/0/fields");
+        assertThat(field.getMessage().toLowerCase()).doesNotContain("slcanary");
+    }
+
+    @Test
+    void T_DOM_03_rootCauseLabelValueRejectedAndNeverEchoed() {
+        // B1–B8 labels are truth (break_type); counterparty prose may say "duplicate", a label is never visible.
+        LedgerException name = rejected(with(b -> ((ObjectNode) b.at("/instruments/0")).put("name", "B7_SETTLEMENT_SHORTFALL")));
+        assertThat(name).hasMessageContaining("/instruments/0/name").hasMessageNotContaining("SHORTFALL");
+        rejected(with(b -> ((ObjectNode) b.at("/evidence/0")).put("text", "per ops this is b3_price_rounding")));
+        assertThatCode(() -> GUARD.check(with(b -> ((ObjectNode) b.at("/evidence/0")).put("text", "Possible duplicate of our ref"))))
+                .doesNotThrowAnyException();
     }
 
     @Test

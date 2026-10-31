@@ -12,7 +12,8 @@ import java.util.Set;
 
 /**
  * Key names that exist only in hidden truth (ADR-015, T-DOM-03), lower-cased: every property name in
- * scenario/truth.schema.json that the visible WorldBundle schema doesn't also use, plus truth_ref and canary.
+ * scenario/truth.schema.json that the visible WorldBundle schema doesn't also use, plus truth_ref, canary and
+ * explanation (rules/truth-isolation.md lists it; truth.schema.json doesn't have it yet).
  * Shared names (break_id, isin, currency, …) are visible by design, so "any truth-schema name" would reject
  * every bundle. Derived from the contracts on the classpath, never hand-copied, so it follows schema changes.
  */
@@ -24,6 +25,7 @@ public final class TruthKeys {
         keys.removeAll(propertyNames("contracts/scenario/world_bundle.schema.json"));
         keys.add("truth_ref");
         keys.add("canary");
+        keys.add("explanation");
         return Set.copyOf(keys);
     }
 

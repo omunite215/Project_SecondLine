@@ -94,6 +94,27 @@ class BundleCounterparties(unittest.TestCase):
         self.assertTrue(all(t["counterparty_id"] in cps for t in b["trades"]))
 
 
+class BookingShape(unittest.TestCase):
+    ENTRY_TYPES = ["TRADE", "SETTLEMENT", "FEE", "FX_CONVERSION", "FX_REVALUATION", "CORPORATE_ACTION"]
+
+    def test_OM_04_entries_carry_type_and_effective_date(self):
+        # docs/domain.md: every entry has entry_type + effective_date; read_bookings returns both, and a
+        # business date is never derived from a timestamp (rules/money.md).
+        defs = load("scenario/world_bundle.schema.json")["$defs"]
+        for d in ("journal_entry", "securities_movement"):
+            self.assertIn("effective_date", defs[d]["required"], d)
+            self.assertEqual(defs[d]["properties"]["entry_type"]["enum"], self.ENTRY_TYPES, d)
+        # A closed set: a free-text type could carry a cause ("DUPLICATE_…").
+        self.assertIn("entry_id", defs["securities_movement"]["required"])
+
+    def test_OM_04_movements_group_into_balanced_entries(self):
+        groups = {}
+        for m in load("examples/scenario/world_bundle_minimal.json")["securities_movements"]:
+            q = int(m["quantity"]) * (1 if m["side"] == "DR" else -1)
+            groups[m["entry_id"]] = groups.get(m["entry_id"], 0) + q
+        self.assertTrue(groups and all(v == 0 for v in groups.values()), groups)
+
+
 class SettlementVocabulary(unittest.TestCase):
     def test_OM_04_settlement_status_keeps_evidence_enum(self):
         rec = load("scenario/world_bundle.schema.json")["$defs"]["evidence_record"]

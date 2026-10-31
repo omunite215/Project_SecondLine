@@ -71,6 +71,8 @@
  "journal_entries": [
   {
    "entry_id": "jnl_0000C001",
+   "entry_type": "SETTLEMENT",
+   "effective_date": "2026-02-27",
    "booked_at": "2026-02-27T15:00:00Z",
    "trade_id": "trd_0000B001",
    "lines": [
@@ -92,6 +94,9 @@
  "securities_movements": [
   {
    "movement_id": "mov_0000D001",
+   "entry_id": "sec_0000D001",
+   "entry_type": "SETTLEMENT",
+   "effective_date": "2026-02-27",
    "booked_at": "2026-02-27T15:00:00Z",
    "trade_id": "trd_0000B001",
    "account": "S100-XS0000000012",
@@ -101,6 +106,9 @@
   },
   {
    "movement_id": "mov_0000D002",
+   "entry_id": "sec_0000D001",
+   "entry_type": "SETTLEMENT",
+   "effective_date": "2026-02-27",
    "booked_at": "2026-02-27T15:00:00Z",
    "trade_id": "trd_0000B001",
    "account": "S900-XS0000000012",

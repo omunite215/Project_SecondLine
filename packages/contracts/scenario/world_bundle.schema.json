@@ -352,12 +352,28 @@
       "additionalProperties": false,
       "required": [
         "entry_id",
+        "entry_type",
+        "effective_date",
         "booked_at",
         "lines"
       ],
       "properties": {
         "entry_id": {
           "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "entry_type": {
+          "description": "Posting pattern from docs/domain.md; a closed set, so no type can name a cause.",
+          "enum": [
+            "TRADE",
+            "SETTLEMENT",
+            "FEE",
+            "FX_CONVERSION",
+            "FX_REVALUATION",
+            "CORPORATE_ACTION"
+          ]
+        },
+        "effective_date": {
+          "$ref": "../common.schema.json#/$defs/date"
         },
         "booked_at": {
           "$ref": "../common.schema.json#/$defs/utc_timestamp"
@@ -403,6 +419,9 @@
       "additionalProperties": false,
       "required": [
         "movement_id",
+        "entry_id",
+        "entry_type",
+        "effective_date",
         "booked_at",
         "account",
         "isin",
@@ -412,6 +431,23 @@
       "properties": {
         "movement_id": {
           "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "entry_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "entry_type": {
+          "description": "Posting pattern from docs/domain.md; a closed set, so no type can name a cause.",
+          "enum": [
+            "TRADE",
+            "SETTLEMENT",
+            "FEE",
+            "FX_CONVERSION",
+            "FX_REVALUATION",
+            "CORPORATE_ACTION"
+          ]
+        },
+        "effective_date": {
+          "$ref": "../common.schema.json#/$defs/date"
         },
         "booked_at": {
           "$ref": "../common.schema.json#/$defs/utc_timestamp"
@@ -434,7 +470,8 @@
         "quantity": {
           "$ref": "#/$defs/trade/properties/quantity"
         }
-      }
+      },
+      "description": "One securities line; lines sharing entry_id form one entry, balanced per ISIN (checked by the loader)."
     },
     "evidence_record": {
       "description": "What the agent can read. Counterparty text is untrusted (may carry dev injections) but never truth. Field keys are allowlisted per kind (ADR-017), so no field name can carry a cause.",

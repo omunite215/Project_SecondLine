@@ -30,7 +30,9 @@ public class ReversalService {
         Db.domain(() -> tx.execute(s -> {
             JournalRepository.Header h = reversible(repo.cashHeader(ns, entryId), entryId);
             List<CashLine> lines = repo.cashLines(ns, entryId).stream().map(CashLine::reversed).toList();
-            repo.insertCash(id, new CashEntry(ns, "REVERSAL", h.businessDate(), lines), entryId, reason);
+            // The reversal books against the same trade, so read_bookings shows it next to the original.
+            repo.insertCash(id, new CashEntry(ns, "REVERSAL", h.businessDate(), lines), entryId, reason,
+                    new BookingRef(null, h.tradeId(), null));
             return id;
         }));
         return id;
@@ -42,7 +44,8 @@ public class ReversalService {
         Db.domain(() -> tx.execute(s -> {
             JournalRepository.Header h = reversible(repo.securitiesHeader(ns, entryId), entryId);
             List<SecuritiesLine> lines = repo.securitiesLines(ns, entryId).stream().map(SecuritiesLine::reversed).toList();
-            repo.insertSecurities(id, new SecuritiesEntry(ns, "REVERSAL", h.businessDate(), lines), entryId, reason);
+            repo.insertSecurities(id, new SecuritiesEntry(ns, "REVERSAL", h.businessDate(), lines), entryId, reason,
+                    new BookingRef(null, h.tradeId(), null));
             positions.apply(ns, lines);
             return id;
         }));

@@ -3,6 +3,11 @@ package com.secondline.ledger;
 import com.secondline.ledger.journal.CashPostingService;
 import com.secondline.ledger.export.NamespaceExporter;
 import com.secondline.ledger.load.BundleGuard;
+import com.secondline.ledger.read.ReadController;
+import com.secondline.ledger.read.ReadService;
+import com.secondline.ledger.web.ErrorAdvice;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.secondline.ledger.load.WorldBundleLoader;
 import com.secondline.ledger.ns.NamespaceRepository;
 import com.secondline.ledger.journal.JournalRepository;
@@ -51,5 +56,14 @@ public final class Services {
 
     public static NamespaceExporter exporter() {
         return new NamespaceExporter(JdbcClient.create(DS), namespaces(), TX);
+    }
+
+    public static ReadService reads() {
+        return new ReadService(JdbcClient.create(DS), namespaces(), TX);
+    }
+
+    /** The read routes with the real ErrorAdvice, without booting a context. */
+    public static MockMvc readMvc() {
+        return MockMvcBuilders.standaloneSetup(new ReadController(reads())).setControllerAdvice(new ErrorAdvice()).build();
     }
 }

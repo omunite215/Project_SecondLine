@@ -95,13 +95,13 @@ public class JournalRepository {
     }
 
     private Header header(String table, UUID ns, UUID entryId) {
-        return jdbc.sql("SELECT business_date, reverses_entry_id FROM " + table + " WHERE ns = ? AND entry_id = ?")
+        return jdbc.sql("SELECT business_date, reverses_entry_id, trade_id FROM " + table + " WHERE ns = ? AND entry_id = ?")
                 .params(ns, entryId)
-                .query((rs, i) -> new Header(rs.getObject(1, LocalDate.class), rs.getObject(2, UUID.class)))
+                .query((rs, i) -> new Header(rs.getObject(1, LocalDate.class), rs.getObject(2, UUID.class), rs.getString(3)))
                 .optional().orElse(null);
     }
 
-    record Header(LocalDate businessDate, UUID reversesEntryId) {}
+    record Header(LocalDate businessDate, UUID reversesEntryId, String tradeId) {}
 
     /** One header row; with a BookingRef its ref, trade_id and posted_at are explicit, otherwise DB defaults. */
     private void header(String table, UUID ns, UUID entryId, String type, java.time.LocalDate date, UUID reverses,
@@ -111,8 +111,10 @@ public class JournalRepository {
                             + " VALUES (?, ?, ?, ?, ?, ?)")
                     .params(ns, entryId, type, date, reverses, reason).update();
         } else {
+            // A null ref falls back to the column's own default draw (V005), so callers may name only the trade.
+            String draw = "'" + (table.equals("journal_headers") ? "jnl_" : "mov_") + "' || substr(md5(random()::text), 1, 16)";
             jdbc.sql("INSERT INTO ledger." + table + " (ns, entry_id, entry_type, business_date, reverses_entry_id, reason,"
-                            + " ref, trade_id, posted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, coalesce(?, now()))")
+                            + " ref, trade_id, posted_at) VALUES (?, ?, ?, ?, ?, ?, coalesce(?, " + draw + "), ?, coalesce(?, now()))")
                     .params(ns, entryId, type, date, reverses, reason, ref.ref(), ref.tradeId(), ref.postedAt()).update();
         }
     }

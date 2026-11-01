@@ -126,6 +126,8 @@ class T_DOM_03_BundleGuardTest {
                         (Consumer<ObjectNode>) b -> ((ObjectNode) b.at("/journal_entries/0/lines/0")).put("account", "4300-USD")),
                 Arguments.of("duplicate trade id", "/trades/1/trade_id",
                         (Consumer<ObjectNode>) b -> ((ArrayNode) b.get("trades")).add(b.at("/trades/0").deepCopy())),
+                Arguments.of("partial settlement without quantity", "/evidence/2/fields",
+                        (Consumer<ObjectNode>) b -> ((ObjectNode) b.at("/evidence/2/fields")).put("status", "PARTIALLY_SETTLED")),
                 Arguments.of("duplicate evidence version", "/evidence/",
                         (Consumer<ObjectNode>) b -> ((ArrayNode) b.get("evidence")).add(b.at("/evidence/0").deepCopy())));
     }

@@ -64,23 +64,19 @@ ALTER TABLE ledger.reference_data_versions
     ADD COLUMN retrieved_at timestamptz NOT NULL,
     ADD UNIQUE (ns, ref);
 
--- Evidence is shown to the agent verbatim and untrusted; its hash is computed here, never supplied.
+-- Evidence is shown to the agent verbatim and untrusted (read_evidence hashes exactly what it serves).
 ALTER TABLE ledger.evidence_records
     ADD COLUMN source_system text NOT NULL
         CHECK (source_system ~ '^[a-z0-9_-]{2,32}$' AND source_system !~* '(dev|eval|blind|test)'),
-    ADD COLUMN text text NOT NULL CHECK (length(text) <= 4000 AND text !~* 'slcanary-'),
-    ADD COLUMN content_sha256 text NOT NULL DEFAULT '';
-CREATE FUNCTION ledger.hash_evidence() RETURNS trigger LANGUAGE plpgsql AS $$
-BEGIN
-    NEW.content_sha256 := 'sha256:' || encode(sha256(convert_to(NEW.text, 'UTF8')), 'hex');
-    RETURN NEW;
-END $$;
-CREATE TRIGGER evidence_records_hash BEFORE INSERT ON ledger.evidence_records
-    FOR EACH ROW EXECUTE FUNCTION ledger.hash_evidence();
+    ADD COLUMN text text NOT NULL CHECK (length(text) <= 4000 AND text !~* 'slcanary-');
 
 -- Breaks: the symptom reconciliation sees, never a break type (that is a root-cause label, ADR-015).
+-- Status follows the list_breaks/get_break contract enum.
 ALTER TABLE ledger.breaks
     DROP COLUMN break_type_visible,
+    DROP CONSTRAINT breaks_status_check,
+    ADD CONSTRAINT breaks_status_check
+        CHECK (status IN ('OPEN', 'CLASSIFIED', 'PENDING_APPROVAL', 'RESOLVED', 'ESCALATED')),
     ADD COLUMN opened_at timestamptz NOT NULL,
     ADD COLUMN symptom text NOT NULL CHECK (symptom IN ('CASH_DIFFERENCE', 'POSITION_DIFFERENCE', 'UNMATCHED_TRADE',
         'SETTLEMENT_FAILURE', 'REFERENCE_MISMATCH')),

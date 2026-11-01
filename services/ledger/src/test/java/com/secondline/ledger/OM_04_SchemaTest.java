@@ -94,20 +94,6 @@ class OM_04_SchemaTest {
     }
 
     @Test
-    void OM_04_evidenceContentHashIsDerivedNotSupplied() throws SQLException {
-        UUID ns = LedgerDb.newNamespace();
-        exec(app(), "INSERT INTO ledger.evidence_records (ns, id, version, kind, fields, observed_at, source_system, text)"
-                + " VALUES (?, 'evd_00000001', 1, 'NOSTRO_STATEMENT', '{}'::jsonb, now(), 'nostro_sim', 'abc')", ns);
-        assertThat(query(app(), "SELECT content_sha256 FROM ledger.evidence_records WHERE ns = ?", ns))
-                .isEqualTo("sha256:ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
-        exec(app(), "INSERT INTO ledger.evidence_records"
-                + " (ns, id, version, kind, fields, observed_at, source_system, text, content_sha256)"
-                + " VALUES (?, 'evd_00000002', 1, 'NOSTRO_STATEMENT', '{}'::jsonb, now(), 'nostro_sim', 'abc', 'sha256:00')", ns);
-        assertThat(query(app(), "SELECT content_sha256 FROM ledger.evidence_records WHERE ns = ? AND id = 'evd_00000002'", ns))
-                .startsWith("sha256:ba7816bf");  // a supplied hash is overwritten
-    }
-
-    @Test
     void OM_04_dbRejectsCanariesInVisibleTextEvenPastTheGuard() throws SQLException {
         UUID ns = LedgerDb.newNamespace();
         sqlState("23514", () -> exec(app(), "INSERT INTO ledger.evidence_records (ns, id, version, kind, fields, observed_at,"

@@ -103,6 +103,10 @@ public class BundleGuard {
             Set<String> versions = new HashSet<>();
             JsonNode ev = b.get("evidence");
             for (int i = 0; i < ev.size(); i++) {
+                JsonNode f = ev.get(i).get("fields");
+                if ("PARTIALLY_SETTLED".equals(f.path("status").asText()) && !f.has("quantity")) {
+                    fail("/evidence/" + i + "/fields", "a partial settlement must state its quantity");
+                }
                 String id = ev.get(i).get("record_id").asText();
                 if (!versions.add(id + "@" + ev.get(i).get("version").asText())) {
                     fail("/evidence/" + i, "duplicate record_id + version");

@@ -11,6 +11,8 @@ Branch `om/OM-04-contracts-2-0-0` · §5 §9 §10 §12 · ADR-015 (Amendment 1),
   - `securities_movement`: required `entry_id`. Lines that share it form one entry, balanced per ISIN.
   - `ns_export` description: the state hash excludes `ns`.
 - `tools/read_settlement_status.output.schema.json`: the status enum is now the evidence enum.
+- Break `symptom` is one vocabulary, `common.schema.json#/$defs/break_symptom` (the bundle's five values), shared by the bundle, `list_breaks` and `get_break`. `STATUS_MISMATCH` is gone.
+- `read_custodian_statement`: drops `statement_id` and the top-level `record_version`. Each line now carries `record_id` and `record_version`, because custodian evidence is one record per ISIN and a merged statement couldn't be cited.
 
 ## How to use it now
 - Factory (KG-03): emit one institution and counterparty per broker, and set `counterparty_id` on every trade. Example: `examples/scenario/world_bundle_minimal.json` (`ins_0000G001` / `cpt_0000H001`).

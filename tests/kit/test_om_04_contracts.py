@@ -124,6 +124,23 @@ class SettlementVocabulary(unittest.TestCase):
         self.assertEqual(tool_enum, evidence_enum)
 
 
+class BreakAndStatementShapes(unittest.TestCase):
+    def test_OM_04_one_symptom_vocabulary(self):
+        # The agent sees the symptom the factory wrote, so all three shapes share common.schema.json#/$defs/break_symptom.
+        ref = "../common.schema.json#/$defs/break_symptom"
+        self.assertEqual(load("scenario/world_bundle.schema.json")["$defs"]["break_symptom"]["properties"]["symptom"]["$ref"], ref)
+        item = load("tools/list_breaks.output.schema.json")["properties"]["breaks"]["items"]
+        self.assertEqual(item["properties"]["symptom"]["$ref"], ref)
+        self.assertEqual(load("tools/get_break.output.schema.json")["properties"]["break"]["properties"]["symptom"]["$ref"], ref)
+        self.assertIn("SETTLEMENT_FAILURE", load("common.schema.json")["$defs"]["break_symptom"]["enum"])
+
+    def test_OM_04_custodian_lines_are_citable(self):
+        # Custodian evidence is one record per ISIN; every line names the record + version an evidence_ref cites.
+        s = load("tools/read_custodian_statement.output.schema.json")
+        self.assertEqual(s["required"], ["as_of_date", "lines"])
+        self.assertEqual(s["properties"]["lines"]["items"]["required"], ["record_id", "record_version", "isin", "quantity"])
+
+
 class StateHashScope(unittest.TestCase):
     def test_OM_04_T_EVAL_03_state_hash_excludes_ns(self):
         # ns is a fresh UUID per load (ADR-015), so a hash over it could never match across loads.

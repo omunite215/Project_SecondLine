@@ -39,22 +39,25 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 ## M-1 Truthful simulator (ledger side)
 
 ### OM-02 · Java contracts library (types, schema validation, JCS, digests)
-- meta: P0 | M-1 | 1d | mcs | deps: SH-02 | status: todo
+- meta: P0 | M-1 | 1d | mcs | deps: SH-02 | status: review
 - refs: §9 | ADR-005 ADR-011 | REQ-005
 - build: libs/contracts-java: types generated from packages/contracts (jsonschema2pojo task) or records + a generator check; networknt JSON-Schema validator with cached schemas; ErrorCode enum generated from errors.json; CanonicalJson (RFC 8785 / JCS) + Digests.sha256; ActionDigest(action, evidence versions, state_version) shared by approvals and idempotency.
 - done: every §9 example validates; JCS matches SH-08 vectors once they exist; `make codegen` deterministic (CI fails on diff).
+- evidence: PR (this); 36 JUnit OM_02_* in libs/contracts-java (every §9 example validates + every examples/invalid rejected, same x-validates as contracts_check); 10 kit test_OM_02_* (codegen deterministic + committed current; x-action-digest guard; golden action_digest vectors recomputed in Python); JCS vs SH-08 vectors: VERIFY when SH-08 lands; make contracts-check OK; make kit-check OK; ./gradlew test green
 
 ### OM-03 · Ledger core: schema, journal, positions, immutability
-- meta: P0 | M-1 | 4d | mcs | deps: OM-01, OM-02, SH-03 | status: todo
+- meta: P0 | M-1 | 4d | mcs | deps: OM-01, OM-02, SH-03 | status: review
 - refs: §5 §9 | REQ-002 | T-DOM-01 T-DOM-05 | I1 I2 | ADR-002 | NFR-02 | SEC-12
 - build: Flyway V001+: institutions, counterparties, instruments, trades, bookings, allocations, settlement_instructions, settlement_events, custodian_records, positions (projection), cash_accounts, journal_headers/journal_lines (NUMERIC + CHAR(3) currency), reference_data_versions, corporate_actions, fx_snapshots, evidence_records, breaks (state_version); every table keyed (ns, id). PostingService enforces Σdebit = Σcredit per currency inside the transaction; trigger blocks UPDATE/DELETE of committed journal rows; corrections = reversing entry with reverses_id; quantity/position changes are domain transactions, never cash entries; ArchUnit rule bans float/double in domain packages.
 - done: jqwik property tests T-DOM-01 (valid postings stay balanced, unbalanced rejected, per-currency precision); T-DOM-05 reversal keeps the original row; migrations apply cleanly in CI on Testcontainers.
+- evidence: PR (this). SCRIPTED (make test-ledger, Testcontainers postgres:17.11 + shipped infra/db/init): 64 ledger tests — T-DOM-01 jqwik (10k-try pure balance / precision / cross-currency; 200-try DB balance), T-DOM-05 (reversal keeps original; committed entries take no more lines; reversal must mirror, never of a reversal; 200-try history property), OM_03_projectionEqualsIncremental (200 tries), DB-enforced balance + immutability + per-currency scale, typed DOMAIN_INVALID incl. commit-time rejections, ArchUnit no float/double. VERIFY (local, not CI): fresh compose volume, ledger-migrate applies V001–V004, ledger healthy. ADR-019 PROPOSED. ErrorCode enum swap pending #32.
 
 ### OM-04 · Ledger reads, scenario loader, namespaces, export & state hash
-- meta: P0 | M-1 | 3d | mcs | deps: OM-03 | status: todo
+- meta: P0 | M-1 | 3d | mcs | deps: OM-03 | status: review
 - refs: §5 §9 §12 | REQ-001 REQ-002 REQ-011 | T-EVAL-03 T-DOM-03 | ADR-007 ADR-015
 - build: /internal/v1/ns/{ns}/… read endpoints backing every §10 read tool (as-of params, record versions, provenance); /admin/v1/ns (create), …/{ns}:load (WorldBundle → rows, idempotent by bundle hash, rejects any truth-schema field), …/export (canonical JSON), …/state-hash (sha256 of the JCS export), DELETE; agent_runs registry (run_id, ns, controls, manifest_ref).
 - done: load → export → hash identical across two loads and both machines; a bundle containing a truth field is rejected; read endpoints contract-tested against openapi/ledger-internal.yaml; KG-06 consumes the export.
+- evidence: ledger 208/208 + contracts-java 36/36 (gradle 2026-11-01); tests/kit 239 OK; contracts-check OK; board-check OK; T_EVAL_03_minimalBundleMatchesGoldenVector: Java state hash == Python vector sha256:8f8c6722…ae9e; OM_04_ReadContractTest: 11 read routes validate; leakage-auditor x2 + contract-guardian findings fixed; PENDING: Kunal's Mac run (both machines), KG-06 consumes vector, leakage-check is TODO(KG-05)
 
 ## M-2 Real agent (tool boundary)
 

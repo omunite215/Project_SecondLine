@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/scenario/world_bundle.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/scenario/world_bundle.schema.json",
   "title": "WorldBundle",
   "description": "Initial state the ledger loads into a fresh ns (ADR-015). Symptoms only, never causes; truth-named evidence keys and SLCANARY- in any free-text field fail validation. Values per ADR-016 / docs/domain.md.",
   "type": "object",
@@ -10,6 +10,8 @@
     "scenario_id",
     "as_of",
     "reference_snapshots",
+    "institutions",
+    "counterparties",
     "instruments",
     "accounts",
     "fx_rates",
@@ -21,7 +23,7 @@
   ],
   "properties": {
     "bundle_version": {
-      "const": "1.0"
+      "const": "2.0"
     },
     "scenario_id": {
       "$ref": "../common.schema.json#/$defs/opaque_id"
@@ -33,6 +35,18 @@
       "type": "array",
       "items": {
         "$ref": "#/$defs/reference_snapshot"
+      }
+    },
+    "institutions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/institution"
+      }
+    },
+    "counterparties": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/counterparty"
       }
     },
     "instruments": {
@@ -135,6 +149,47 @@
         }
       }
     },
+    "institution": {
+      "description": "Synthetic institution (golden rule 2); an LEI, if present, is synthetic too.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "institution_id",
+        "name"
+      ],
+      "properties": {
+        "institution_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 80,
+          "not": {
+            "pattern": "SLCANARY-"
+          }
+        },
+        "lei": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{18}[0-9]{2}$"
+        }
+      }
+    },
+    "counterparty": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "counterparty_id",
+        "institution_id"
+      ],
+      "properties": {
+        "counterparty_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "institution_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        }
+      }
+    },
     "instrument": {
       "type": "object",
       "additionalProperties": false,
@@ -227,6 +282,7 @@
       "required": [
         "trade_id",
         "version",
+        "counterparty_id",
         "isin",
         "side",
         "quantity",
@@ -243,6 +299,9 @@
         "version": {
           "type": "integer",
           "minimum": 1
+        },
+        "counterparty_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
         },
         "isin": {
           "$ref": "../common.schema.json#/$defs/isin"
@@ -293,12 +352,28 @@
       "additionalProperties": false,
       "required": [
         "entry_id",
+        "entry_type",
+        "effective_date",
         "booked_at",
         "lines"
       ],
       "properties": {
         "entry_id": {
           "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "entry_type": {
+          "description": "Posting pattern from docs/domain.md; a closed set, so no type can name a cause.",
+          "enum": [
+            "TRADE",
+            "SETTLEMENT",
+            "FEE",
+            "FX_CONVERSION",
+            "FX_REVALUATION",
+            "CORPORATE_ACTION"
+          ]
+        },
+        "effective_date": {
+          "$ref": "../common.schema.json#/$defs/date"
         },
         "booked_at": {
           "$ref": "../common.schema.json#/$defs/utc_timestamp"
@@ -344,6 +419,9 @@
       "additionalProperties": false,
       "required": [
         "movement_id",
+        "entry_id",
+        "entry_type",
+        "effective_date",
         "booked_at",
         "account",
         "isin",
@@ -353,6 +431,23 @@
       "properties": {
         "movement_id": {
           "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "entry_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "entry_type": {
+          "description": "Posting pattern from docs/domain.md; a closed set, so no type can name a cause.",
+          "enum": [
+            "TRADE",
+            "SETTLEMENT",
+            "FEE",
+            "FX_CONVERSION",
+            "FX_REVALUATION",
+            "CORPORATE_ACTION"
+          ]
+        },
+        "effective_date": {
+          "$ref": "../common.schema.json#/$defs/date"
         },
         "booked_at": {
           "$ref": "../common.schema.json#/$defs/utc_timestamp"
@@ -375,7 +470,8 @@
         "quantity": {
           "$ref": "#/$defs/trade/properties/quantity"
         }
-      }
+      },
+      "description": "One securities line; lines sharing entry_id form one entry, balanced per ISIN (checked by the loader)."
     },
     "evidence_record": {
       "description": "What the agent can read. Counterparty text is untrusted (may carry dev injections) but never truth. Field keys are allowlisted per kind (ADR-017), so no field name can carry a cause.",
@@ -823,13 +919,7 @@
           "$ref": "../common.schema.json#/$defs/utc_timestamp"
         },
         "symptom": {
-          "enum": [
-            "CASH_DIFFERENCE",
-            "POSITION_DIFFERENCE",
-            "UNMATCHED_TRADE",
-            "SETTLEMENT_FAILURE",
-            "REFERENCE_MISMATCH"
-          ]
+          "$ref": "../common.schema.json#/$defs/break_symptom"
         },
         "currency": {
           "$ref": "../common.schema.json#/$defs/currency"

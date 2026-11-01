@@ -1,6 +1,10 @@
 spring:
   application:
     name: ledger
+  # The running ledger never migrates: it connects as ledger_svc (DML only). Flyway runs in the
+  # one-shot ledger-migrate service as ledger_migrator (profile `migrate`, ADR-019).
+  flyway:
+    enabled: false
 server:
   port: 8081
 management:

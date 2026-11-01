@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/scenario/manifest.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/scenario/manifest.schema.json",
   "title": "ScenarioManifest",
   "description": "Agent-visible scenario manifest (§9). No truth_ref, break_type, seed, split, pressure or injection labels (golden rule 4); those live in run_manifest.",
   "type": "object",

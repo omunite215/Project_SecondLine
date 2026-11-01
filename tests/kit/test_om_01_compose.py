@@ -39,9 +39,23 @@ class Compose(unittest.TestCase):
     def setUpClass(cls):
         cls.services = load_config()["services"]
 
+    def one_shots(self) -> set[str]:
+        """Jobs that run to completion (e.g. ledger-migrate, ADR-019): another service gates on their exit."""
+        return {dep for s in self.services.values() for dep, cond in s.get("depends_on", {}).items()
+                if cond.get("condition") == "service_completed_successfully"}
+
     def test_OM_01_every_service_healthchecked(self):
         for name, s in self.services.items():
+            if name in self.one_shots():
+                continue
             self.assertTrue(s.get("healthcheck", {}).get("test"), name)
+
+    def test_OM_03_one_shot_jobs_never_restart(self):
+        # Exempt from healthchecks only because they exit; a restarting "one-shot" would be a daemon.
+        shots = self.one_shots()
+        self.assertIn("ledger-migrate", shots)
+        for name in shots:
+            self.assertEqual(self.services[name].get("restart", "no"), "no", name)
 
     def test_OM_01_every_service_mem_limited(self):
         for name, s in self.services.items():

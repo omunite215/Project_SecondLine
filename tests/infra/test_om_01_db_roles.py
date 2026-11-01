@@ -67,8 +67,15 @@ class DbRoles(unittest.TestCase):
     def test_OM_01_ledger_cannot_create_in_audit(self):
         self.assertDenied("ledger_svc", "create table audit.om01_owned(x int)")
 
-    def test_OM_01_ledger_owns_ledger_schema(self):
-        self.assertAllowed("ledger_svc", "create table ledger.om01_owned(x int); drop table ledger.om01_owned")
+    def test_OM_03_only_the_migrator_creates_in_ledger(self):
+        # ADR-019 (supersedes OM-01's "ledger owns the ledger schema"): the running ledger is DML-only.
+        self.assertDenied("ledger_svc", "create table ledger.om01_owned(x int)")
+        self.assertAllowed("ledger_migrator_svc", "create table ledger.om01_owned(x int); drop table ledger.om01_owned")
+
+    def test_OM_03_ledger_cannot_delete_from_superuser_tables(self):
+        # The OM-01 default that gave ledger_app full DML on postgres-created ledger tables is gone (ADR-019).
+        self.assertDenied("ledger_svc", "delete from ledger.om01_probe")
+        self.assertDenied("ledger_svc", "update ledger.om01_probe set x = 1")
 
     def test_OM_01_grader_read_only(self):
         for schema in ("ledger", "audit", "eval"):
@@ -81,7 +88,7 @@ class DbRoles(unittest.TestCase):
             self.assertDenied("operator_svc", f"insert into {schema}.om01_probe values (9)")
 
     def test_OM_01_public_schema_locked(self):
-        for user in ("ledger_svc", "grader_svc", "operator_svc"):
+        for user in ("ledger_svc", "ledger_migrator_svc", "grader_svc", "operator_svc"):
             self.assertDenied(user, "create table public.om01_x(x int)")
 
     def test_OM_01_service_users_cannot_escalate(self):

@@ -47,3 +47,4 @@ services/agent/.claude/skills/langgraph-*/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+.jqwik-database

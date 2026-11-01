@@ -1,0 +1,35 @@
+{
+ "description": "OM-04 T-EVAL-03: load examples/scenario/world_bundle_minimal.json; snapshot_hash = sha256(JCS(bundle without x-validates)); state_hash = sha256(JCS(export without \"ns\")). Computed with Python's json (sort_keys, compact separators), which equals JCS for documents of strings and integers only.",
+ "bundle": "examples/scenario/world_bundle_minimal.json",
+ "snapshot_hash": "sha256:51a5c3f3f91e4fcffd584e22a46f6c0175a11a3acb1d6dfe15a4118f1b898696",
+ "export_without_ns": {
+  "export_version": "1.0",
+  "snapshot_hash": "sha256:51a5c3f3f91e4fcffd584e22a46f6c0175a11a3acb1d6dfe15a4118f1b898696",
+  "state_version": 0,
+  "cash_balances": [
+   {
+    "account": "1110-USD",
+    "currency": "USD",
+    "balance": "-3703.68"
+   },
+   {
+    "account": "1300-USD",
+    "currency": "USD",
+    "balance": "3703.68"
+   }
+  ],
+  "security_balances": [
+   {
+    "account": "S100-XS0000000012",
+    "isin": "XS0000000012",
+    "quantity": "300"
+   },
+   {
+    "account": "S900-XS0000000012",
+    "isin": "XS0000000012",
+    "quantity": "-300"
+   }
+  ]
+ },
+ "state_hash": "sha256:8f8c6722e4ba7da22e8303dc71bc1d9230f634b880a866d987f20c8eb926ae9e"
+}

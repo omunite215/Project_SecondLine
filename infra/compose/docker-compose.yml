@@ -10,6 +10,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:?run make bootstrap}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run make bootstrap}
       LEDGER_SVC_PASSWORD: ${LEDGER_SVC_PASSWORD:?run make bootstrap}
+      LEDGER_MIGRATOR_PASSWORD: ${LEDGER_MIGRATOR_PASSWORD:?run make bootstrap}
       GRADER_SVC_PASSWORD: ${GRADER_SVC_PASSWORD:?run make bootstrap}
       OPERATOR_SVC_PASSWORD: ${OPERATOR_SVC_PASSWORD:?run make bootstrap}
     volumes:
@@ -49,15 +50,37 @@ services:
       timeout: 3s
       retries: 30
 
-  # ---- app: Java services (mcp-adapter joins in OM-06). No depends_on yet: the skeletons don't use the DB;
-  # OM-02 adds `depends_on: postgres` together with the datasource.
+  # ---- app: Java services (mcp-adapter joins in OM-06).
+  # ledger-migrate applies Flyway as ledger_migrator and exits; the running ledger only ever holds the
+  # ledger_svc (DML-only) password, so it can't alter or drop its own tables (ADR-019).
+  ledger-migrate:
+    image: secondline/ledger:dev
+    pull_policy: build
+    build: {context: ../.., dockerfile: services/ledger/Dockerfile}
+    profiles: [app]
+    depends_on:
+      postgres: {condition: service_healthy}
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xmx256m -XX:+ExitOnOutOfMemoryError"
+      SPRING_PROFILES_ACTIVE: migrate
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:?run make bootstrap}?currentSchema=ledger
+      SPRING_DATASOURCE_USERNAME: ledger_migrator_svc
+      SPRING_DATASOURCE_PASSWORD: ${LEDGER_MIGRATOR_PASSWORD:?run make bootstrap}
+    mem_limit: 384m
+    restart: "no"
+
   ledger:
     build: {context: ../.., dockerfile: services/ledger/Dockerfile}
     image: secondline/ledger:dev
     pull_policy: build
     profiles: [app]
+    depends_on:
+      ledger-migrate: {condition: service_completed_successfully}
     environment:
       JAVA_TOOL_OPTIONS: "-Xmx512m -XX:+ExitOnOutOfMemoryError"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:?run make bootstrap}?currentSchema=ledger
+      SPRING_DATASOURCE_USERNAME: ledger_svc
+      SPRING_DATASOURCE_PASSWORD: ${LEDGER_SVC_PASSWORD:?run make bootstrap}
     ports: ["127.0.0.1:8081:8081"]
     mem_limit: 768m
     healthcheck:

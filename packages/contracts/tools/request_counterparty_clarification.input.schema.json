@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/tools/request_counterparty_clarification.input.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/tools/request_counterparty_clarification.input.schema.json",
   "title": "Simulated message to a counterparty — input",
   "type": "object",
   "additionalProperties": false,

@@ -1,0 +1,9 @@
+# ledger-migrate (ADR-019): apply Flyway as ledger_migrator, then exit. No web server.
+spring:
+  main:
+    web-application-type: none
+  flyway:
+    enabled: true
+    schemas: ledger
+    default-schema: ledger
+    init-sqls: SET ROLE ledger_migrator

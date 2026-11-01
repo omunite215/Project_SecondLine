@@ -31,7 +31,7 @@ class OpenApi(unittest.TestCase):
         for name in ("thing", "error_response"):
             (self.root / f"{name}.schema.json").write_text(json.dumps({
                 "$schema": "https://json-schema.org/draft/2020-12/schema",
-                "$id": f"https://secondline.invalid/contracts/1/{name}.schema.json", "type": "object"}))
+                "$id": f"https://secondline.invalid/contracts/2/{name}.schema.json", "type": "object"}))
         (self.root / "openapi").mkdir()
 
     def tearDown(self):

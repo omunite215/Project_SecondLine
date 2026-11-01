@@ -38,3 +38,8 @@ OM-01's `00-roles.sql` made `ledger_app` the owner of schema `ledger`, and the r
   - `docker compose -p <scratch> … up -d --wait postgres ledger-migrate ledger`;
   - then `SELECT tableowner FROM pg_tables WHERE schemaname='ledger'`;
   - then `docker compose -p <scratch> down -v`.
+
+## Addendum A — 2026-10-31 (OM-04): namespaces are retired, never deleted · om ☑ kunal ☐
+- `DELETE /admin/v1/ns/{ns}` sets `namespaces.status = 'RETIRED'`. Every route for that namespace then answers 403 `PERMISSION_DENIED`, and a retired namespace can't be un-retired (V005 `namespace_guard`). Ledger rows are kept, because the app role has no DELETE (this ADR) and the ledgers are immutable (T-DOM-05).
+- Physically purging a retired namespace (disk space after campaigns) is a migrator-role job and out of scope for v1. It must never run from the `ledger` service.
+- Tests: `OM_04_AdminApiTest.OM_04_retiredNamespaceIsDeniedButKept`, `OM_04_SchemaTest.OM_04_snapshotIsWriteOnce`.

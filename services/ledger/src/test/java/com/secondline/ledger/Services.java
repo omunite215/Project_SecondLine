@@ -1,6 +1,7 @@
 package com.secondline.ledger;
 
 import com.secondline.ledger.journal.CashPostingService;
+import com.secondline.ledger.admin.AdminController;
 import com.secondline.ledger.export.NamespaceExporter;
 import com.secondline.ledger.load.BundleGuard;
 import com.secondline.ledger.read.ReadController;
@@ -65,5 +66,11 @@ public final class Services {
     /** The read routes with the real ErrorAdvice, without booting a context. */
     public static MockMvc readMvc() {
         return MockMvcBuilders.standaloneSetup(new ReadController(reads())).setControllerAdvice(new ErrorAdvice()).build();
+    }
+
+    /** The admin routes with the real ErrorAdvice, without booting a context. */
+    public static MockMvc adminMvc() {
+        return MockMvcBuilders.standaloneSetup(new AdminController(namespaces(), loader(), exporter(), JdbcClient.create(DS)))
+                .setControllerAdvice(new ErrorAdvice()).build();
     }
 }

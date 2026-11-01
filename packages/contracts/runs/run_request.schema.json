@@ -7,7 +7,9 @@
   "required": [
     "ns",
     "controls",
-    "agent_id"
+    "agent_id",
+    "scenario_id",
+    "manifest_ref"
   ],
   "properties": {
     "ns": {
@@ -22,6 +24,12 @@
     },
     "agent_id": {
       "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "scenario_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "manifest_ref": {
+      "$ref": "../common.schema.json#/$defs/manifest_ref"
     }
   },
   "description": "Budgets, scope and expiry are server-derived from the campaign config, never client-supplied."

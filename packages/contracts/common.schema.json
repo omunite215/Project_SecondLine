@@ -169,6 +169,48 @@
         "SETTLEMENT_FAILURE",
         "REFERENCE_MISMATCH"
       ]
+    },
+    "manifest_ref": {
+      "description": "Reference to a run manifest (path or id), stored opaquely and never dereferenced by a runtime service; it can't point into generated data or truth.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_][A-Za-z0-9_./-]{0,199}$",
+      "not": {
+        "anyOf": [
+          {
+            "pattern": "\\.\\."
+          },
+          {
+            "pattern": "(^|/)(truth|generated)(/|$)"
+          },
+          {
+            "pattern": "[Ss][Ll][Cc][Aa][Nn][Aa][Rr][Yy]-"
+          }
+        ]
+      }
+    },
+    "tool_name": {
+      "description": "A §10 tool (tools/INDEX.json).",
+      "enum": [
+        "escalate_break",
+        "get_action_status",
+        "get_approval_status",
+        "get_break",
+        "list_breaks",
+        "propose_adjustment",
+        "propose_booking_correction",
+        "propose_classification",
+        "propose_corporate_action",
+        "read_bookings",
+        "read_corporate_actions",
+        "read_custodian_statement",
+        "read_evidence",
+        "read_fx_snapshot",
+        "read_positions",
+        "read_reference_data",
+        "read_settlement_status",
+        "read_trade",
+        "request_counterparty_clarification"
+      ]
     }
   }
 }

@@ -159,6 +159,16 @@
         ]
       },
       "description": "Kind of a world-bundle evidence record, as read_evidence returns it (ADR-017): every kind but INTERNAL_BOOKING."
+    },
+    "break_symptom": {
+      "description": "What reconciliation sees, never a cause; one vocabulary for the bundle and the read tools (OM-04).",
+      "enum": [
+        "CASH_DIFFERENCE",
+        "POSITION_DIFFERENCE",
+        "UNMATCHED_TRADE",
+        "SETTLEMENT_FAILURE",
+        "REFERENCE_MISMATCH"
+      ]
     }
   }
 }

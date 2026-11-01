@@ -919,13 +919,7 @@
           "$ref": "../common.schema.json#/$defs/utc_timestamp"
         },
         "symptom": {
-          "enum": [
-            "CASH_DIFFERENCE",
-            "POSITION_DIFFERENCE",
-            "UNMATCHED_TRADE",
-            "SETTLEMENT_FAILURE",
-            "REFERENCE_MISMATCH"
-          ]
+          "$ref": "../common.schema.json#/$defs/break_symptom"
         },
         "currency": {
           "$ref": "../common.schema.json#/$defs/currency"

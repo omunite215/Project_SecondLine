@@ -35,13 +35,7 @@
           ]
         },
         "symptom": {
-          "enum": [
-            "CASH_DIFFERENCE",
-            "POSITION_DIFFERENCE",
-            "UNMATCHED_TRADE",
-            "STATUS_MISMATCH"
-          ],
-          "description": "Visible symptom only; never the root cause (ADR-015)."
+          "$ref": "../common.schema.json#/$defs/break_symptom"
         },
         "currency": {
           "$ref": "../common.schema.json#/$defs/currency"

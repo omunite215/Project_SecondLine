@@ -5,6 +5,9 @@ jqwik = "1.10.2"
 archunit = "1.5.1"
 # 3.x needs Jackson 3; Boot 3.5 is on Jackson 2 (OM-02).
 networknt-json-schema = "2.0.8"
+# OM-05 G1: Ed25519 JWTs (Nimbus needs Tink for OKP). Both ≥ 2 weeks old on 2026-11-01.
+nimbus-jose-jwt = "10.10"
+tink = "1.24.0"
 
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
@@ -21,6 +24,10 @@ jqwik = { module = "net.jqwik:jqwik", version.ref = "jqwik" }
 archunit-junit5 = { module = "com.tngtech.archunit:archunit-junit5", version.ref = "archunit" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind" }
 json-schema-validator = { module = "com.networknt:json-schema-validator", version.ref = "networknt-json-schema" }
+nimbus-jose-jwt = { module = "com.nimbusds:nimbus-jose-jwt", version.ref = "nimbus-jose-jwt" }
+tink = { module = "com.google.crypto.tink:tink", version.ref = "tink" }
+micrometer-tracing-bridge-otel = { module = "io.micrometer:micrometer-tracing-bridge-otel" }
+opentelemetry-sdk-testing = { module = "io.opentelemetry:opentelemetry-sdk-testing" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

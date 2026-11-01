@@ -94,8 +94,16 @@ services:
     image: secondline/gateway:dev
     pull_policy: build
     profiles: [app]
+    depends_on:
+      ledger: {condition: service_healthy}
     environment:
       JAVA_TOOL_OPTIONS: "-Xmx512m -XX:+ExitOnOutOfMemoryError"
+      GATEWAY_SIGNING_JWK_PATH: /run/secrets/gateway-signing.jwk
+      GATEWAY_OPERATOR_TOKEN: ${GATEWAY_OPERATOR_TOKEN:?run make bootstrap}
+      GATEWAY_LEDGER_URL: http://ledger:8081
+      GATEWAY_OPA_URL: http://opa:8181
+    volumes:
+      - ../../secrets/gateway-signing.jwk:/run/secrets/gateway-signing.jwk:ro
     ports: ["127.0.0.1:8080:8080"]
     mem_limit: 768m
     healthcheck:

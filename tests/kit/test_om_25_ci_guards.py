@@ -215,6 +215,21 @@ class CiConsistency(unittest.TestCase):
         self.assertIn("environment: claude-review", text)
         self.assertNotRegex(text, r"^\s+ref:", "never check out the PR head under pull_request_target")
 
+    def test_OM_25_ai_review_uses_the_workflow_token(self):
+        # Run 41112559314 (PR #31) failed at "App token exchange failed: 401 Invalid OIDC token": the GitHub App
+        # path needs an installation we can't verify. The workflow's own GITHUB_TOKEN (contents: read,
+        # pull-requests: write) is no broader, and without the exchange the job needs no OIDC token at all.
+        text = (WORKFLOWS / "claude-review.yml").read_text()
+        self.assertRegex(text, r"(?m)^\s+github_token: \$\{\{ secrets\.GITHUB_TOKEN \}\}$")
+        self.assertNotIn("id-token", text)
+        # The token reaches an LLM reading untrusted PR content, so its rights are pinned exactly: the top-level
+        # block is the whole set, and no job may widen it with its own permissions: block.
+        block = re.search(r"(?m)^permissions:\n((?:  \S.*\n)+)", text)
+        self.assertIsNotNone(block, "top-level permissions block")
+        self.assertEqual(sorted(block.group(1).split("\n")[:-1]),
+                         ["  contents: read", "  issues: read", "  pull-requests: write"])
+        self.assertNotRegex(text, r"(?m)^ {4,}permissions:", "a job-level permissions block would override the set")
+
     def test_OM_25_dependabot_covers_build_files(self):
         text = (ROOT / ".github/dependabot.yml").read_text()
         self.assertIn(("github-actions", "/"), dependabot_entries(text))

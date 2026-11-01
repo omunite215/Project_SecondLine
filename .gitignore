@@ -16,6 +16,7 @@ build/
 out/
 target/
 .gradle/
+.jqwik-database
 node_modules/
 .next/
 dist/

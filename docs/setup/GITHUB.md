@@ -23,7 +23,7 @@ Rulesets evaluate independently. An Om merge is logged as suite result `bypass` 
 2. **Merging:** squash only; "Automatically delete head branches" on; auto-merge off.
 3. **Rulesets + label:** `make gh-apply`, review, then `python3 scripts/gh_settings.py apply --yes`. It creates new restrictions before removing old bypasses, so there's no window where Kunal can merge.
 4. **AI first-pass review** (optional; uses Om's Claude usage):
-   - No GitHub App is needed. The job posts with its own `GITHUB_TOKEN` (contents: read, pull-requests: write), passed to the action as `github_token`. The App path failed on run 41112559314 with "Invalid OIDC token".
+   - No GitHub App is needed. The job is configured to post with its own `GITHUB_TOKEN` (contents: read, pull-requests: write), passed to the action as `github_token`. The App path failed on run 41112559314 with "Invalid OIDC token". VERIFY: the first labelled run after this is on `main`.
    - Environment `claude-review` with a deployment-branch policy allowing only `main`. Put the token there, never in repo secrets: a repo secret is readable by any workflow on a same-repo PR. In your own terminal: `gh secret set CLAUDE_CODE_OAUTH_TOKEN --env claude-review` (value from `claude setup-token`, Pro/Max).
    - The workflow uses `pull_request_target` (runs from protected `main`, so a PR can't edit it) and only runs when **Om** adds the `ai-review` label. Required reviewers would need GitHub Enterprise on a private repo; the branch policy doesn't. Never add `ref:` to its checkout.
    - To use an API key instead, add `ANTHROPIC_API_KEY` and switch the workflow input to `anthropic_api_key`.

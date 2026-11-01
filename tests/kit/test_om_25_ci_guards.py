@@ -222,8 +222,13 @@ class CiConsistency(unittest.TestCase):
         text = (WORKFLOWS / "claude-review.yml").read_text()
         self.assertRegex(text, r"(?m)^\s+github_token: \$\{\{ secrets\.GITHUB_TOKEN \}\}$")
         self.assertNotIn("id-token", text)
-        self.assertRegex(text, r"(?m)^  contents: read$")
-        self.assertNotRegex(text, r"(?m)^  contents: write$")
+        # The token reaches an LLM reading untrusted PR content, so its rights are pinned exactly: the top-level
+        # block is the whole set, and no job may widen it with its own permissions: block.
+        block = re.search(r"(?m)^permissions:\n((?:  \S.*\n)+)", text)
+        self.assertIsNotNone(block, "top-level permissions block")
+        self.assertEqual(sorted(block.group(1).split("\n")[:-1]),
+                         ["  contents: read", "  issues: read", "  pull-requests: write"])
+        self.assertNotRegex(text, r"(?m)^ {4,}permissions:", "a job-level permissions block would override the set")
 
     def test_OM_25_dependabot_covers_build_files(self):
         text = (ROOT / ".github/dependabot.yml").read_text()

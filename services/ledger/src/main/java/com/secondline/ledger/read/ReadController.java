@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Gateway → ledger read routes, one per §10 read tool (contracts openapi/ledger-internal.yaml). The gateway
- * maps run → ns; run_id never reaches the ledger. Realm authentication arrives with OM-07; until then these
- * routes are reachable only on the compose network (never a published port).
+ * maps run → ns; run_id never reaches the ledger. Realm authentication arrives with OM-07, a gate for SH-07;
+ * until then any container on the compose network can call these routes, and the host only via 127.0.0.1.
  */
 @RestController
 @RequestMapping("/internal/v1/ns/{ns}")

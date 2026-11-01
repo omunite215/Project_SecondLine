@@ -30,7 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
  * Harness-only namespace lifecycle (contracts openapi/ledger-admin.yaml, ADR-015, ADR-019): create → :load →
  * export / state-hash → retire, plus the agent_runs registry. Bodies are parsed strictly (duplicate keys and
  * trailing tokens rejected), so the bundle that is hashed is the bundle that was sent. Realm authentication
- * arrives with OM-07; until then the ledger listens on loopback only.
+ * arrives with OM-07, a gate for SH-07. Until then compose publishes the port on 127.0.0.1 only (kit test), but
+ * other containers on the compose network can reach these routes: no agent-side container may join it before OM-07.
  */
 @RestController
 @RequestMapping("/admin/v1")

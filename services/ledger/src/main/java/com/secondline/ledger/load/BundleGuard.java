@@ -115,7 +115,35 @@ public class BundleGuard {
             }
         }
 
+        /**
+         * The schema checks dates and timestamps by pattern only, so "2026-02-30" gets through it. Every key that
+         * holds a date or a UTC instant, anywhere (evidence fields included), must parse on the calendar.
+         */
+        private static final Set<String> DATES = Set.of("as_of", "trade_date", "settlement_date", "effective_date",
+                "settle_date", "value_date", "ex_date", "record_date", "pay_date");
+        private static final Set<String> INSTANTS = Set.of("booked_at", "received_at", "opened_at", "retrieved_at",
+                "cutoff_time");
+
+        private void calendar(JsonNode n, String ptr) {
+            if (n.isArray()) {
+                for (int i = 0; i < n.size(); i++) calendar(n.get(i), ptr + "/" + i);
+            } else if (n.isObject()) {
+                for (Map.Entry<String, JsonNode> e : n.properties()) {
+                    String p = ptr + "/" + e.getKey();
+                    String v = e.getValue().isTextual() ? e.getValue().asText() : null;
+                    try {
+                        if (v != null && DATES.contains(e.getKey())) java.time.LocalDate.parse(v);
+                        if (v != null && INSTANTS.contains(e.getKey())) java.time.OffsetDateTime.parse(v);
+                    } catch (java.time.format.DateTimeParseException x) {
+                        fail(p, "not a calendar date or UTC instant");
+                    }
+                    calendar(e.getValue(), p);
+                }
+            }
+        }
+
         void check() {
+            calendar(b, "");
             each("counterparties", (c, p) -> in(institutions, c, "institution_id", p));
             each("trades", (t, p) -> {
                 in(counterparties, t, "counterparty_id", p);
@@ -143,6 +171,12 @@ public class BundleGuard {
             });
             each("breaks", (k, p) -> {
                 optional(isins, k, "isin", p);
+                if (k.has("cash_difference") && k.has("currency")) {
+                    int minor = com.secondline.ledger.domain.Currency.of(k.get("currency").asText()).minorUnits();
+                    if (new java.math.BigDecimal(k.get("cash_difference").asText()).scale() > minor) {
+                        fail(p + "/cash_difference", "finer than the currency's minor units");
+                    }
+                }
                 all(trades, k, "trade_ids", p);
                 all(evidence, k, "evidence_ids", p);
             });

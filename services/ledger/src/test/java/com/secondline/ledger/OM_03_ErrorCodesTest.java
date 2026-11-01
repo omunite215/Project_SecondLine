@@ -24,5 +24,6 @@ class OM_03_ErrorCodesTest {
         assertThat(e.code()).isEqualTo(ErrorCode.DOMAIN_INVALID);
         assertThat(e.code().httpStatus()).hasValue(422);
         assertThat(e).hasMessage("DOMAIN_INVALID: bad");
+        assertThat(e.detail()).isEqualTo("bad");
     }
 }

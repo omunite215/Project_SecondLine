@@ -101,6 +101,21 @@ class OM_04_AdminApiTest {
         assertThat(LedgerDb.query(LedgerDb.app(), "SELECT status FROM ledger.namespaces WHERE ns = ?", ns)).isEqualTo("EMPTY");
     }
 
+    @Test
+    void OM_04_everyFailureIsATypedErrorResponse() throws Exception {
+        UUID ns = create();
+        assertError(perform(post("/admin/v1/ns/" + ns + ":load").contentType(MediaType.APPLICATION_JSON)), 422, "DOMAIN_INVALID");
+        assertError(perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put("/admin/v1/ns/" + ns + "/export")),
+                422, "DOMAIN_INVALID");
+        assertError(perform(get("/admin/v1/no-such-route")), 422, "DOMAIN_INVALID");
+        // Anything unforeseen leaves as a typed 503 with a fixed message, never a stack trace or a value.
+        var r = new com.secondline.ledger.web.ErrorAdvice().unexpected(new IllegalStateException("secret detail trd_0000B001"));
+        assertThat(r.getStatusCode().value()).isEqualTo(503);
+        assertThat(r.getBody().get("error_code").asText()).isEqualTo("RETRYABLE_UNAVAILABLE");
+        assertThat(r.getBody().toString()).doesNotContain("secret").doesNotContain("trd_");
+        assertThat(SCHEMAS.validate("error_response.schema.json", r.getBody())).isEmpty();
+    }
+
     static MvcResult run(String json) throws Exception {
         return perform(post("/admin/v1/runs").contentType(MediaType.APPLICATION_JSON).content(json));
     }

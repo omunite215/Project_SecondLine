@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/tools/get_break.output.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/tools/get_break.output.schema.json",
   "title": "One break with its linked records \u2014 output",
   "type": "object",
   "additionalProperties": false,
@@ -35,13 +35,7 @@
           ]
         },
         "symptom": {
-          "enum": [
-            "CASH_DIFFERENCE",
-            "POSITION_DIFFERENCE",
-            "UNMATCHED_TRADE",
-            "STATUS_MISMATCH"
-          ],
-          "description": "Visible symptom only; never the root cause (ADR-015)."
+          "$ref": "../common.schema.json#/$defs/break_symptom"
         },
         "currency": {
           "$ref": "../common.schema.json#/$defs/currency"

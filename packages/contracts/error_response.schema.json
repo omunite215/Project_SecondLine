@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/error_response.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/error_response.schema.json",
   "title": "Error response for every 4xx/5xx (codes from errors.json; never ORACLE_MISMATCH)",
   "type": "object",
   "additionalProperties": false,

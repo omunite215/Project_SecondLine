@@ -1,6 +1,7 @@
 name: claude-review
 # Optional AI first-pass review (uses Om's Claude usage). Runs only when Om adds the `ai-review` label.
-# Setup: docs/setup/GITHUB.md §5 (Claude GitHub App + secret CLAUDE_CODE_OAUTH_TOKEN).
+# Setup: docs/setup/GITHUB.md §5 (secret CLAUDE_CODE_OAUTH_TOKEN). GitHub calls use this job's own GITHUB_TOKEN
+# (contents: read, pull-requests: write), not the Claude GitHub App: no OIDC token exchange (run 41112559314 failed there).
 # pull_request_target: this file and its label check come from protected main, so a PR can't edit them.
 # The token is a secret of environment `claude-review`, whose deployment-branch policy allows only main,
 # so a workflow added on a PR branch can't read it. Agent mode (prompt input) never checks out the PR head,
@@ -13,7 +14,6 @@ permissions:
   contents: read
   pull-requests: write
   issues: read
-  id-token: write
 jobs:
   review:
     if: >-
@@ -29,6 +29,7 @@ jobs:
       - uses: anthropics/claude-code-action@d70510b174a1244958df0b03166a54912811f3e6 # v1.0.264
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           plugin_marketplaces: "https://github.com/anthropics/claude-code.git"
           plugins: "code-review@claude-code-plugins"
           prompt: "/code-review:code-review --comment ${{ github.repository }}/pull/${{ github.event.pull_request.number }}"

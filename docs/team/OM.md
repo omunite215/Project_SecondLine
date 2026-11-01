@@ -16,7 +16,7 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - evidence: merged #9 (2026-10-29); V1 fresh clone Om 8.4 s, V2 Kunal arm64 8.4 s + 11/11 DB-role tests, V3 docs-only PR #13 merged with java/stack skipped under the required checks; CI run 40812113039 green
 
 ### OM-25 · CI/CD ownership: rulesets, required checks, PR automation
-- meta: P0 | M-0 | 2d | mcs=1d | deps: SH-01 | status: todo
+- meta: P0 | M-0 | 2d | mcs=1d | deps: SH-01 | status: doing
 - refs: §19 §21 §23 | NFR-07 NFR-11 | T-DOC-01 | ADR-010 | RSK-01 RSK-14
 - build: on omunite215/Project_SecondLine per docs/setup/GITHUB.md: Kunal as collaborator (Write); squash-only merges + auto-delete branches; ruleset on main (PR + 1 approval + code-owner review + conversation resolution + required checks; no force-push/deletion; no bypass on `main` — Om's own PRs need Kunal's approval; ruleset `merge-gate` lets only Om merge; immutable `m*` gate tags; settings as code in .github/settings.json + `make gh-check`); `ai-review` label + .github/workflows/claude-review.yml with secret CLAUDE_CODE_OAUTH_TOKEN; required checks grow as services land (java, python, policy, console, leakage, contracts drift); CI caches (Gradle, uv, pnpm); Dependabot entries per ecosystem; tag each milestone gate (m0…m5); review every PR within 24 h with /review-pr.
 - done: a test PR from Kunal cannot merge until CI is green and Om approves; Om's own PR cannot merge without Kunal's approval + green CI and Kunal cannot merge any PR; claude-review posts on a labeled PR; GITHUB.md matches the real settings.

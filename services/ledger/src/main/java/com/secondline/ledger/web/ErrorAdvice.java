@@ -48,9 +48,18 @@ public class ErrorAdvice {
         return respond(ErrorCode.DOMAIN_INVALID, "missing or unreadable request body");
     }
 
-    @ExceptionHandler({HttpRequestMethodNotSupportedException.class, NoHandlerFoundException.class, NoResourceFoundException.class})
-    public ResponseEntity<JsonNode> noRoute(Exception e) {
-        return respond(ErrorCode.DOMAIN_INVALID, "no such route or method");
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<JsonNode> wrongMethod(Exception e) {
+        return respond(ErrorCode.DOMAIN_INVALID, "method not supported on this route");
+    }
+
+    /**
+     * No route is plain HTTP 404 with no body, as OM-01 requires for hidden actuator endpoints: it's not a contract
+     * response, and an empty 404 says nothing about what exists. Listed here so the catch-all doesn't make it a 503.
+     */
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
+    public ResponseEntity<Void> noRoute(Exception e) {
+        return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(Exception.class)

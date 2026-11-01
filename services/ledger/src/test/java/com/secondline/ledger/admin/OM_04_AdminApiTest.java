@@ -107,7 +107,9 @@ class OM_04_AdminApiTest {
         assertError(perform(post("/admin/v1/ns/" + ns + ":load").contentType(MediaType.APPLICATION_JSON)), 422, "DOMAIN_INVALID");
         assertError(perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put("/admin/v1/ns/" + ns + "/export")),
                 422, "DOMAIN_INVALID");
-        assertError(perform(get("/admin/v1/no-such-route")), 422, "DOMAIN_INVALID");
+        MvcResult none = perform(get("/admin/v1/no-such-route"));
+        assertThat(none.getResponse().getStatus()).isEqualTo(404);  // no route: plain 404, nothing about what exists
+        assertThat(none.getResponse().getContentAsString()).isEmpty();
         // Anything unforeseen leaves as a typed 503 with a fixed message, never a stack trace or a value.
         var r = new com.secondline.ledger.web.ErrorAdvice().unexpected(new IllegalStateException("secret detail trd_0000B001"));
         assertThat(r.getStatusCode().value()).isEqualTo(503);

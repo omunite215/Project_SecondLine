@@ -4,6 +4,7 @@ WORKDIR /src
 COPY gradlew settings.gradle.kts build.gradle.kts gradle.properties ./
 COPY gradle gradle
 COPY libs libs
+COPY packages/contracts packages/contracts
 COPY services/ledger services/ledger
 COPY services/gateway services/gateway
 RUN ./gradlew :services:ledger:bootJar --no-daemon -q

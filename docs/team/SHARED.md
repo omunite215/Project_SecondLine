@@ -54,7 +54,7 @@ The driver owns the outcome and schedules the session; the other person contribu
 ## M-2 Integration gate
 
 ### SH-07 · Vertical slice end-to-end (M-2 gate)
-- meta: P0 | M-2 | om=1d kg=1d | mcs | driver: kg | deps: OM-04, OM-05, OM-06, KG-06, KG-08 | status: todo
+- meta: P0 | M-2 | om=1d kg=1d | mcs | driver: kg | deps: OM-04, OM-05, OM-06, OM-07, KG-06, KG-08 | status: todo
 - refs: §20 §10 §8 §4 | REQ-004 | T-AI-01 | RSK-01
 - build: one B1 (timing) and one B7 (shortfall → escalate) dev case end to end: factory → load ns → create run (controls=off) → agent via MCP → gateway → ledger → export → grade; trace visible (Jaeger if available, else logs); record the action sequence as a labeled scripted fallback.
 - done: `make run-one SCN=<id> CONTROLS=off` passes on both machines with no manual DB patches; graded outcome stored.

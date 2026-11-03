@@ -10,6 +10,7 @@ dependencies {
     implementation(libs.tink)
     implementation(libs.micrometer.tracing.bridge.otel)
     testImplementation(libs.opentelemetry.sdk.testing)
+    testImplementation("org.yaml:snakeyaml") // version from the Boot BOM; reads ledger-internal.yaml in a parity test
 }
 
 // Gateway tests read the contracts (gateway-tools.yaml, tools/INDEX.json) straight from the repo.

@@ -25,10 +25,15 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ToolController {
-    private final ToolPipeline pipeline;
+    private static final java.util.regex.Pattern UUID_SHAPE =
+            java.util.regex.Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$");
 
-    public ToolController(ToolPipeline pipeline) {
+    private final ToolPipeline pipeline;
+    private final org.springframework.beans.factory.ObjectProvider<io.micrometer.tracing.Tracer> tracer;
+
+    public ToolController(ToolPipeline pipeline, org.springframework.beans.factory.ObjectProvider<io.micrometer.tracing.Tracer> tracer) {
         this.pipeline = pipeline;
+        this.tracer = tracer;
     }
 
     @PostMapping(path = "/v1/runs/{runId}/tools/{tool}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -51,8 +56,19 @@ public class ToolController {
         if (json == null || !json.isObject()) { // every tool input is an object; "" parses to an empty node
             throw new GatewayException(ErrorCode.DOMAIN_INVALID, "request body must be one JSON object (no duplicate keys, no floats)");
         }
+        tag(pathRunId, json);
         ToolResult r = pipeline.handle(new ToolCall(bearer(authorization), pathRunId, tool, json, UUID.randomUUID()));
         return ResponseEntity.status(r.status()).contentType(MediaType.APPLICATION_JSON).body(r.body());
+    }
+
+    /** Span tags (G13): run_id from the path, action_id only if it's a UUID. Never the token or any free text. */
+    private void tag(UUID runId, JsonNode body) {
+        io.micrometer.tracing.Tracer t = tracer.getIfAvailable();
+        io.micrometer.tracing.Span span = t == null ? null : t.currentSpan();
+        if (span == null) return;
+        span.tag("run_id", runId.toString());
+        JsonNode action = body.get("action_id");
+        if (action != null && action.isTextual() && UUID_SHAPE.matcher(action.asText()).matches()) span.tag("action_id", action.asText());
     }
 
     /** The token after "Bearer ", or "" for anything else: another scheme's credential is never passed on. */

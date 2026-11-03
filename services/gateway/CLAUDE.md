@@ -1,21 +1,25 @@
 # services/gateway — policy enforcement point (owner: Om)
 Spring Boot · Java 21. Stateless except Redis. Each tool call: token → schema → budget/halt → OPA → ledger → typed result. Never mutates financial state itself (ADR-013).
 
-## Planned layout
+## Layout (OM-05; [Om] = Om writes it, learn card)
 ```text
 com.secondline.gateway
-  runs/      POST /v1/runs → ns-bound run + short-lived Ed25519 JWT
-  tools/     POST /v1/runs/{runId}/tools/{tool}; one handler per §10 tool
-  auth/      token verification (aud, exp, run_id, ns, allowed_tools, controls)
-  policy/    OPA client (decision + bundle hash); writes fail closed
-  budget/    Redis counters + halt flags (advisory; durable status lives in the ledger)
-  routing/   ledger client with the gateway service JWT; propagates traceparent
-  observe/   Micrometer `gateway.onpath` histogram + OTel spans
+  token/     RunTokens [Om] (Ed25519 run JWTs, G2/G3), SigningKeys (JWK file, missing → no start), KeyGen
+  pipeline/  ToolPipeline.handle [Om] (stage order, conditions, fail-closed mapping); ToolCall/ToolResult/Stage
+  web/       ToolController (strict JSON object bodies), RunController, ErrorAdvice (contract errors only)
+  runs/      RunService: POST /v1/runs, operator token, Idempotency-Key, ledger registers the run first
+  route/     ToolRoutes: every INDEX.json tool → READ | ACTION | SIMULATED | UNROUTED (parity-tested vs ledger-internal.yaml)
+  client/    LedgerClient (service JWT, 4xx pass-through only for contract errors), PolicyClient (OPA, 200 ms), DecisionLog
+  guard/     RunGuard / InMemoryRunGuard: call budget, halt, C_msg (OM-12 replaces with ledger-backed flags)
+  schema/    InputSchemas: DOMAIN_INVALID that never echoes input
+  observe/   OnPathFilter: `gateway.onpath` timer (SLO buckets 1–500 ms; tool ∈ §10 or "unknown"; status)
+  config/    GatewayConfig wiring; gateway.* properties in application.yml
 ```
 ## Commands
 `make test-gateway` · `make test-sec` · `./gradlew :services:gateway:bootRun`
 ## Conventions
 - The control condition (off | monitor | full) comes from the run record, never from the request (ADR-014).
+- Spans carry run_id (path) and action_id (only if UUID-shaped); never tokens, keys or free text.
 - `gateway.onpath` = request received → response sent. It is the H2 latency source: don't move its boundaries without SH-06 sign-off.
 - Denied ⇒ decision persisted + DENY receipt; zero ledger mutation.
 - Read first: §8 §10 §11 shards; ADR-013/014.

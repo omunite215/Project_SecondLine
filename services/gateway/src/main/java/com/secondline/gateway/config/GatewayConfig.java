@@ -63,22 +63,26 @@ public class GatewayConfig {
         return new DecisionLog(ledger, schemas);
     }
 
-    /** G10 harness caps; max-messages is ADR-014's C_msg placeholder until OM-12 sets it per run. */
+    /** G10 harness call cap; C_msg is per run (ADR-014 placeholder: the run's break count), looked up by the pipeline. */
     @Bean
-    RunGuard runGuard(@Value("${gateway.budget.max-calls:500}") int maxCalls, @Value("${gateway.budget.max-messages:5}") int maxMessages) {
-        return new InMemoryRunGuard(maxCalls, maxMessages);
+    RunGuard runGuard(@Value("${gateway.budget.max-calls:500}") int maxCalls) {
+        return new InMemoryRunGuard(maxCalls);
     }
 
     /** G5: an unset GATEWAY_OPERATOR_TOKEN denies every run creation. */
     @Bean
     RunService runService(@Value("${gateway.operator-token:}") String operatorToken, LedgerClient ledger, RunTokens tokens,
                           SchemaRegistry schemas, @Value("${gateway.idempotency.capacity:10000}") int capacity) {
+        // insecure-defaults: a set-but-short operator secret is guessable; make bootstrap generates 32 random bytes.
+        if (!operatorToken.isEmpty() && operatorToken.length() < 32) {
+            throw new IllegalStateException("gateway.operator-token (GATEWAY_OPERATOR_TOKEN) must be at least 32 characters");
+        }
         return new RunService(operatorToken, ledger, tokens, schemas, capacity);
     }
 
     @Bean
     ToolPipeline toolPipeline(RunTokens tokens, SchemaRegistry schemas, RunGuard guard, PolicyClient policy,
-                              LedgerClient ledger, DecisionLog log, Clock clock) {
-        return new ToolPipeline(tokens, new InputSchemas(schemas), guard, policy, ledger, log, clock);
+                              LedgerClient ledger, DecisionLog log, Clock clock, io.micrometer.core.instrument.MeterRegistry meters) {
+        return new ToolPipeline(tokens, new InputSchemas(schemas), guard, policy, ledger, log, clock, meters);
     }
 }

@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 /**
  * The gateway's only way to the ledger (ADR-013), always with a fresh service JWT (G12). G11: 5xx, timeouts,
- * refused connections and non-JSON answers are RETRYABLE_UNAVAILABLE; a 4xx passes through only if its body is a
+ * refused connections, redirects and non-JSON answers are RETRYABLE_UNAVAILABLE; a 4xx passes through only if its body is a
  * contract error_response with a runtime code; any other 4xx is treated as unavailable, never as an outcome.
  */
 public class LedgerClient {
@@ -80,6 +80,7 @@ public class LedgerClient {
     private LedgerResponse call(HttpRequest.Builder req, String what) {
         Http.Answer a = Http.send(req.header("Authorization", "Bearer " + tokens.bearer())
                 .header("Accept", "application/json"), timeout, what);
+        if (a.status() >= 300 && a.status() < 400) throw Http.unavailable(what, null); // a redirect is never an outcome
         if (a.status() >= 400 && !SCHEMAS.validate("error_response.schema.json", a.body()).isEmpty()) {
             throw Http.unavailable(what, null); // not a contract error: a wrong path, a proxy page, a grader-only code
         }

@@ -88,9 +88,22 @@ class OM_05_ObservabilityTest {
     }
 
     @Test
+    void OM_05_unverifiedCallsAreNeverTaggedWithARun() throws Exception {
+        SPANS.reset();
+        when(pipeline.handle(any())).thenReturn(new ToolResult(403, Contracts.MAPPER.readTree("{}"))); // token refused
+        call("get_break", "{\"run_id\":\"" + RUN + "\",\"action_id\":\"" + ACTION + "\"}");
+        Thread.sleep(6000); // past one BatchSpanProcessor flush
+        // Spring's own server span keeps the raw URL (which contains the path's run id); what matters is that no
+        // run_id / action_id attribute is set from an unproven path or body.
+        assertThat(SPANS.getFinishedSpanItems()).isNotEmpty().allSatisfy(span -> assertThat(
+                span.getAttributes().asMap().keySet().stream().map(io.opentelemetry.api.common.AttributeKey::getKey).toList())
+                .doesNotContain("run_id", "action_id"));
+    }
+
+    @Test
     void OM_05_spanCarriesRunAndActionIdButNoToken() throws Exception {
         SPANS.reset();
-        when(pipeline.handle(any())).thenReturn(new ToolResult(200, Contracts.MAPPER.readTree("{}")));
+        when(pipeline.handle(any())).thenReturn(new ToolResult(200, Contracts.MAPPER.readTree("{}"), RUN));
         call("propose_adjustment", "{\"run_id\":\"" + RUN + "\",\"action_id\":\"" + ACTION + "\"}");
         long deadline = System.nanoTime() + Duration.ofSeconds(12).toNanos(); // BatchSpanProcessor flushes every 5 s
         List<SpanData> spans = SPANS.getFinishedSpanItems();

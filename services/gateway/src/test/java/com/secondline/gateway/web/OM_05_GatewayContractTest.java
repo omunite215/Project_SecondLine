@@ -126,11 +126,16 @@ class OM_05_GatewayContractTest {
     }
 
     @Test
-    void OM_05_unreadableBodiesAreDomainInvalidBeforeThePipeline() {
+    void OM_05_unreadableBodiesReachThePipelineAsNullSoTheTokenIsJudgedFirst() throws Exception {
+        // Not a 422 before authentication: the pipeline checks the token, then answers DOMAIN_INVALID (logged).
+        when(pipeline.handle(any())).thenReturn(new ToolResult(403,
+                Contracts.MAPPER.readTree("{\"error_code\":\"PERMISSION_DENIED\",\"message\":\"x\",\"request_id\":\"" + UUID.randomUUID() + "\"}")));
         for (String bad : new String[] {"not json", "{\"a\":1,\"a\":2}", "{\"amount\":1.5}", "", "[1] [2]", "[]", "\"x\"", "null"}) {
-            contractError(post("/v1/runs/" + RUN + "/tools/get_break", bad, "Bearer x"), ErrorCode.DOMAIN_INVALID);
+            post("/v1/runs/" + RUN + "/tools/get_break", bad, "Bearer x");
         }
-        verify(pipeline, never()).handle(any());
+        ArgumentCaptor<ToolCall> c = ArgumentCaptor.forClass(ToolCall.class);
+        verify(pipeline, org.mockito.Mockito.times(8)).handle(c.capture());
+        assertThat(c.getAllValues()).allSatisfy(call -> assertThat(call.body()).isNull());
     }
 
     @Test
@@ -159,5 +164,13 @@ class OM_05_GatewayContractTest {
         assertThatThrownBy(() -> new SpringApplicationBuilder(GatewayApplication.class)
                 .run("--server.port=0", "--gateway.signing-jwk-path=").close())
                 .hasStackTraceContaining("gateway.signing-jwk-path");
+    }
+
+    @Test
+    void OM_05_weakOperatorTokenStopsStartup() {
+        // insecure-defaults: a set-but-short operator secret is a guessable credential; unset still means deny-all.
+        assertThatThrownBy(() -> new SpringApplicationBuilder(GatewayApplication.class)
+                .run("--server.port=0", "--gateway.signing-jwk-path=" + TestKeys.path(), "--gateway.operator-token=changeme").close())
+                .hasStackTraceContaining("at least 32");
     }
 }

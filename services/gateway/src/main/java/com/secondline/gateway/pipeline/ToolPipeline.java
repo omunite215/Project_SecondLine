@@ -8,37 +8,45 @@ import com.secondline.contracts.generated.ErrorCode;
 import com.secondline.gateway.GatewayException;
 import com.secondline.gateway.client.DecisionLog;
 import com.secondline.gateway.client.DecisionLogEntry;
+import com.secondline.gateway.client.LedgerClient;
 import com.secondline.gateway.client.LedgerResponse;
+import com.secondline.gateway.client.PolicyClient;
 import com.secondline.gateway.client.PolicyDecision;
+import com.secondline.gateway.guard.RunGuard;
 import com.secondline.gateway.route.RouteKind;
 import com.secondline.gateway.route.ToolRoute;
 import com.secondline.gateway.route.ToolRoutes;
-import com.secondline.gateway.token.RunClaims;
-import com.secondline.gateway.client.LedgerClient;
-import com.secondline.gateway.client.PolicyClient;
-import com.secondline.gateway.guard.RunGuard;
 import com.secondline.gateway.schema.InputSchemas;
+import com.secondline.gateway.token.RunClaims;
 import com.secondline.gateway.token.RunTokens;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.time.Clock;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * The gateway's policy enforcement point (OM-05 Task 4, §8 §11, ADR-013, ADR-014).
+ * The gateway's policy enforcement point (OM-05 Task 4, §8 §11, ADR-013, ADR-014). {@link #handle} (learn card;
+ * written by Claude at Om's request, 2026-11-03), spec {@code OM_05_PipelineTest}.
  *
- * <p>{@link #handle} (learn card; written by Claude at Om's request, 2026-11-03). The spec is
- * {@code OM_05_PipelineTest}. The building blocks (all tested in Task 3):
+ * <p>Stage order: token → call budget → body → binding → schema → halt (monitor/full only) → (simulated C_msg |
+ * OPA in full for non-read tools) → route. Decisions (§8 step 3 "logs all decisions, including denies"):
  * <ul>
- *   <li>{@link RunTokens#verify} → RunClaims, or PERMISSION_DENIED (token stage; no trusted ns, so not logged).</li>
- *   <li>binding: the body's run_id must equal the token's run_id (PERMISSION_DENIED).</li>
- *   <li>{@link InputSchemas#validate} (DOMAIN_INVALID) · {@link RunGuard#admit} (RUN_HALTED).</li>
- *   <li>{@link PolicyClient#decide}: only when controls=full and the tool's risk isn't read (ADR-014, G9).</li>
- *   <li>{@link com.secondline.gateway.route.ToolRoutes}: READ → {@link LedgerClient#read}, ACTION →
- *       {@link LedgerClient#postAction}, SIMULATED → {@link RunGuard#tryConsumeMessage}, UNROUTED → 503.</li>
- *   <li>{@link DecisionLog#record}: every decision after the token stage, with its stage, decision and code.</li>
- *   <li>Errors become error_response bodies with the code's HTTP status; nothing echoes the request or a token.</li>
+ *   <li>token-stage denials have no trusted ns for the ledger's ns-scoped log, so they're audit-logged by the gateway
+ *       and counted ({@code gateway.token_denied}), never dropped;</li>
+ *   <li>every later decision goes to the ledger decision log once its outcome is known: ALLOW at stage routed only
+ *       after the ledger answered 2xx (decision_log_entry contract), DENY at stage ledger for a ledger refusal,
+ *       outage or a 2xx that fails its output schema;</li>
+ *   <li>a deny always stays a deny, whatever happens while recording it.</li>
  * </ul>
+ * OPA and the ledger only ever get ns, controls and run identity from the verified token, never from the body.
  */
 public class ToolPipeline {
+    private static final Logger AUDIT = LoggerFactory.getLogger("com.secondline.gateway.audit");
+    private static final Set<String> TOOLS = ToolRoutes.all().stream().map(ToolRoute::tool).collect(Collectors.toUnmodifiableSet());
+
     final RunTokens tokens;
     final InputSchemas schemas;
     final RunGuard guard;
@@ -46,9 +54,10 @@ public class ToolPipeline {
     final LedgerClient ledger;
     final DecisionLog log;
     final Clock clock;
+    final MeterRegistry meters;
 
     public ToolPipeline(RunTokens tokens, InputSchemas schemas, RunGuard guard, PolicyClient policy, LedgerClient ledger,
-                        DecisionLog log, Clock clock) {
+                        DecisionLog log, Clock clock, MeterRegistry meters) {
         this.tokens = tokens;
         this.schemas = schemas;
         this.guard = guard;
@@ -56,24 +65,29 @@ public class ToolPipeline {
         this.ledger = ledger;
         this.log = log;
         this.clock = clock;
+        this.meters = meters;
     }
 
-    /**
-     * Stage order: token → binding → schema → guard → (simulated budget | policy) → route. Every decision after the
-     * token stage is logged. A routed call is logged ALLOW *before* the ledger sees it, so nothing executes without
-     * its decision on record (log down → 503, not routed). A deny always stays a deny, even if logging it fails.
-     */
     public ToolResult handle(ToolCall call) {
         RunClaims claims;
         try {
             claims = tokens.verify(call.bearer(), call.pathRunId(), call.tool());
         } catch (GatewayException e) {
-            return error(e, call); // no trusted run or ns yet: nothing to attribute a log entry to
+            String tool = TOOLS.contains(call.tool()) ? call.tool() : "unknown";
+            meters.counter("gateway.token_denied", "tool", tool).increment();
+            AUDIT.warn("decision=DENY stage=token tool={} request_id={}", tool, call.requestId()); // never the token
+            return error(e, call, null);
         }
-        ToolRoute route = ToolRoutes.of(call.tool()); // in allowed_tools, so a §10 tool
-        UUID actionId = uuid(call.body().get("action_id"));
-        Decision d = new Decision(call, claims, actionId);
-
+        Decision d = new Decision(call, claims);
+        try {
+            guard.admit(claims.runId()); // every verified call counts, valid or not (a runaway can't dodge the cap)
+        } catch (GatewayException e) {
+            return d.deny(Stage.GUARD, e);
+        }
+        if (call.body() == null) {
+            return d.deny(Stage.SCHEMA, new GatewayException(ErrorCode.DOMAIN_INVALID,
+                    "request body must be one JSON object (no duplicate keys, no floats)"));
+        }
         JsonNode bodyRun = call.body().get("run_id");
         if (bodyRun == null || !bodyRun.isTextual() || !claims.runId().toString().equals(bodyRun.asText())) {
             return d.deny(Stage.BINDING, RunTokens.denied());
@@ -83,19 +97,22 @@ public class ToolPipeline {
         } catch (GatewayException e) {
             return d.deny(Stage.SCHEMA, e);
         }
-        try {
-            guard.admit(claims.runId());
-        } catch (GatewayException e) {
-            return d.deny(Stage.GUARD, e);
+        if (!"off".equals(claims.controls()) && guard.halted(claims.runId())) { // ADR-014: no kill switch in B
+            return d.deny(Stage.GUARD, new GatewayException(ErrorCode.RUN_HALTED, "run halted"));
         }
 
+        ToolRoute route = ToolRoutes.of(call.tool());
         if (route.kind() == RouteKind.SIMULATED) { // ADR-014: budgeted in every condition, no state change, no OPA
-            if (!guard.tryConsumeMessage(claims.runId())) {
-                return d.deny(Stage.POLICY, new GatewayException(ErrorCode.POLICY_DENIED, "counterparty message budget used up"));
+            boolean ok;
+            try {
+                ok = guard.tryConsumeMessage(claims.runId(), () -> breakCount(claims));
+            } catch (GatewayException e) {
+                return d.deny(Stage.POLICY, e); // budget unknown → fail closed
             }
-            if (!d.allow(null)) return d.unavailable();
+            if (!ok) return d.deny(Stage.POLICY, new GatewayException(ErrorCode.POLICY_DENIED, "counterparty message budget used up"));
+            d.allow(null);
             return new ToolResult(200, Contracts.MAPPER.createObjectNode().put("request_id", call.requestId().toString())
-                    .put("status", "QUEUED").put("simulated", true));
+                    .put("status", "QUEUED").put("simulated", true), claims.runId());
         }
 
         String bundleHash = null;
@@ -110,7 +127,9 @@ public class ToolPipeline {
             if ("DENY".equals(p.decision())) {
                 return d.deny(Stage.POLICY, new GatewayException(ErrorCode.POLICY_DENIED, "denied by policy"), bundleHash);
             }
-            if ("REVIEW_REQUIRED".equals(p.decision())) { // held until OM-11; errors.json maps the code to 202
+            if ("REVIEW_REQUIRED".equals(p.decision())) {
+                // Not routed. §8 step 4 (persist digest + versions, maker-checker) is OM-11's approval store; until then
+                // the decision log entry (action_id + REVIEW_REQUIRED) is the record. errors.json maps the code to 202.
                 return d.review(new GatewayException(ErrorCode.REVIEW_REQUIRED, "held for maker-checker review"), bundleHash);
             }
         }
@@ -118,14 +137,36 @@ public class ToolPipeline {
         if (route.kind() == RouteKind.UNROUTED) {
             return d.deny(Stage.LEDGER, new GatewayException(ErrorCode.RETRYABLE_UNAVAILABLE, call.tool() + " unavailable"));
         }
-        if (!d.allow(bundleHash)) return d.unavailable();
         LedgerResponse r;
         try {
             r = route.kind() == RouteKind.READ ? ledger.read(claims.ns(), route, call.body()) : ledger.postAction(claims.ns(), call.body());
         } catch (GatewayException e) {
-            return error(e, call); // already logged as routed; the ledger committed nothing (G11)
+            // A write may or may not have committed: only a retry with the same idempotency_key is safe (§8 step 6).
+            GatewayException unknown = route.kind() == RouteKind.READ ? e : new GatewayException(ErrorCode.RETRYABLE_UNAVAILABLE,
+                    "ledger outcome unknown; retry with the same idempotency_key");
+            return d.deny(Stage.LEDGER, unknown, bundleHash);
         }
-        return new ToolResult(r.status(), r.body());
+        if (r.status() >= 400) { // a contract error_response from the ledger: passed through, recorded as its DENY
+            d.record("DENY", r.body().path("error_code").asText(null), Stage.LEDGER, bundleHash);
+            return new ToolResult(r.status(), r.body(), claims.runId());
+        }
+        if (!schemas.outputMatches(call.tool(), r.body())) { // defence in depth: nothing off-contract reaches the agent
+            return d.deny(Stage.LEDGER, new GatewayException(ErrorCode.RETRYABLE_UNAVAILABLE,
+                    "ledger answer did not match its contract"), bundleHash);
+        }
+        d.allow(bundleHash);
+        return new ToolResult(r.status(), r.body(), claims.runId());
+    }
+
+    /** ADR-014 C_msg placeholder: one message per break in the run, from the ledger's list_breaks. */
+    private int breakCount(RunClaims claims) {
+        ObjectNode q = Contracts.MAPPER.createObjectNode().put("run_id", claims.runId().toString());
+        LedgerResponse r = ledger.read(claims.ns(), ToolRoutes.of("list_breaks"), q);
+        JsonNode breaks = r.body().get("breaks");
+        if (r.status() != 200 || breaks == null || !breaks.isArray()) {
+            throw new GatewayException(ErrorCode.RETRYABLE_UNAVAILABLE, "message budget unavailable");
+        }
+        return breaks.size();
     }
 
     /** OPA's view of the run: only verified token claims, never anything from the request body. */
@@ -144,21 +185,21 @@ public class ToolPipeline {
         }
     }
 
-    static ToolResult error(GatewayException e, ToolCall call) {
+    static ToolResult error(GatewayException e, ToolCall call, UUID verifiedRunId) {
         ObjectNode body = Contracts.MAPPER.valueToTree(new ErrorResponse(e.code(), e.detail(), call.requestId().toString(), null));
-        return new ToolResult(e.code().httpStatus().orElseThrow(), body);
+        return new ToolResult(e.code().httpStatus().orElseThrow(), body, verifiedRunId);
     }
 
-    /** One call's decision, logged once with its stage. */
+    /** One verified call's decision record. */
     private final class Decision {
         private final ToolCall call;
         private final RunClaims claims;
         private final UUID actionId;
 
-        Decision(ToolCall call, RunClaims claims, UUID actionId) {
+        Decision(ToolCall call, RunClaims claims) {
             this.call = call;
             this.claims = claims;
-            this.actionId = actionId;
+            this.actionId = call.body() == null ? null : uuid(call.body().get("action_id"));
         }
 
         ToolResult deny(Stage stage, GatewayException e) {
@@ -167,39 +208,31 @@ public class ToolPipeline {
 
         ToolResult deny(Stage stage, GatewayException e, String bundleHash) {
             record("DENY", e.code().name(), stage, bundleHash);
-            return error(e, call);
+            return error(e, call, claims.runId());
         }
 
         ToolResult review(GatewayException e, String bundleHash) {
             record("REVIEW_REQUIRED", e.code().name(), Stage.POLICY, bundleHash);
-            return error(e, call);
+            return error(e, call, claims.runId());
         }
 
-        /** Logs ALLOW (stage routed); false if the log is unavailable, in which case nothing may be routed. */
-        boolean allow(String bundleHash) {
+        void allow(String bundleHash) {
+            record("ALLOW", null, Stage.ROUTED, bundleHash);
+        }
+
+        /**
+         * Best effort, after the outcome is fixed: a recording failure never changes the answer (a deny stays a deny;
+         * an executed action's authoritative record is the ledger's receipt, OM-14). A miss is counted and audit-logged.
+         */
+        void record(String decision, String code, Stage stage, String bundleHash) {
             try {
-                log.record(claims.ns(), entry("ALLOW", null, Stage.ROUTED, bundleHash));
-                return true;
-            } catch (GatewayException e) {
-                return false;
+                log.record(claims.ns(), new DecisionLogEntry(UUID.randomUUID(), claims.runId(), call.tool(), actionId, decision,
+                        code, claims.controls(), bundleHash, stage.wire(), clock.instant()));
+            } catch (RuntimeException e) {
+                meters.counter("gateway.decision_log_missed", "stage", stage.wire()).increment();
+                AUDIT.error("decision log write failed decision={} stage={} run_id={} request_id={}", decision, stage.wire(),
+                        claims.runId(), call.requestId());
             }
-        }
-
-        ToolResult unavailable() {
-            return error(new GatewayException(ErrorCode.RETRYABLE_UNAVAILABLE, "decision log unavailable; nothing was routed"), call);
-        }
-
-        private void record(String decision, String code, Stage stage, String bundleHash) {
-            try {
-                log.record(claims.ns(), entry(decision, code, stage, bundleHash));
-            } catch (GatewayException ignored) {
-                // A deny stays a deny even if it couldn't be recorded; the miss shows as a log gap, never an ALLOW.
-            }
-        }
-
-        private DecisionLogEntry entry(String decision, String code, Stage stage, String bundleHash) {
-            return new DecisionLogEntry(UUID.randomUUID(), claims.runId(), call.tool(), actionId, decision, code,
-                    claims.controls(), bundleHash, stage.wire(), clock.instant());
         }
     }
 }

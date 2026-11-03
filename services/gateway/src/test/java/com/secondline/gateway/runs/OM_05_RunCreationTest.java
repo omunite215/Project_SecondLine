@@ -73,6 +73,8 @@ class OM_05_RunCreationTest {
     void OM_05_idempotencyKeyIsARequiredUuid() {
         code(ErrorCode.DOMAIN_INVALID, () -> runs.create(OPERATOR, null, request()));
         code(ErrorCode.DOMAIN_INVALID, () -> runs.create(OPERATOR, "not-a-uuid", request()));
+        code(ErrorCode.DOMAIN_INVALID, () -> runs.create(OPERATOR, "1-1-1-1-1", request())); // non-canonical forms
+        code(ErrorCode.DOMAIN_INVALID, () -> runs.create(OPERATOR, IDEMPOTENCY_ID.toUpperCase(), request()));
         verify(ledger, never()).registerRun(any());
     }
 
@@ -117,6 +119,20 @@ class OM_05_RunCreationTest {
         RunService.Created c = runs.create(OPERATOR, IDEMPOTENCY_ID, request());
         assertThat(c.status()).isEqualTo(403);
         assertThat(c.body()).isEqualTo(denied);
+        verify(tokens, never()).issue(any());
+    }
+
+    @Test
+    void OM_05_ledgerAnswerIsCheckedBeforeATokenIsIssued() {
+        // The ledger must have registered exactly what was asked; otherwise no token (fail closed).
+        for (ObjectNode wrong : java.util.List.of(
+                Contracts.MAPPER.createObjectNode().put("run_id", RUN.toString()).put("ns", UUID.randomUUID().toString()).put("controls", "monitor"),
+                Contracts.MAPPER.createObjectNode().put("run_id", RUN.toString()).put("ns", NS.toString()).put("controls", "off"),
+                Contracts.MAPPER.createObjectNode().put("run_id", "nope").put("ns", NS.toString()).put("controls", "monitor"),
+                Contracts.MAPPER.createObjectNode().put("ns", NS.toString()).put("controls", "monitor"))) {
+            when(ledger.registerRun(any())).thenReturn(new LedgerResponse(201, wrong));
+            code(ErrorCode.RETRYABLE_UNAVAILABLE, () -> runs.create(OPERATOR, UUID.randomUUID().toString(), request()));
+        }
         verify(tokens, never()).issue(any());
     }
 

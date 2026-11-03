@@ -27,7 +27,9 @@ import java.util.UUID;
  * unset secret denies every caller. The run is registered in the ledger first (the ledger owns run_id and checks
  * the ns is LOADED); only then is a token issued, with the controls from the ledger's answer and every §10 tool
  * (ADR-014: same surface in every condition). Idempotency-Key: same key + same body → the first answer; a
- * different body → IDEMPOTENCY_CONFLICT. The memory is bounded and lost on restart (documented OM-05 limit).
+ * different body → IDEMPOTENCY_CONFLICT. The memory is bounded and lost on restart (documented OM-05 limit). Known
+ * window: if the ledger registers the run but its answer times out, a retry registers a second run, because
+ * ledger-admin register_run has no idempotency key yet (contract change, tracked for OM-07).
  */
 public class RunService {
     public record Created(int status, JsonNode body) {}
@@ -73,8 +75,8 @@ public class RunService {
                 .put("agent_id", request.get("agent_id").asText()).put("manifest_ref", request.get("manifest_ref").asText());
         LedgerResponse reg = ledger.registerRun(registration);
         if (reg.status() >= 300) return new Created(reg.status(), reg.body()); // e.g. 403 ns not LOADED; not remembered
-        UUID runId = UUID.fromString(reg.body().get("run_id").asText());
-        SignedToken t = tokens.issue(new RunGrant(runId, UUID.fromString(reg.body().get("ns").asText()),
+        UUID runId = checkedRun(reg.body(), registration);
+        SignedToken t = tokens.issue(new RunGrant(runId, UUID.fromString(registration.get("ns").asText()),
                 request.get("scenario_id").asText(), request.get("agent_id").asText(), reg.body().get("controls").asText(), ALL_TOOLS));
         ObjectNode out = Contracts.MAPPER.createObjectNode().put("run_id", runId.toString()).put("token", t.token())
                 .put("expires_at", t.expiresAt().truncatedTo(ChronoUnit.MILLIS).toString());
@@ -92,11 +94,28 @@ public class RunService {
         return MessageDigest.isEqual(operatorToken, bearer.getBytes(StandardCharsets.UTF_8));
     }
 
+    /** The key in canonical lowercase form only, so "1-1-1-1-1" and its normalisation can't share a slot. */
     private static String uuid(String key) {
         try {
-            return UUID.fromString(key == null ? "" : key).toString();
+            String k = UUID.fromString(key == null ? "" : key).toString();
+            if (!k.equals(key)) throw new IllegalArgumentException("not canonical");
+            return k;
         } catch (IllegalArgumentException e) {
-            throw new GatewayException(ErrorCode.DOMAIN_INVALID, "Idempotency-Key must be a UUID");
+            throw new GatewayException(ErrorCode.DOMAIN_INVALID, "Idempotency-Key must be a canonical lowercase UUID");
+        }
+    }
+
+    /** The ledger must have registered exactly the requested ns + controls; anything else issues no token. */
+    private static UUID checkedRun(JsonNode answer, JsonNode asked) {
+        try {
+            UUID runId = UUID.fromString(answer.get("run_id").asText());
+            if (!asked.get("ns").asText().equals(answer.get("ns").asText())
+                    || !asked.get("controls").asText().equals(answer.get("controls").asText())) {
+                throw new IllegalStateException("registration mismatch");
+            }
+            return runId;
+        } catch (RuntimeException e) {
+            throw new GatewayException(ErrorCode.RETRYABLE_UNAVAILABLE, "ledger run registration answer not usable", e);
         }
     }
 }

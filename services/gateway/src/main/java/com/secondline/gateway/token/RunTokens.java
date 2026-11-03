@@ -40,6 +40,8 @@ public class RunTokens {
     public static final String AUDIENCE = "secondline-gateway-tools";
     public static final Duration SKEW = Duration.ofSeconds(30);
     private static final Set<String> CONTROLS = Set.of("off", "monitor", "full");
+    /** Explicit typing (RFC 8725 §3.11): a service JWT signed by the same key can never pass as a run token. */
+    public static final JOSEObjectType TYPE = new JOSEObjectType("sl-run+jwt");
 
     private final SigningKeys keys;
     private final Clock clock;
@@ -61,7 +63,7 @@ public class RunTokens {
                 .claim("allowed_tools", grant.allowedTools())
                 .issueTime(Date.from(now)).notBeforeTime(Date.from(now)).expirationTime(Date.from(exp))
                 .jwtID(UUID.randomUUID().toString()).build();
-        SignedJWT jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.EdDSA).keyID(keys.kid()).type(JOSEObjectType.JWT).build(), claims);
+        SignedJWT jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.EdDSA).keyID(keys.kid()).type(TYPE).build(), claims);
         try {
             jwt.sign(new Ed25519Signer(keys.privateJwk()));
         } catch (JOSEException e) {
@@ -81,7 +83,9 @@ public class RunTokens {
             if (token == null || pathRunId == null || tool == null) throw denied();
             SignedJWT jwt = SignedJWT.parse(token); // a PlainJWT ("alg":"none") isn't a JWS and fails here
             JWSHeader h = jwt.getHeader();
-            if (!JWSAlgorithm.EdDSA.equals(h.getAlgorithm()) || !keys.kid().equals(h.getKeyID())) throw denied();
+            if (!JWSAlgorithm.EdDSA.equals(h.getAlgorithm()) || !keys.kid().equals(h.getKeyID()) || !TYPE.equals(h.getType())) {
+                throw denied();
+            }
             if (!jwt.verify(new Ed25519Verifier(keys.publicJwk()))) throw denied();
             JWTClaimsSet c = jwt.getJWTClaimsSet();
             Instant now = clock.instant();
@@ -89,7 +93,10 @@ public class RunTokens {
             Date exp = c.getExpirationTime();
             Date nbf = c.getNotBeforeTime();
             if (exp == null || nbf == null || c.getIssueTime() == null || c.getJWTID() == null) throw denied();
-            if (now.isAfter(exp.toInstant().plus(SKEW)) || nbf.toInstant().isAfter(now.plus(SKEW))) throw denied();
+            if (now.isAfter(exp.toInstant().plus(SKEW)) || nbf.toInstant().isAfter(now.plus(SKEW))
+                    || c.getIssueTime().toInstant().isAfter(now.plus(SKEW))) {
+                throw denied();
+            }
             UUID runId = UUID.fromString(c.getStringClaim("run_id"));
             UUID ns = UUID.fromString(c.getStringClaim("ns"));
             String scenario = c.getStringClaim("scenario_id");

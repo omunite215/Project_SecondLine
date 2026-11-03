@@ -71,7 +71,7 @@ class OM_05_RunTokensTest {
         try {
             JWTClaimsSet.Builder b = validClaims();
             edit.accept(b);
-            SignedJWT jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.EdDSA).keyID(kid).type(JOSEObjectType.JWT).build(), b.build());
+            SignedJWT jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.EdDSA).keyID(kid).type(RunTokens.TYPE).build(), b.build());
             jwt.sign(new Ed25519Signer(keys.privateJwk()));
             return jwt.serialize();
         } catch (Exception e) {
@@ -95,7 +95,7 @@ class OM_05_RunTokensTest {
         SignedJWT jwt = SignedJWT.parse(tokens.issue(GRANT).token());
         assertThat(jwt.getHeader().getAlgorithm()).isEqualTo(JWSAlgorithm.EdDSA);
         assertThat(jwt.getHeader().getKeyID()).isEqualTo(KEYS.kid());
-        assertThat(jwt.getHeader().getType()).isEqualTo(JOSEObjectType.JWT);
+        assertThat(jwt.getHeader().getType()).isEqualTo(RunTokens.TYPE); // explicit typing, RFC 8725 §3.11
         JWTClaimsSet c = jwt.getJWTClaimsSet();
         assertThat(c.getIssuer()).isEqualTo(RunTokens.ISSUER);
         assertThat(c.getAudience()).containsExactly(RunTokens.AUDIENCE);
@@ -182,6 +182,18 @@ class OM_05_RunTokensTest {
         refused(() -> tokens.verify(signEd(KEYS, KEYS.kid(), b -> b.claim("ns", "not-a-uuid")), RUN, "read_trade"));
         refused(() -> tokens.verify(signEd(KEYS, KEYS.kid(), b -> b.expirationTime(null)), RUN, "read_trade"));
         refused(() -> tokens.verify(signEd(KEYS, KEYS.kid(), b -> b.claim("controls", "everything")), RUN, "read_trade"));
+    }
+
+    @Test
+    void OM_05_otherTokenTypesAndFutureIatRejected() throws Exception {
+        // A service JWT (or any plain "JWT") signed by the same key must never pass as a run token.
+        JWTClaimsSet c = validClaims().build();
+        for (JOSEObjectType typ : new JOSEObjectType[] {JOSEObjectType.JWT, new JOSEObjectType("sl-svc+jwt"), null}) {
+            SignedJWT jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.EdDSA).keyID(KEYS.kid()).type(typ).build(), c);
+            jwt.sign(new Ed25519Signer(KEYS.privateJwk()));
+            refused(() -> tokens.verify(jwt.serialize(), RUN, "read_trade"));
+        }
+        refused(() -> tokens.verify(signEd(KEYS, KEYS.kid(), b -> b.issueTime(Date.from(T0.plusSeconds(120)))), RUN, "read_trade"));
     }
 
     @Test

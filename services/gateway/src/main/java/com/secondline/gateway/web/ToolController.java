@@ -53,11 +53,10 @@ public class ToolController {
         } catch (ContractException e) {
             json = null;
         }
-        if (json == null || !json.isObject()) { // every tool input is an object; "" parses to an empty node
-            throw new GatewayException(ErrorCode.DOMAIN_INVALID, "request body must be one JSON object (no duplicate keys, no floats)");
-        }
-        tag(pathRunId, json);
+        if (json != null && !json.isObject()) json = null; // every tool input is an object; "" parses to an empty node
+        // An unreadable body is judged by the pipeline AFTER the token, so it isn't an unauthenticated probe.
         ToolResult r = pipeline.handle(new ToolCall(bearer(authorization), pathRunId, tool, json, UUID.randomUUID()));
+        if (r.verifiedRunId() != null) tag(r.verifiedRunId(), json); // only a run the token proved
         return ResponseEntity.status(r.status()).contentType(MediaType.APPLICATION_JSON).body(r.body());
     }
 
@@ -67,7 +66,7 @@ public class ToolController {
         io.micrometer.tracing.Span span = t == null ? null : t.currentSpan();
         if (span == null) return;
         span.tag("run_id", runId.toString());
-        JsonNode action = body.get("action_id");
+        JsonNode action = body == null ? null : body.get("action_id");
         if (action != null && action.isTextual() && UUID_SHAPE.matcher(action.asText()).matches()) span.tag("action_id", action.asText());
     }
 

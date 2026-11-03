@@ -165,6 +165,7 @@ class OM_05_ClientsTest {
         SignedJWT jwt = SignedJWT.parse(auth.substring(7));
         assertThat(jwt.verify(new Ed25519Verifier(keys.publicJwk()))).isTrue();
         assertThat(jwt.getHeader().getKeyID()).isEqualTo("gw-test-v1");
+        assertThat(jwt.getHeader().getType().getType()).isEqualTo("sl-svc+jwt"); // never mistaken for a run token
         assertThat(jwt.getJWTClaimsSet().getAudience()).containsExactly("ledger");
         assertThat(jwt.getJWTClaimsSet().getSubject()).isEqualTo("gateway");
         assertThat(jwt.getJWTClaimsSet().getExpirationTime().toInstant()).isEqualTo(NOW.plusSeconds(60));
@@ -194,6 +195,8 @@ class OM_05_ClientsTest {
         ledger.reply = new StubServer.Reply(200, "{}", 1500);
         code(ErrorCode.RETRYABLE_UNAVAILABLE, () -> ledgerClient.postAction(NS, Contracts.MAPPER.createObjectNode()));
         ledger.reply = new StubServer.Reply(200, "not json", 0);
+        code(ErrorCode.RETRYABLE_UNAVAILABLE, () -> ledgerClient.postAction(NS, Contracts.MAPPER.createObjectNode()));
+        ledger.reply = new StubServer.Reply(302, "{\"moved\":true}", 0); // a redirect is never an outcome
         code(ErrorCode.RETRYABLE_UNAVAILABLE, () -> ledgerClient.postAction(NS, Contracts.MAPPER.createObjectNode()));
         LedgerClient nowhere = new LedgerClient("http://127.0.0.1:1", new ServiceTokens(keys, Clock.systemUTC()), Duration.ofMillis(300));
         code(ErrorCode.RETRYABLE_UNAVAILABLE, () -> nowhere.postAction(NS, Contracts.MAPPER.createObjectNode()));
@@ -239,15 +242,19 @@ class OM_05_ClientsTest {
 
     @Test
     void OM_05_budgetExhaustionAndHaltAreRunHalted() {
-        InMemoryRunGuard guard = new InMemoryRunGuard(2, 1);
+        InMemoryRunGuard guard = new InMemoryRunGuard(2);
         guard.admit(RUN);
         guard.admit(RUN);
-        code(ErrorCode.RUN_HALTED, () -> guard.admit(RUN));
+        code(ErrorCode.RUN_HALTED, () -> guard.admit(RUN)); // the call budget, every condition
         UUID other = UUID.randomUUID();
         guard.halt(other);
-        code(ErrorCode.RUN_HALTED, () -> guard.admit(other));
-        assertThat(guard.tryConsumeMessage(RUN)).isTrue();
-        assertThat(guard.tryConsumeMessage(RUN)).isFalse(); // C_msg exhausted → the pipeline answers POLICY_DENIED (ADR-014)
+        assertThat(guard.halted(other)).isTrue(); // the pipeline applies halts only in monitor/full (ADR-014)
+        assertThat(guard.halted(RUN)).isFalse();
+        java.util.concurrent.atomic.AtomicInteger lookups = new java.util.concurrent.atomic.AtomicInteger();
+        java.util.function.IntSupplier oneBreak = () -> { lookups.incrementAndGet(); return 1; };
+        assertThat(guard.tryConsumeMessage(RUN, oneBreak)).isTrue();
+        assertThat(guard.tryConsumeMessage(RUN, oneBreak)).isFalse(); // C_msg exhausted → POLICY_DENIED (ADR-014)
+        assertThat(lookups.get()).isEqualTo(1); // the run's budget is looked up once
     }
 
     @Test

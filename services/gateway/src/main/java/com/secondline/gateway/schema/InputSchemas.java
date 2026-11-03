@@ -26,4 +26,9 @@ public class InputSchemas {
                     "input does not match the " + tool + " schema (" + errors.size() + " violation" + (errors.size() == 1 ? "" : "s") + ")");
         }
     }
+
+    /** Defence in depth: a 2xx ledger answer must match tools/<tool>.output.schema.json before the agent sees it. */
+    public boolean outputMatches(String tool, JsonNode output) {
+        return registry.validate("tools/" + tool + ".output.schema.json", output).isEmpty();
+    }
 }

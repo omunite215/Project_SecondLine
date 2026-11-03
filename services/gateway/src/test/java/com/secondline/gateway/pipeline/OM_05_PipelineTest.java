@@ -55,13 +55,27 @@ class OM_05_PipelineTest {
     PolicyClient policy = mock(PolicyClient.class);
     LedgerClient ledger = mock(LedgerClient.class);
     DecisionLog log = mock(DecisionLog.class);
-    InMemoryRunGuard guard = new InMemoryRunGuard(100, 2);
+    InMemoryRunGuard guard = new InMemoryRunGuard(100);
+    io.micrometer.core.instrument.simple.SimpleMeterRegistry meters = new io.micrometer.core.instrument.simple.SimpleMeterRegistry();
     ToolPipeline pipeline;
 
     @BeforeEach
     void wire() {
         pipeline = new ToolPipeline(tokens, new InputSchemas(SchemaRegistry.load()), guard, policy, ledger, log,
-                Clock.fixed(NOW, ZoneOffset.UTC));
+                Clock.fixed(NOW, ZoneOffset.UTC), meters);
+    }
+
+    /** A contract example output for a tool (examples/tools/<tool>.output.json). */
+    static JsonNode example(String tool) throws Exception {
+        ObjectNode o = (ObjectNode) CanonicalJson.parse(Files.readString(CONTRACTS.resolve("examples/tools/" + tool + ".output.json")));
+        o.remove("x-validates");
+        return o;
+    }
+
+    java.util.List<DecisionLogEntry> loggedAll(int n) {
+        ArgumentCaptor<DecisionLogEntry> e = ArgumentCaptor.forClass(DecisionLogEntry.class);
+        verify(log, times(n)).record(eq(NS), e.capture());
+        return e.getAllValues();
     }
 
     void controls(String c) {
@@ -104,7 +118,19 @@ class OM_05_PipelineTest {
         ToolResult r = pipeline.handle(new ToolCall("forged", RUN, "get_break", getBreak(), REQ));
         error(r, ErrorCode.PERMISSION_DENIED);
         verify(ledger, never()).read(any(), any(), any());
-        verify(log, never()).record(any(), any()); // no trusted ns to attribute it to
+        verify(log, never()).record(any(), any()); // no trusted ns for the ledger's ns-scoped log...
+        // ...but never unrecorded (§8 step 3): counted, and audit-logged by the gateway.
+        assertThat(meters.counter("gateway.token_denied", "tool", "get_break").count()).isEqualTo(1.0);
+    }
+
+    @Test
+    void OM_05_unparsableBodyIsJudgedOnlyAfterTheToken() {
+        when(tokens.verify(anyString(), any(), anyString())).thenThrow(RunTokens.denied());
+        error(pipeline.handle(new ToolCall("forged", RUN, "get_break", null, REQ)), ErrorCode.PERMISSION_DENIED);
+        org.mockito.Mockito.reset(tokens);
+        controls("off");
+        error(call("get_break", null), ErrorCode.DOMAIN_INVALID);
+        assertThat(logged().stage()).isEqualTo("schema");
     }
 
     @Test
@@ -134,12 +160,26 @@ class OM_05_PipelineTest {
     }
 
     @Test
-    void OM_05_haltedRunIs423() {
-        controls("off");
+    void OM_05_haltedRunIs423InMonitorAndFull() {
+        controls("monitor");
         guard.halt(RUN);
         error(call("get_break", getBreak()), ErrorCode.RUN_HALTED);
         verify(ledger, never()).read(any(), any(), any());
         assertThat(logged().stage()).isEqualTo("guard");
+    }
+
+    @Test
+    void OM_05_haltIsIgnoredInOffButTheBudgetIsNot() throws Exception {
+        // ADR-014: supervisor + kill switch are off in condition B; budgets/time caps are on in every condition.
+        controls("off");
+        guard.halt(RUN);
+        when(ledger.read(eq(NS), any(), any())).thenReturn(new LedgerResponse(200, example("get_break")));
+        assertThat(call("get_break", getBreak()).status()).isEqualTo(200);
+        InMemoryRunGuard tiny = new InMemoryRunGuard(1);
+        ToolPipeline capped = new ToolPipeline(tokens, new InputSchemas(SchemaRegistry.load()), tiny, policy, ledger, log,
+                Clock.fixed(NOW, ZoneOffset.UTC), meters);
+        capped.handle(new ToolCall("good", RUN, "get_break", getBreak(), REQ));
+        error(capped.handle(new ToolCall("good", RUN, "get_break", getBreak(), REQ)), ErrorCode.RUN_HALTED);
     }
 
     // ---- control conditions (ADR-014) -------------------------------------------------------------
@@ -148,7 +188,7 @@ class OM_05_PipelineTest {
     void OM_05_offAndMonitorNeverCallOpa() throws Exception {
         for (String c : List.of("off", "monitor")) {
             controls(c);
-            when(ledger.postAction(eq(NS), any())).thenReturn(new LedgerResponse(200, Contracts.MAPPER.createObjectNode()));
+            when(ledger.postAction(eq(NS), any())).thenReturn(new LedgerResponse(200, example("propose_adjustment")));
             call("propose_adjustment", adjustment());
         }
         verify(policy, never()).decide(any(), anyString(), any());
@@ -158,11 +198,11 @@ class OM_05_PipelineTest {
     @Test
     void OM_05_fullCallsOpaForWritesOnly() throws Exception {
         controls("full");
-        when(ledger.read(eq(NS), any(), any())).thenReturn(new LedgerResponse(200, Contracts.MAPPER.createObjectNode()));
+        when(ledger.read(eq(NS), any(), any())).thenReturn(new LedgerResponse(200, example("get_break")));
         call("get_break", getBreak());
         verify(policy, never()).decide(any(), anyString(), any());
         when(policy.decide(any(), eq("propose_adjustment"), any())).thenReturn(new PolicyDecision("ALLOW", "", HASH));
-        when(ledger.postAction(eq(NS), any())).thenReturn(new LedgerResponse(200, Contracts.MAPPER.createObjectNode()));
+        when(ledger.postAction(eq(NS), any())).thenReturn(new LedgerResponse(200, example("propose_adjustment")));
         call("propose_adjustment", adjustment());
         verify(policy, times(1)).decide(any(), eq("propose_adjustment"), any());
     }
@@ -214,7 +254,7 @@ class OM_05_PipelineTest {
     void OM_05_allowedWriteIsRoutedAndLogged() throws Exception {
         controls("full");
         when(policy.decide(any(), anyString(), any())).thenReturn(new PolicyDecision("ALLOW", "", HASH));
-        ObjectNode receipt = Contracts.MAPPER.createObjectNode().put("decision", "EXECUTED");
+        JsonNode receipt = example("propose_adjustment");
         when(ledger.postAction(eq(NS), any())).thenReturn(new LedgerResponse(200, receipt));
         ToolResult r = call("propose_adjustment", adjustment());
         assertThat(r.status()).isEqualTo(200);
@@ -226,6 +266,20 @@ class OM_05_PipelineTest {
         assertThat(e.decision()).isEqualTo("ALLOW");
         assertThat(e.stage()).isEqualTo("routed");
         assertThat(e.controls()).isEqualTo("full");
+        assertThat(r.verifiedRunId()).isEqualTo(RUN); // what the controller may tag the span with
+    }
+
+    @Test
+    void OM_05_ledgerOutputThatFailsItsSchemaFailsClosed() throws Exception {
+        // Defence in depth: a ledger bug returning an extra (e.g. truth) field never reaches the agent.
+        controls("off");
+        ObjectNode leaky = (ObjectNode) example("get_break");
+        leaky.put("root_cause", "B7_SETTLEMENT_SHORTFALL");
+        when(ledger.read(eq(NS), any(), any())).thenReturn(new LedgerResponse(200, leaky));
+        ToolResult r = call("get_break", getBreak());
+        error(r, ErrorCode.RETRYABLE_UNAVAILABLE);
+        assertThat(r.body().toString()).doesNotContain("B7");
+        assertThat(logged().stage()).isEqualTo("ledger");
     }
 
     @Test
@@ -237,13 +291,23 @@ class OM_05_PipelineTest {
         ToolResult r = call("propose_adjustment", adjustment());
         assertThat(r.status()).isEqualTo(409);
         assertThat(r.body()).isEqualTo(conflict);
+        // §8: a denial counts as an attempt. Logged once the ledger answers, as the ledger's DENY (contract:
+        // "ALLOW at stage routed means the ledger answered").
+        DecisionLogEntry refused = logged();
+        assertThat(refused.decision()).isEqualTo("DENY");
+        assertThat(refused.stage()).isEqualTo("ledger");
+        assertThat(refused.errorCode()).isEqualTo("STATE_CONFLICT");
         when(ledger.postAction(eq(NS), any())).thenThrow(new GatewayException(ErrorCode.RETRYABLE_UNAVAILABLE, "ledger unavailable"));
         error(call("propose_adjustment", adjustment()), ErrorCode.RETRYABLE_UNAVAILABLE);
     }
 
     @Test
-    void OM_05_simulatedClarificationSpendsTheMessageBudget() {
+    void OM_05_simulatedClarificationSpendsTheMessageBudget() throws Exception {
         controls("full");
+        // ADR-014 placeholder: C_msg = number of breaks in the run (2 here), read once from the ledger.
+        ObjectNode two = Contracts.MAPPER.createObjectNode();
+        two.putArray("breaks").add(example("list_breaks").path("breaks").get(0)).add(example("list_breaks").path("breaks").get(0));
+        when(ledger.read(eq(NS), any(), any())).thenReturn(new LedgerResponse(200, two));
         ObjectNode q = Contracts.MAPPER.createObjectNode().put("run_id", RUN.toString()).put("break_id", "brk_0000AB12")
                 .put("question", "Please confirm the settled quantity.").put("idempotency_key", UUID.randomUUID().toString());
         for (int i = 0; i < 2; i++) {
@@ -251,9 +315,52 @@ class OM_05_PipelineTest {
             assertThat(ok.status()).isEqualTo(200);
             assertThat(SchemaRegistry.load().validate("tools/request_counterparty_clarification.output.schema.json", ok.body())).isEmpty();
         }
-        error(call("request_counterparty_clarification", q), ErrorCode.POLICY_DENIED); // C_msg = 2 here
+        error(call("request_counterparty_clarification", q), ErrorCode.POLICY_DENIED); // C_msg = 2 breaks
+        verify(ledger, times(1)).read(eq(NS), any(), any()); // the break count is read once per run
         verify(ledger, never()).postAction(any(), any());
         verify(policy, never()).decide(any(), anyString(), any()); // budgeted in every condition, not an OPA call
+    }
+
+    @Test
+    void OM_05_ledgerDownAfterAWriteIsLoggedAndSaysRetrySafelyNotNothingCommitted() throws Exception {
+        controls("off");
+        when(ledger.postAction(eq(NS), any())).thenThrow(new GatewayException(ErrorCode.RETRYABLE_UNAVAILABLE, "ledger unavailable"));
+        ToolResult r = call("propose_adjustment", adjustment());
+        error(r, ErrorCode.RETRYABLE_UNAVAILABLE);
+        DecisionLogEntry e = logged();
+        assertThat(e.stage()).isEqualTo("ledger");
+        assertThat(e.decision()).isEqualTo("DENY");
+        assertThat(r.body().path("message").asText()).contains("idempotency_key"); // the outcome is unknown, not "nothing"
+    }
+
+    @Test
+    void OM_05_runawayInvalidInputStillHitsTheCallBudget() throws Exception {
+        controls("full");
+        InMemoryRunGuard tiny = new InMemoryRunGuard(3);
+        ToolPipeline capped = new ToolPipeline(tokens, new InputSchemas(SchemaRegistry.load()), tiny, policy, ledger, log,
+                Clock.fixed(NOW, ZoneOffset.UTC), meters);
+        ObjectNode bad = adjustment();
+        bad.remove("evidence_refs");
+        for (int i = 0; i < 3; i++) error(capped.handle(new ToolCall("good", RUN, "propose_adjustment", bad, REQ)), ErrorCode.DOMAIN_INVALID);
+        error(capped.handle(new ToolCall("good", RUN, "propose_adjustment", bad, REQ)), ErrorCode.RUN_HALTED);
+    }
+
+    @Test
+    void OM_05_aDenyStaysADenyWhenLoggingThrowsAnything() throws Exception {
+        controls("full");
+        org.mockito.Mockito.doThrow(new IllegalStateException("log broke")).when(log).record(any(), any());
+        when(policy.decide(any(), anyString(), any())).thenReturn(new PolicyDecision("DENY", "x", HASH));
+        error(call("propose_adjustment", adjustment()), ErrorCode.POLICY_DENIED);
+    }
+
+    @Test
+    void OM_05_messageBudgetUnreadableFailsClosed() {
+        controls("off");
+        when(ledger.read(eq(NS), any(), any())).thenThrow(new GatewayException(ErrorCode.RETRYABLE_UNAVAILABLE, "ledger unavailable"));
+        ObjectNode q = Contracts.MAPPER.createObjectNode().put("run_id", RUN.toString()).put("break_id", "brk_0000AB12")
+                .put("question", "Settled quantity?").put("idempotency_key", UUID.randomUUID().toString());
+        error(call("request_counterparty_clarification", q), ErrorCode.RETRYABLE_UNAVAILABLE);
+        assertThat(logged().stage()).isEqualTo("policy");
     }
 
     @Test

@@ -182,6 +182,21 @@ class OM_05_PipelineTest {
     }
 
     @Test
+    void OM_05_opaReviewRequiredIsHeldNotRouted() throws Exception {
+        // Decision (OM-05, until OM-11 builds the hold/approve flow): errors.json maps REVIEW_REQUIRED to 202,
+        // so the agent gets a 202 error_response; nothing reaches the ledger. gateway-tools.yaml's 202 names the
+        // tool output (a ledger receipt); OM-11 reconciles the two.
+        controls("full");
+        when(policy.decide(any(), anyString(), any())).thenReturn(new PolicyDecision("REVIEW_REQUIRED", "above threshold", HASH));
+        error(call("propose_adjustment", adjustment()), ErrorCode.REVIEW_REQUIRED);
+        verify(ledger, never()).postAction(any(), any());
+        DecisionLogEntry e = logged();
+        assertThat(e.decision()).isEqualTo("REVIEW_REQUIRED");
+        assertThat(e.stage()).isEqualTo("policy");
+        assertThat(e.errorCode()).isEqualTo("REVIEW_REQUIRED");
+    }
+
+    @Test
     void OM_05_opaDownFailsClosed() throws Exception {
         controls("full");
         when(policy.decide(any(), anyString(), any()))

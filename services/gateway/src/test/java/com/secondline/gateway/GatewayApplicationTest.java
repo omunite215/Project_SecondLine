@@ -15,6 +15,14 @@ class GatewayApplicationTest {
     @Autowired
     TestRestTemplate http;
 
+    // OM-05: the gateway won't start without its signing key (G4); dependencies point nowhere on purpose.
+    @org.springframework.test.context.DynamicPropertySource
+    static void config(org.springframework.test.context.DynamicPropertyRegistry r) {
+        r.add("gateway.signing-jwk-path", TestKeys::path);
+        r.add("gateway.ledger-url", () -> "http://127.0.0.1:1");
+        r.add("gateway.opa-url", () -> "http://127.0.0.1:1");
+    }
+
     @Test
     void OM01_readinessIsUp() {
         var r = http.getForEntity("/actuator/health/readiness", String.class);

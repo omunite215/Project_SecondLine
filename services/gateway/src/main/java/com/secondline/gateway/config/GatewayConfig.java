@@ -8,6 +8,7 @@ import com.secondline.gateway.client.ServiceTokens;
 import com.secondline.gateway.guard.InMemoryRunGuard;
 import com.secondline.gateway.guard.RunGuard;
 import com.secondline.gateway.pipeline.ToolPipeline;
+import com.secondline.gateway.runs.RunService;
 import com.secondline.gateway.schema.InputSchemas;
 import com.secondline.gateway.token.RunTokens;
 import com.secondline.gateway.token.SigningKeys;
@@ -66,6 +67,13 @@ public class GatewayConfig {
     @Bean
     RunGuard runGuard(@Value("${gateway.budget.max-calls:500}") int maxCalls, @Value("${gateway.budget.max-messages:5}") int maxMessages) {
         return new InMemoryRunGuard(maxCalls, maxMessages);
+    }
+
+    /** G5: an unset GATEWAY_OPERATOR_TOKEN denies every run creation. */
+    @Bean
+    RunService runService(@Value("${gateway.operator-token:}") String operatorToken, LedgerClient ledger, RunTokens tokens,
+                          SchemaRegistry schemas, @Value("${gateway.idempotency.capacity:10000}") int capacity) {
+        return new RunService(operatorToken, ledger, tokens, schemas, capacity);
     }
 
     @Bean

@@ -63,6 +63,11 @@ public class LedgerClient {
         return call(json(Http.uri(base, "/internal/v1/ns/" + ns + "/actions"), action), "ledger");
     }
 
+    /** ledger-admin register_run: {ns, controls, agent_id, manifest_ref} → {run_id, ns, controls}. */
+    public LedgerResponse registerRun(JsonNode registration) {
+        return call(json(Http.uri(base, "/admin/v1/runs"), registration), "ledger");
+    }
+
     public LedgerResponse appendDecision(UUID ns, JsonNode entry) {
         return call(json(Http.uri(base, "/internal/v1/ns/" + ns + "/decisions"), entry), "decision log");
     }

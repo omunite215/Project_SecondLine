@@ -2,5 +2,7 @@
   "x-validates": "runs/run_request.schema.json",
   "ns": "6a5b4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d",
   "controls": "full",
-  "agent_id": "agt_run3f2e1d0c"
+  "agent_id": "agt_run3f2e1d0c",
+  "scenario_id": "scn_0000A001",
+  "manifest_ref": "experiments/manifests/pilot-001.json"
 }

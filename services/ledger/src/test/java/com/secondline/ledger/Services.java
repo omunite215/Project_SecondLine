@@ -69,6 +69,11 @@ public final class Services {
     }
 
     /** The admin routes with the real ErrorAdvice, without booting a context. */
+    public static MockMvc decisionsMvc() {
+        return MockMvcBuilders.standaloneSetup(new com.secondline.ledger.decisions.DecisionController(namespaces(), JdbcClient.create(DS)))
+                .setControllerAdvice(new ErrorAdvice()).build();
+    }
+
     public static MockMvc adminMvc() {
         return MockMvcBuilders.standaloneSetup(new AdminController(namespaces(), loader(), exporter(), JdbcClient.create(DS)))
                 .setControllerAdvice(new ErrorAdvice()).build();

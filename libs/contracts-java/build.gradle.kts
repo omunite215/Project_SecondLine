@@ -18,7 +18,7 @@ sourceSets {
 // Schemas ship on the classpath under contracts/, so validation never touches the network.
 tasks.processResources {
     from(rootProject.file("packages/contracts")) {
-        include("**/*.schema.json", "errors.json")
+        include("**/*.schema.json", "errors.json", "tools/INDEX.json")
         exclude("examples/**", "py/**")
         into("contracts")
     }

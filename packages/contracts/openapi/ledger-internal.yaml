@@ -164,3 +164,16 @@ paths:
         '403': {description: 'PERMISSION_DENIED: ns or id does not resolve in this ns (never 404)', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '422': {description: 'DOMAIN_INVALID: malformed parameter', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
         '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+  # Gateway decision log (OM-05, ADR-013): every tool-call decision, denies included; append-only.
+  /internal/v1/ns/{ns}/decisions:
+    post:
+      summary: Append one gateway decision for a run in this ns
+      operationId: append_decision
+      parameters:
+        - {name: ns, in: path, required: true, schema: {$ref: '../common.schema.json#/$defs/uuid'}}
+      requestBody: {required: true, content: {application/json: {schema: {$ref: '../runs/decision_log_entry.schema.json'}}}}
+      responses:
+        '201': {description: stored}
+        '403': {description: 'PERMISSION_DENIED: ns not available or run not registered in it', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '422': {description: 'DOMAIN_INVALID: not a decision_log_entry, or decision_id already stored', content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}
+        '503': {description: 503, content: {application/json: {schema: {$ref: '../error_response.schema.json'}}}}

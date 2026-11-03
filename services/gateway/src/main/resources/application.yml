@@ -3,6 +3,12 @@ spring:
     name: gateway
 server:
   port: 8080
+# OM-05. Secrets never as literal values here: the key is a file path, the operator token an env var.
+gateway:
+  signing-jwk-path: ${GATEWAY_SIGNING_JWK_PATH:}
+  operator-token: ${GATEWAY_OPERATOR_TOKEN:}
+  ledger-url: ${GATEWAY_LEDGER_URL:http://localhost:8081}
+  opa-url: ${GATEWAY_OPA_URL:http://localhost:8181}
 management:
   endpoints:
     web:

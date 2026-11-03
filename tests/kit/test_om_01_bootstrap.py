@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 KEYS = ("POSTGRES_PASSWORD", "LEDGER_SVC_PASSWORD", "LEDGER_MIGRATOR_PASSWORD", "GRADER_SVC_PASSWORD", "OPERATOR_SVC_PASSWORD",
-        "GRAFANA_ADMIN_PASSWORD")
+        "GRAFANA_ADMIN_PASSWORD", "GATEWAY_OPERATOR_TOKEN")
 
 
 def env_file(path: Path) -> dict[str, str]:

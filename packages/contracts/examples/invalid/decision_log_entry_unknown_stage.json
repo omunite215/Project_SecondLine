@@ -1,0 +1,10 @@
+{
+ "x-validates": "runs/decision_log_entry.schema.json",
+ "decision_id": "7c1d2e3f-4a5b-4c6d-8e7f-9a0b1c2d3e4f",
+ "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+ "tool": "read_trade",
+ "decision": "ALLOW",
+ "controls": "off",
+ "stage": "skipped",
+ "at": "2026-03-02T16:05:00Z"
+}

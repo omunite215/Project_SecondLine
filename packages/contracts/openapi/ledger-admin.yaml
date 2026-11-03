@@ -93,7 +93,7 @@ components:
         ns: {$ref: '../runs/run_request.schema.json#/properties/ns'}
         controls: {$ref: '../runs/run_request.schema.json#/properties/controls'}
         agent_id: {$ref: '../runs/run_request.schema.json#/properties/agent_id'}
-        manifest_ref: {type: string, pattern: '^[A-Za-z0-9_][A-Za-z0-9_./-]{0,199}$', not: {pattern: '\.\.'}, description: 'Reference to the run manifest (a path or id), never its contents. Stored opaquely; the ledger never dereferences it.'}
+        manifest_ref: {$ref: '../common.schema.json#/$defs/manifest_ref'}
     Run:
       type: object
       additionalProperties: false

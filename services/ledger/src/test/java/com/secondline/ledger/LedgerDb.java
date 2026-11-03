@@ -13,7 +13,7 @@ import org.testcontainers.utility.MountableFile;
  * the roles under test are the roles compose creates. Flyway runs as ledger_migrator (ADR-019).
  */
 public final class LedgerDb {
-    static final String APP_PW = "test-ledger-svc";
+    public static final String APP_PW = "test-ledger-svc";
     static final String MIGRATOR_PW = "test-ledger-migrator";
     private static final PostgreSQLContainer<?> PG = start();
     private static volatile boolean migrated;

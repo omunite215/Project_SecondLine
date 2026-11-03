@@ -62,11 +62,12 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 ## M-2 Real agent (tool boundary)
 
 ### OM-05 · Gateway: REST tool API, run tokens, OPA hook, decision log
-- meta: P0 | M-2 | 4d | mcs | learn | deps: OM-02, SH-05 | status: doing
+- meta: P0 | M-2 | 4d | mcs | learn | deps: OM-02, SH-05 | status: review
 - refs: §7 §8 §10 §11 | REQ-004 REQ-005 REQ-016 | T-SEC-02 | ADR-005 ADR-013 | SEC-03 | NFR-08 | MET-09 | RSK-05
 - skills: insecure-defaults
 - build: services/gateway (Spring Boot): POST /v1/runs (operator auth) → ns-bound run + short-lived Ed25519 JWT (aud, sub, run_id, ns, scenario_id, allowed_tools, controls, exp); POST /v1/runs/{runId}/tools/{tool} → verify token + run binding → JSON-Schema input check → budget/halt check → OPA query (per ADR-014 condition) → route to ledger with the gateway service JWT → typed result/error; every decision incl. denies persisted via ledger /internal/v1/decisions; Micrometer histogram `gateway.onpath` (fine p99 buckets) + OTel span with run_id/action_id; writes fail closed if OPA or ledger is unreachable. Stub the ledger until OM-04 lands.
 - done: contract tests vs openapi/gateway-tools.yaml; a denied call leaves the ledger state-hash unchanged; OPA down ⇒ writes denied with a typed error; on-path p50/p95/p99 logged locally (measured, not claimed).
+- evidence: PR (this). SCRIPTED: gateway 76 tests (RunTokens 14, pipeline 21, clients 13, contract 9, run creation 9, observability 4, bench 1, …), ledger 215 incl. OM_05_DecisionLogTest 6 + OM_05_GatewayAgainstLedgerTest (real pipeline vs real ledger: POLICY_DENIED + DENY row in policy_decisions; read routed + schema-valid). VERIFY: state-hash-unchanged criterion is vacuous until OM-08's actions endpoint. SIMULATED on-path (stub ledger/OPA, localhost, n=1000 each): read p50 4–7 / p95 8–14 / p99 14–21 ms; write p50 5–9 / p95 11–19 / p99 16–26 ms. Open: OM-07/OM-11/OM-14 items in docs/plans/OM-05.md
 
 ### OM-06 · MCP adapter: thin, unprivileged tool surface
 - meta: P0 | M-2 | 1.5d | mcs | deps: SH-02, KG-01 | status: todo

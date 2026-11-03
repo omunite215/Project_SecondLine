@@ -16,7 +16,8 @@ com.secondline.gateway
   config/    GatewayConfig wiring; gateway.* properties in application.yml
 ```
 ## Commands
-`make test-gateway` · `make test-sec` · `./gradlew :services:gateway:bootRun`
+`make test-gateway` · `make test-sec` · `./gradlew :services:gateway:bootRun` · on-path bench (SIMULATED): `./gradlew :services:gateway:test --tests '*OM_05_OnPathBench'` → build/reports/om05-onpath.json
+Gateway ↔ real ledger: `services/ledger/.../e2e/OM_05_GatewayAgainstLedgerTest` (Testcontainers). Test JVMs set `sun.net.httpserver.nodelay=true` (JDK stub servers stall ~40 ms/hop without it).
 ## Conventions
 - The control condition (off | monitor | full) comes from the run record, never from the request (ADR-014).
 - Spans carry run_id (path) and action_id (only if UUID-shaped); never tokens, keys or free text.

@@ -71,6 +71,8 @@ class OM_04_ReadContractTest {
         Map<String, Object> paths = contractPaths();
         for (Map.Entry<String, Object> p : paths.entrySet()) {
             if (LATER.contains(p.getKey())) continue;
+            // Only read routes: a path without GET is a write (actions, decisions), tested where it's built.
+            if (!((Map<String, Object>) p.getValue()).containsKey("get")) continue;
             assertThat(PATHS).as("no test call for contract path " + p.getKey()).containsKey(p.getKey());
             Map<String, Object> getOp = (Map<String, Object>) ((Map<String, Object>) p.getValue()).get("get");
             Map<String, Object> ok = (Map<String, Object>) ((Map<String, Object>) getOp.get("responses")).get("200");

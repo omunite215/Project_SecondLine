@@ -36,7 +36,7 @@ services:
       retries: 30
 
   opa:
-    image: openpolicyagent/opa:1.21.4-static
+    image: openpolicyagent/opa:1.22.0-static
     profiles: [core]
     command: ["run", "--server", "--addr", "0.0.0.0:8181", "--log-level", "error"]
     ports: ["127.0.0.1:8181:8181"]

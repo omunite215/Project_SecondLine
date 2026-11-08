@@ -108,7 +108,7 @@ services:
 
   # ---- obs: OTel collector → Jaeger + Prometheus → Grafana (OM-17 extends).
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.164.0
+    image: otel/opentelemetry-collector-contrib:0.164.0-386
     profiles: [obs]
     command: ["--config", "/etc/otelcol/config.yaml"]
     volumes: ["../observability/otel-collector.yaml:/etc/otelcol/config.yaml:ro"]

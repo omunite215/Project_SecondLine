@@ -97,7 +97,10 @@ class Dockerfiles(unittest.TestCase):
             text = (ROOT / f"services/{svc}/Dockerfile").read_text()
             runtime = text.split("\nFROM ")[-1]
             self.assertRegex(runtime, r"(?m)^USER (?!root)\S+", svc)
-            self.assertIn("eclipse-temurin:21.0.12.1_1-jre-noble", runtime, svc)
+            # Exact Temurin 21 build tag (never a floating one); build and runtime stages on the same build.
+            tags = re.findall(r"(?m)^FROM eclipse-temurin:(21\.\d+\.\d+(?:\.\d+)?_\d+)-(jdk|jre)-noble\b", text)
+            self.assertEqual(sorted(k for _, k in tags), ["jdk", "jre"], svc)
+            self.assertEqual(len({v for v, _ in tags}), 1, f"{svc}: jdk and jre stages differ: {tags}")
             self.assertNotIn(":latest", text, svc)
 
     def test_OM_01_dockerignore_excludes_secrets_and_builds(self):

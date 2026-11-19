@@ -81,10 +81,9 @@ lint: ## All linters: pre-commit (gitleaks, EOF, LF) on every file
 test: ## All unit suites (quiet): Java + kit (Python suites: make test-py)
 	@$(GRADLE) test
 	@$(MAKE) --no-print-directory kit-test
-codegen: ## Regenerate Java + Python (+ TS) types from packages/contracts
-	$(call todo,SH-02)
-codegen-java: ## Java types
-	$(call todo,OM-02)
+codegen: codegen-java ## Regenerate Java + Python (+ TS) types from packages/contracts
+codegen-java: ## Java enums (deterministic; committed; CI fails on diff)
+	@python3 scripts/codegen_java.py
 codegen-py: ## Python sl_contracts models
 	$(call todo,KG-01)
 contracts-check: ## Validate schemas + examples (uv fetches pinned jsonschema/pyyaml; no install needed)

@@ -16,7 +16,7 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - evidence: merged #9 (2026-10-29); V1 fresh clone Om 8.4 s, V2 Kunal arm64 8.4 s + 11/11 DB-role tests, V3 docs-only PR #13 merged with java/stack skipped under the required checks; CI run 40812113039 green
 
 ### OM-25 · CI/CD ownership: rulesets, required checks, PR automation
-- meta: P0 | M-0 | 2d | mcs=1d | deps: SH-01 | status: todo
+- meta: P0 | M-0 | 2d | mcs=1d | deps: SH-01 | status: doing
 - refs: §19 §21 §23 | NFR-07 NFR-11 | T-DOC-01 | ADR-010 | RSK-01 RSK-14
 - build: on omunite215/Project_SecondLine per docs/setup/GITHUB.md: Kunal as collaborator (Write); squash-only merges + auto-delete branches; ruleset on main (PR + 1 approval + code-owner review + conversation resolution + required checks; no force-push/deletion; no bypass on `main` — Om's own PRs need Kunal's approval; ruleset `merge-gate` lets only Om merge; immutable `m*` gate tags; settings as code in .github/settings.json + `make gh-check`); `ai-review` label + .github/workflows/claude-review.yml with secret CLAUDE_CODE_OAUTH_TOKEN; required checks grow as services land (java, python, policy, console, leakage, contracts drift); CI caches (Gradle, uv, pnpm); Dependabot entries per ecosystem; tag each milestone gate (m0…m5); review every PR within 24 h with /review-pr.
 - done: a test PR from Kunal cannot merge until CI is green and Om approves; Om's own PR cannot merge without Kunal's approval + green CI and Kunal cannot merge any PR; claude-review posts on a labeled PR; GITHUB.md matches the real settings.
@@ -39,10 +39,11 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 ## M-1 Truthful simulator (ledger side)
 
 ### OM-02 · Java contracts library (types, schema validation, JCS, digests)
-- meta: P0 | M-1 | 1d | mcs | deps: SH-02 | status: todo
+- meta: P0 | M-1 | 1d | mcs | deps: SH-02 | status: review
 - refs: §9 | ADR-005 ADR-011 | REQ-005
 - build: libs/contracts-java: types generated from packages/contracts (jsonschema2pojo task) or records + a generator check; networknt JSON-Schema validator with cached schemas; ErrorCode enum generated from errors.json; CanonicalJson (RFC 8785 / JCS) + Digests.sha256; ActionDigest(action, evidence versions, state_version) shared by approvals and idempotency.
 - done: every §9 example validates; JCS matches SH-08 vectors once they exist; `make codegen` deterministic (CI fails on diff).
+- evidence: PR (this); 36 JUnit OM_02_* in libs/contracts-java (every §9 example validates + every examples/invalid rejected, same x-validates as contracts_check); 10 kit test_OM_02_* (codegen deterministic + committed current; x-action-digest guard; golden action_digest vectors recomputed in Python); JCS vs SH-08 vectors: VERIFY when SH-08 lands; make contracts-check OK; make kit-check OK; ./gradlew test green
 
 ### OM-03 · Ledger core: schema, journal, positions, immutability
 - meta: P0 | M-1 | 4d | mcs | deps: OM-01, OM-02, SH-03 | status: todo

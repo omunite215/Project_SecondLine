@@ -1,0 +1,115 @@
+{
+ "$comment": "OM-02 / ADR-011 golden action_digest vectors. Expected values come from an independent stdlib Python JCS (tests/kit/test_om_02_contracts.py recomputes them); the Java ActionDigest and the audit-verifier must reproduce them byte for byte. SH-08 adds the full JCS/receipt suite.",
+ "x-action-digest": {
+  "$comment": "ADR-011: action_digest = sha256 over the JCS (RFC 8785) form of exactly these fields, evidence_refs sorted by (record_id, version). Excluded: action_id, request_id (per request, so retries digest the same), idempotency_key (it indexes the digest), agent_explanation (C6). Implementations: libs/contracts-java ActionDigest, packages/audit-verifier.",
+  "include": [
+   "run_id",
+   "break_id",
+   "tool_schema_version",
+   "type",
+   "reason_code",
+   "parameters",
+   "evidence_refs",
+   "expected_state_version"
+  ],
+  "sort": {
+   "evidence_refs": [
+    "record_id",
+    "version"
+   ]
+  }
+ },
+ "cases": [
+  {
+   "name": "adjustment_example",
+   "action": {
+    "action_id": "7d1e2a9c-0b3f-4c5d-9e8f-1a2b3c4d5e6f",
+    "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+    "break_id": "brk_0000AB12",
+    "request_id": "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+    "tool_schema_version": "1.0",
+    "type": "ADJUSTMENT",
+    "reason_code": "ROUNDING_DIFFERENCE",
+    "parameters": {
+     "currency": "USD",
+     "amount": "0.01",
+     "debit_account": "4100-USD",
+     "credit_account": "1300-USD",
+     "trade_id": "trd_00004521",
+     "purpose": "ROUNDING"
+    },
+    "evidence_refs": [
+     {
+      "record_id": "ev_00000017",
+      "version": 2
+     }
+    ],
+    "expected_state_version": 7,
+    "idempotency_key": "5c4b3a29-1807-4f6e-9d5c-4b3a29180716",
+    "agent_explanation": "Booked consideration differs from the custodian by one cent; rounding per trade."
+   },
+   "canonical": "{\"break_id\":\"brk_0000AB12\",\"evidence_refs\":[{\"record_id\":\"ev_00000017\",\"version\":2}],\"expected_state_version\":7,\"parameters\":{\"amount\":\"0.01\",\"credit_account\":\"1300-USD\",\"currency\":\"USD\",\"debit_account\":\"4100-USD\",\"purpose\":\"ROUNDING\",\"trade_id\":\"trd_00004521\"},\"reason_code\":\"ROUNDING_DIFFERENCE\",\"run_id\":\"3f2e1d0c-4b5a-4968-8776-655443322110\",\"tool_schema_version\":\"1.0\",\"type\":\"ADJUSTMENT\"}",
+   "action_digest": "sha256:57f96a0688ea50faf94936cdbf8e7d31471810c8e3700be23aa15e0cfdcd2fd9"
+  },
+  {
+   "name": "escalate_example_with_explanation",
+   "action": {
+    "action_id": "9f304c1e-2d5b-4e7f-9a0b-3c4d5e6f7081",
+    "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+    "break_id": "brk_0000AB12",
+    "request_id": "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+    "tool_schema_version": "1.0",
+    "type": "ESCALATE",
+    "reason_code": "CASH_SHORTFALL",
+    "parameters": {
+     "queue": "TREASURY"
+    },
+    "evidence_refs": [],
+    "expected_state_version": 7,
+    "idempotency_key": "7e6d5c4b-3a29-4f8e-9e7d-6c5b4a392818",
+    "agent_explanation": "Booked consideration differs from the custodian by one cent; rounding per trade."
+   },
+   "canonical": "{\"break_id\":\"brk_0000AB12\",\"evidence_refs\":[],\"expected_state_version\":7,\"parameters\":{\"queue\":\"TREASURY\"},\"reason_code\":\"CASH_SHORTFALL\",\"run_id\":\"3f2e1d0c-4b5a-4968-8776-655443322110\",\"tool_schema_version\":\"1.0\",\"type\":\"ESCALATE\"}",
+   "action_digest": "sha256:ac9f71d432ea1d349cc648e1e8baded9156143ef2ce31bf9e87019bce3f25574"
+  },
+  {
+   "name": "refs_out_of_order",
+   "action": {
+    "action_id": "7d1e2a9c-0b3f-4c5d-9e8f-1a2b3c4d5e6f",
+    "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+    "break_id": "brk_0000AB12",
+    "request_id": "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+    "tool_schema_version": "1.0",
+    "type": "ADJUSTMENT",
+    "reason_code": "ROUNDING_DIFFERENCE",
+    "parameters": {
+     "currency": "USD",
+     "amount": "0.01",
+     "debit_account": "4100-USD",
+     "credit_account": "1300-USD",
+     "trade_id": "trd_00004521",
+     "purpose": "ROUNDING"
+    },
+    "evidence_refs": [
+     {
+      "record_id": "set_0000ZZ99",
+      "version": 2
+     },
+     {
+      "record_id": "ev_00000017",
+      "version": 2
+     },
+     {
+      "record_id": "ev_00000017",
+      "version": 1
+     }
+    ],
+    "expected_state_version": 7,
+    "idempotency_key": "5c4b3a29-1807-4f6e-9d5c-4b3a29180716",
+    "agent_explanation": "Booked consideration differs from the custodian by one cent; rounding per trade."
+   },
+   "canonical": "{\"break_id\":\"brk_0000AB12\",\"evidence_refs\":[{\"record_id\":\"ev_00000017\",\"version\":1},{\"record_id\":\"ev_00000017\",\"version\":2},{\"record_id\":\"set_0000ZZ99\",\"version\":2}],\"expected_state_version\":7,\"parameters\":{\"amount\":\"0.01\",\"credit_account\":\"1300-USD\",\"currency\":\"USD\",\"debit_account\":\"4100-USD\",\"purpose\":\"ROUNDING\",\"trade_id\":\"trd_00004521\"},\"reason_code\":\"ROUNDING_DIFFERENCE\",\"run_id\":\"3f2e1d0c-4b5a-4968-8776-655443322110\",\"tool_schema_version\":\"1.0\",\"type\":\"ADJUSTMENT\"}",
+   "action_digest": "sha256:219672153bc96d1aa1cf0f6b21418402c4ce6fe21faf24a506e0b64131cde653"
+  }
+ ]
+}

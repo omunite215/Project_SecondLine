@@ -8,7 +8,7 @@ Commands: `make bootstrap` (once: .env with random secrets, pre-commit hook; no 
 | core | postgres 17, redis 7, opa 1.x | 768 MB total (512/128/128) |
 | app | ledger :8081, gateway :8080 (mcp-adapter: OM-06) | 768 MB each, JVM -Xmx512m |
 | events | kafka 4 KRaft (supervisor: KG cards) | 1 GB |
-| obs | otel-collector, jaeger :16686, prometheus :9090, grafana :3000 | 256 MB each |
+| obs | otel-collector, jaeger :16686, prometheus :9090, grafana :3000 | 256 MB each (grafana 512 MB) |
 | ui | console (OM-21) | — |
 | chaos | toxiproxy :8474 (postgres → :15432, redis → :16379) | 64 MB |
 

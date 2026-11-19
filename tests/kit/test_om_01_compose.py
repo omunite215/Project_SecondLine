@@ -49,6 +49,11 @@ class Compose(unittest.TestCase):
         core = sum(int(s["mem_limit"]) for s in self.services.values() if "core" in s["profiles"])
         self.assertLessEqual(core, 768 * MB)
 
+    def test_OM_01_grafana_mem_fits_measured_rss(self):
+        # grafana 13.3.0 settles at ~278 MiB anon (cgroup memory.stat, 2026-11-19); at 256m it was OOM-killed
+        # (exit 137) in CI stack runs on #35 #45 #51. 512m keeps ~1.8x headroom.
+        self.assertGreaterEqual(int(self.services["grafana"]["mem_limit"]), 512 * MB)
+
     def test_OM_01_images_pinned(self):
         for name, s in self.services.items():
             if "build" in s:

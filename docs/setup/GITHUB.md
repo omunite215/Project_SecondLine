@@ -23,7 +23,7 @@ Rulesets evaluate independently. An Om merge is logged as suite result `bypass` 
 2. **Merging:** squash only; "Automatically delete head branches" on; auto-merge off.
 3. **Rulesets + label:** `make gh-apply`, review, then `python3 scripts/gh_settings.py apply --yes`. It creates new restrictions before removing old bypasses, so there's no window where Kunal can merge.
 4. **AI first-pass review** (optional; uses Om's Claude usage):
-   - In Claude Code, run `/install-github-app` to install the Claude GitHub App on the repo.
+   - No GitHub App is needed. The job is configured to post with its own `GITHUB_TOKEN` (contents: read, pull-requests: write), passed to the action as `github_token`. The App path failed on run 41112559314 with "Invalid OIDC token". VERIFY: the first labelled run after this is on `main`.
    - Environment `claude-review` with a deployment-branch policy allowing only `main`. Put the token there, never in repo secrets: a repo secret is readable by any workflow on a same-repo PR. In your own terminal: `gh secret set CLAUDE_CODE_OAUTH_TOKEN --env claude-review` (value from `claude setup-token`, Pro/Max).
    - The workflow uses `pull_request_target` (runs from protected `main`, so a PR can't edit it) and only runs when **Om** adds the `ai-review` label. Required reviewers would need GitHub Enterprise on a private repo; the branch policy doesn't. Never add `ref:` to its checkout.
    - To use an API key instead, add `ANTHROPIC_API_KEY` and switch the workflow input to `anthropic_api_key`.
@@ -49,3 +49,20 @@ Only when a merge can't wait for the other person (e.g. submission deadline, Kun
 ### Break-glass log
 | date | PR | why | bypass removed |
 |---|---|---|---|
+
+## Acceptance evidence (OM-25, from the ruleset log)
+Read with `gh api "repos/omunite215/Project_SecondLine/rulesets/rule-suites/<id>"`. Rule suites are kept about a month, so these lines are the durable copy.
+
+| check | rule suite | what it shows |
+|---|---|---|
+| Kunal's PR → Om approves → Om merges | 4800117078 (#27, a517245) | every `main` rule `pass`; only `merge-gate` bypassed (admin) |
+| Om's PR → Kunal approves → Om merges | 4822524643 (#28, 3e11880) · 4823776227 (#31, baaed0d) | every `main` rule `pass`; only `merge-gate` bypassed |
+| Om gets no bypass of `main` | 4799287382 (refused: required check `kit` missing) · 4785942812 (refused: unresolved conversation) | `main` rules fail → push refused although Om is admin |
+| Only Om creates `m*` tags | 4775954466 (Kunal, `refs/tags/m-test`) | `gate-tags-create/creation: fail` |
+| Settings match the file | `make gh-check` → `OK` (2026-11-01) | no drift |
+
+Still to show:
+- Kunal's own `gh pr merge` refused.
+- Om's merge refused for **missing approval** specifically.
+- A claude-review run that posts (needs this PR on `main`; the workflow runs from `main`).
+- `git push origin :m0` refused, once the first real gate tag exists.

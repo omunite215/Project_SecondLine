@@ -19,7 +19,7 @@ endef
 .PHONY: help board-next board-check trace trace-check spec-check spec-split ctx kit-test kit-check gh-check gh-apply submission-check hpc-help \
  bootstrap up down ps logs reset db-shell lint test codegen codegen-java codegen-py lint-py contracts-check \
  test-ledger test-gateway test-mcp test-policy test-py test-agent test-factory test-eval test-supervisor test-console \
- test-int test-sec test-redteam test-chaos test-load leakage-check refdata-verify \
+ test-int test-sec test-redteam test-chaos test-load leakage-check refdata-verify refdata-fetch \
  factory factory-all run-one pilot campaign analyze replay verify-chain demo-up demo-seed demo-run demo-test
 
 help: ## List targets
@@ -134,8 +134,10 @@ test-redteam: ## Platform red-team suite by family
 	$(call todo,KG-14)
 leakage-check: ## Canary + truth-field scan
 	$(call todo,KG-05)
-refdata-verify: ## Re-hash reference snapshots
-	$(call todo,KG-02)
+refdata-verify: ## Re-hash reference snapshots + check DATASHEET_INPUTS.md (no network)
+	@$(PY) scripts/refdata.py verify
+refdata-fetch: ## Download public reference snapshots (network, human-run): make refdata-fetch DATE=YYYY-MM-DD
+	$(PY) scripts/refdata.py fetch --date $(or $(DATE),$(shell date -u +%F))
 factory: ## Generate scenarios: make factory SPLIT=dev N=40 [OUT=data/generated]
 	@$(UV) run python -m sl_factory generate --split $(or $(SPLIT),dev) --n $(or $(N),40) --out $(or $(OUT),data/generated)
 factory-all: ## Generate dev + eval + blind

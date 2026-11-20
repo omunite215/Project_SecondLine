@@ -18,10 +18,11 @@ Owner key `kg` (`owner: kunal` in CLAUDE.local.md). Claude reads this through `p
 ## M-1 Truthful simulator (truth side)
 
 ### KG-02 · Public reference-data snapshots (GLEIF, ECB, H.10, ISO codes)
-- meta: P1 | M-1 | 2d | deps: KG-01 | status: todo
+- meta: P1 | M-1 | 2d | deps: KG-01 | status: review
 - refs: §6 | REQ-001 | SEC-14 | RSK-15 | U13 | B4 B7 B8
 - build: scripts/refdata fetchers → data/reference/<source>/<date>/ + MANIFEST.json (URL, retrieval time, license, sha256, row counts, coverage gaps): small GLEIF subset (≤500 LEIs, CC0; an LEI is not a settlement account), ECB euro reference rates (information-only, not executable prices), Fed H.10 for chosen pairs on aligned dates only, ISO 20022 / T2S status + reason codes with citations and `verify: true` until SH-13 confirms. JPMorgan synthetic data = optional, never a blocker.
 - done: `make refdata-verify` re-hashes every snapshot; the factory reads refdata only via MANIFEST; datasheet inputs recorded.
+- evidence: make refdata-verify: 4 snapshots verified (ECB 908 rates, H.10 872, GLEIF 499 LEIs, ISO 5 codes); test_KG_02_verify_rehashes_every_snapshot, test_KG_02_factory_reads_refdata_only_via_manifest, test_KG_02_datasheet_inputs_recorded
 
 ### KG-03 · Causal break factory core (world, lifecycle, B1–B3)
 - meta: P0 | M-1 | 3d | mcs | deps: KG-01, SH-02, SH-03 | status: review

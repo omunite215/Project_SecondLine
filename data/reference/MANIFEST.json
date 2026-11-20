@@ -1,0 +1,138 @@
+{
+ "manifest_version": "1.0",
+ "snapshots": [
+  {
+   "caveats": [
+    "information-only reference rates, not executable transaction prices (§6)",
+    "concertation 14:15 CET; published around 16:00 CET",
+    "raw.csv stored with LF line endings (normalized from the download)"
+   ],
+   "coverage_gaps": [
+    "no rates on weekends or TARGET holidays",
+    "pairs USD, GBP, CHF, JPY per EUR only; window 2026-01-02..2026-11-19"
+   ],
+   "date": "2026-11-20",
+   "files": [
+    {
+     "bytes": 77243,
+     "path": "ecb/2026-11-20/rates.json",
+     "rows": 908,
+     "sha256": "sha256:1710f1035c77fa846d2245642d937845203585352dd564cf138a8370b9480a2d"
+    },
+    {
+     "bytes": 192881,
+     "path": "ecb/2026-11-20/raw.csv",
+     "sha256": "sha256:1be7a6d2ccf7cf5a72b196d0b07b82f5781afa77a1525fef4822e212feaa6f4e"
+    }
+   ],
+   "license": "ECB statistics: free reuse with source acknowledgement",
+   "license_url": "https://www.ecb.europa.eu/home/disclaimer/html/index.en.html",
+   "ref": "ecb@2026-11-20",
+   "retrieved_at": "2026-11-20T02:43:26Z",
+   "source": "ecb",
+   "url": [
+    "https://data-api.ecb.europa.eu/service/data/EXR/D.USD+GBP+CHF+JPY.EUR.SP00.A?format=csvdata&startPeriod=2026-01-02&endPeriod=2026-11-19"
+   ],
+   "verify": true
+  },
+  {
+   "caveats": [
+    "an LEI identifies a legal entity, not a settlement account (§6)"
+   ],
+   "coverage_gaps": [
+    "first 100 ISSUED LEIs by LEI per US, GB, DE, CH, JP; not representative",
+    "no BIC or settlement-account mapping fetched",
+    "1 SOLE_PROPRIETOR record(s) excluded (natural persons)"
+   ],
+   "date": "2026-11-20",
+   "files": [
+    {
+     "bytes": 119576,
+     "path": "gleif/2026-11-20/lei_subset.json",
+     "rows": 499,
+     "sha256": "sha256:c9b0dfaabb20df37c17083aacfb407163b3bf8837b1d46e7327e3ed6762b7c45"
+    }
+   ],
+   "license": "CC0 1.0 (GLEIF LEI data)",
+   "license_url": "https://www.gleif.org/en/meta/lei-data-terms-of-use",
+   "ref": "gleif@2026-11-20",
+   "retrieved_at": "2026-11-20T02:43:32Z",
+   "source": "gleif",
+   "url": [
+    "https://api.gleif.org/api/v1/lei-records?filter%5Bentity.legalAddress.country%5D=US&filter%5Bregistration.status%5D=ISSUED&sort=lei&page%5Bsize%5D=100&page%5Bnumber%5D=1",
+    "https://api.gleif.org/api/v1/lei-records?filter%5Bentity.legalAddress.country%5D=GB&filter%5Bregistration.status%5D=ISSUED&sort=lei&page%5Bsize%5D=100&page%5Bnumber%5D=1",
+    "https://api.gleif.org/api/v1/lei-records?filter%5Bentity.legalAddress.country%5D=DE&filter%5Bregistration.status%5D=ISSUED&sort=lei&page%5Bsize%5D=100&page%5Bnumber%5D=1",
+    "https://api.gleif.org/api/v1/lei-records?filter%5Bentity.legalAddress.country%5D=CH&filter%5Bregistration.status%5D=ISSUED&sort=lei&page%5Bsize%5D=100&page%5Bnumber%5D=1",
+    "https://api.gleif.org/api/v1/lei-records?filter%5Bentity.legalAddress.country%5D=JP&filter%5Bregistration.status%5D=ISSUED&sort=lei&page%5Bsize%5D=100&page%5Bnumber%5D=1"
+   ],
+   "verify": false
+  },
+  {
+   "caveats": [
+    "noon buying rates in New York: different methodology and timing from ECB (§6)",
+    "compare with ECB only on aligned_with_ecb.json dates; never exchangeable",
+    "raw.csv stored with LF line endings (normalized from the download)"
+   ],
+   "coverage_gaps": [
+    "window 2026-01-02..2026-11-13: H.10 is published weekly with a lag",
+    "44 'ND' (no data) observations in the raw download dropped, e.g. US holidays",
+    "EUR and GBP quoted as USD per unit; CHF and JPY as units per USD"
+   ],
+   "date": "2026-11-20",
+   "files": [
+    {
+     "bytes": 3228,
+     "path": "h10/2026-11-20/aligned_with_ecb.json",
+     "rows": 215,
+     "sha256": "sha256:191567f6f231b02345c80248467ca88429aebb3690077e805fc6d8a27f6be282"
+    },
+    {
+     "bytes": 74559,
+     "path": "h10/2026-11-20/rates.json",
+     "rows": 872,
+     "sha256": "sha256:105b9c69a03d6436bf0b9d077b14101e51955ea1757fd4e01e77f0838848ef84"
+    },
+    {
+     "bytes": 49045,
+     "path": "h10/2026-11-20/raw.csv",
+     "sha256": "sha256:60c127f56b5869efe9f4c66ca46f535edb4f37f0964ad6b8a28a398869075dcd"
+    }
+   ],
+   "license": "Federal Reserve Board statistical release; public data, cite the Board",
+   "license_url": "https://www.federalreserve.gov/data.htm",
+   "ref": "h10@2026-11-20",
+   "retrieved_at": "2026-11-20T02:43:26Z",
+   "source": "h10",
+   "url": [
+    "https://www.federalreserve.gov/datadownload/Output.aspx?rel=H10&series=60f32914ab61dfab590e0e470153e3ae&lastobs=260&from=&to=&filetype=csv&label=include&layout=seriescolumn"
+   ],
+   "verify": true
+  },
+  {
+   "caveats": [
+    "every code is verify: true until SH-13 checks it (RSK-15)"
+   ],
+   "coverage_gaps": [
+    "curated, not fetched: pending/failing reason codes used by B1/B7 only"
+   ],
+   "date": "2026-11-20",
+   "files": [
+    {
+     "bytes": 1301,
+     "path": "iso20022/2026-11-20/settlement_codes.json",
+     "rows": 5,
+     "sha256": "sha256:c53f35593c30a26dea9a6ab62f58f8145fe6258c3e49cd498b6dd8884991d8a7"
+    }
+   ],
+   "license": "curated from public ISO 20022 documentation (codes and meanings only)",
+   "license_url": "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets",
+   "ref": "iso20022@2026-11-20",
+   "retrieved_at": "2026-11-20T02:43:32Z",
+   "source": "iso20022",
+   "url": [
+    "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets"
+   ],
+   "verify": true
+  }
+ ]
+}

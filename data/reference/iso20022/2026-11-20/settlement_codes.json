@@ -1,0 +1,42 @@
+[
+ {
+  "citation": "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets",
+  "code": "LACK",
+  "kind": "pending_reason",
+  "meaning": "Lack of securities: insufficient securities on the delivering account",
+  "used_by": "B7",
+  "verify": true
+ },
+ {
+  "citation": "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets",
+  "code": "MONY",
+  "kind": "pending_reason",
+  "meaning": "Insufficient money: insufficient cash on the receiving account",
+  "used_by": "B7",
+  "verify": true
+ },
+ {
+  "citation": "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets",
+  "code": "CLAC",
+  "kind": "pending_reason",
+  "meaning": "Counterparty insufficient securities",
+  "used_by": "B7",
+  "verify": true
+ },
+ {
+  "citation": "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets",
+  "code": "CMON",
+  "kind": "pending_reason",
+  "meaning": "Counterparty insufficient money",
+  "used_by": "B7",
+  "verify": true
+ },
+ {
+  "citation": "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets",
+  "code": "CYCL",
+  "kind": "pending_reason",
+  "meaning": "Awaiting next settlement cycle",
+  "used_by": "B1",
+  "verify": true
+ }
+]

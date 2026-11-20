@@ -1,0 +1,5234 @@
+[
+ {
+  "base": "EUR",
+  "date": "2026-01-02",
+  "quote": "USD",
+  "rate": "1.1738"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-02",
+  "quote": "USD",
+  "rate": "1.3481"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-02",
+  "quote": "CHF",
+  "rate": "0.7918"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-02",
+  "quote": "JPY",
+  "rate": "156.7200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-05",
+  "quote": "USD",
+  "rate": "1.1715"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-05",
+  "quote": "USD",
+  "rate": "1.3527"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-05",
+  "quote": "CHF",
+  "rate": "0.7924"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-05",
+  "quote": "JPY",
+  "rate": "156.3200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-06",
+  "quote": "USD",
+  "rate": "1.1689"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-06",
+  "quote": "USD",
+  "rate": "1.3497"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-06",
+  "quote": "CHF",
+  "rate": "0.7954"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-06",
+  "quote": "JPY",
+  "rate": "156.7000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-07",
+  "quote": "USD",
+  "rate": "1.1690"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-07",
+  "quote": "USD",
+  "rate": "1.3474"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-07",
+  "quote": "CHF",
+  "rate": "0.7967"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-07",
+  "quote": "JPY",
+  "rate": "156.7300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-08",
+  "quote": "USD",
+  "rate": "1.1655"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-08",
+  "quote": "USD",
+  "rate": "1.3430"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-08",
+  "quote": "CHF",
+  "rate": "0.7993"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-08",
+  "quote": "JPY",
+  "rate": "156.9000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-09",
+  "quote": "USD",
+  "rate": "1.1634"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-09",
+  "quote": "USD",
+  "rate": "1.3413"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-09",
+  "quote": "CHF",
+  "rate": "0.8012"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-09",
+  "quote": "JPY",
+  "rate": "158.0700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-12",
+  "quote": "USD",
+  "rate": "1.1672"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-12",
+  "quote": "USD",
+  "rate": "1.3466"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-12",
+  "quote": "CHF",
+  "rate": "0.7972"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-12",
+  "quote": "JPY",
+  "rate": "158.1500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-13",
+  "quote": "USD",
+  "rate": "1.1646"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-13",
+  "quote": "USD",
+  "rate": "1.3436"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-13",
+  "quote": "CHF",
+  "rate": "0.8005"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-13",
+  "quote": "JPY",
+  "rate": "159.0600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-14",
+  "quote": "USD",
+  "rate": "1.1655"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-14",
+  "quote": "USD",
+  "rate": "1.3445"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-14",
+  "quote": "CHF",
+  "rate": "0.7987"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-14",
+  "quote": "JPY",
+  "rate": "158.1300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-15",
+  "quote": "USD",
+  "rate": "1.1605"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-15",
+  "quote": "USD",
+  "rate": "1.3387"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-15",
+  "quote": "CHF",
+  "rate": "0.8030"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-15",
+  "quote": "JPY",
+  "rate": "158.5000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-16",
+  "quote": "USD",
+  "rate": "1.1599"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-16",
+  "quote": "USD",
+  "rate": "1.3384"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-16",
+  "quote": "CHF",
+  "rate": "0.8026"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-16",
+  "quote": "JPY",
+  "rate": "158.0200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-20",
+  "quote": "USD",
+  "rate": "1.1739"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-20",
+  "quote": "USD",
+  "rate": "1.3472"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-20",
+  "quote": "CHF",
+  "rate": "0.7891"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-20",
+  "quote": "JPY",
+  "rate": "157.8900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-21",
+  "quote": "USD",
+  "rate": "1.1705"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-21",
+  "quote": "USD",
+  "rate": "1.3430"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-21",
+  "quote": "CHF",
+  "rate": "0.7929"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-21",
+  "quote": "JPY",
+  "rate": "158.1600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-22",
+  "quote": "USD",
+  "rate": "1.1738"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-22",
+  "quote": "USD",
+  "rate": "1.3489"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-22",
+  "quote": "CHF",
+  "rate": "0.7905"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-22",
+  "quote": "JPY",
+  "rate": "158.3600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-23",
+  "quote": "USD",
+  "rate": "1.1771"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-23",
+  "quote": "USD",
+  "rate": "1.3590"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-23",
+  "quote": "CHF",
+  "rate": "0.7879"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-23",
+  "quote": "JPY",
+  "rate": "157.5700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-26",
+  "quote": "USD",
+  "rate": "1.1886"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-26",
+  "quote": "USD",
+  "rate": "1.3699"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-26",
+  "quote": "CHF",
+  "rate": "0.7753"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-26",
+  "quote": "JPY",
+  "rate": "153.8800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-27",
+  "quote": "USD",
+  "rate": "1.1980"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-27",
+  "quote": "USD",
+  "rate": "1.3782"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-27",
+  "quote": "CHF",
+  "rate": "0.7666"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-27",
+  "quote": "JPY",
+  "rate": "153.0300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-28",
+  "quote": "USD",
+  "rate": "1.1941"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-28",
+  "quote": "USD",
+  "rate": "1.3787"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-28",
+  "quote": "CHF",
+  "rate": "0.7694"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-28",
+  "quote": "JPY",
+  "rate": "153.6000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-29",
+  "quote": "USD",
+  "rate": "1.1943"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-29",
+  "quote": "USD",
+  "rate": "1.3795"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-29",
+  "quote": "CHF",
+  "rate": "0.7674"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-29",
+  "quote": "JPY",
+  "rate": "152.8800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-01-30",
+  "quote": "USD",
+  "rate": "1.1885"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-01-30",
+  "quote": "USD",
+  "rate": "1.3729"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-30",
+  "quote": "CHF",
+  "rate": "0.7710"
+ },
+ {
+  "base": "USD",
+  "date": "2026-01-30",
+  "quote": "JPY",
+  "rate": "154.3400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-02",
+  "quote": "USD",
+  "rate": "1.1807"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-02",
+  "quote": "USD",
+  "rate": "1.3654"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-02",
+  "quote": "CHF",
+  "rate": "0.7797"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-02",
+  "quote": "JPY",
+  "rate": "155.5000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-03",
+  "quote": "USD",
+  "rate": "1.1819"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-03",
+  "quote": "USD",
+  "rate": "1.3701"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-03",
+  "quote": "CHF",
+  "rate": "0.7749"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-03",
+  "quote": "JPY",
+  "rate": "155.7000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-04",
+  "quote": "USD",
+  "rate": "1.1803"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-04",
+  "quote": "USD",
+  "rate": "1.3659"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-04",
+  "quote": "CHF",
+  "rate": "0.7767"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-04",
+  "quote": "JPY",
+  "rate": "156.6100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-05",
+  "quote": "USD",
+  "rate": "1.1802"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-05",
+  "quote": "USD",
+  "rate": "1.3551"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-05",
+  "quote": "CHF",
+  "rate": "0.7772"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-05",
+  "quote": "JPY",
+  "rate": "156.9100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-06",
+  "quote": "USD",
+  "rate": "1.1812"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-06",
+  "quote": "USD",
+  "rate": "1.3606"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-06",
+  "quote": "CHF",
+  "rate": "0.7758"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-06",
+  "quote": "JPY",
+  "rate": "157.1000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-09",
+  "quote": "USD",
+  "rate": "1.1898"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-09",
+  "quote": "USD",
+  "rate": "1.3667"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-09",
+  "quote": "CHF",
+  "rate": "0.7679"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-09",
+  "quote": "JPY",
+  "rate": "156.0800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-10",
+  "quote": "USD",
+  "rate": "1.1898"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-10",
+  "quote": "USD",
+  "rate": "1.3664"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-10",
+  "quote": "CHF",
+  "rate": "0.7668"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-10",
+  "quote": "JPY",
+  "rate": "154.2800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-11",
+  "quote": "USD",
+  "rate": "1.1884"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-11",
+  "quote": "USD",
+  "rate": "1.3654"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-11",
+  "quote": "CHF",
+  "rate": "0.7700"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-11",
+  "quote": "JPY",
+  "rate": "152.9300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-12",
+  "quote": "USD",
+  "rate": "1.1870"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-12",
+  "quote": "USD",
+  "rate": "1.3632"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-12",
+  "quote": "CHF",
+  "rate": "0.7693"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-12",
+  "quote": "JPY",
+  "rate": "152.6400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-13",
+  "quote": "USD",
+  "rate": "1.1870"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-13",
+  "quote": "USD",
+  "rate": "1.3644"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-13",
+  "quote": "CHF",
+  "rate": "0.7685"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-13",
+  "quote": "JPY",
+  "rate": "152.7700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-17",
+  "quote": "USD",
+  "rate": "1.1831"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-17",
+  "quote": "USD",
+  "rate": "1.3540"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-17",
+  "quote": "CHF",
+  "rate": "0.7718"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-17",
+  "quote": "JPY",
+  "rate": "153.5700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-18",
+  "quote": "USD",
+  "rate": "1.1810"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-18",
+  "quote": "USD",
+  "rate": "1.3536"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-18",
+  "quote": "CHF",
+  "rate": "0.7723"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-18",
+  "quote": "JPY",
+  "rate": "154.4500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-19",
+  "quote": "USD",
+  "rate": "1.1762"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-19",
+  "quote": "USD",
+  "rate": "1.3446"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-19",
+  "quote": "CHF",
+  "rate": "0.7758"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-19",
+  "quote": "JPY",
+  "rate": "154.9600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-20",
+  "quote": "USD",
+  "rate": "1.1781"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-20",
+  "quote": "USD",
+  "rate": "1.3500"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-20",
+  "quote": "CHF",
+  "rate": "0.7756"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-20",
+  "quote": "JPY",
+  "rate": "154.9900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-23",
+  "quote": "USD",
+  "rate": "1.1804"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-23",
+  "quote": "USD",
+  "rate": "1.3509"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-23",
+  "quote": "CHF",
+  "rate": "0.7734"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-23",
+  "quote": "JPY",
+  "rate": "154.3000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-24",
+  "quote": "USD",
+  "rate": "1.1789"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-24",
+  "quote": "USD",
+  "rate": "1.3531"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-24",
+  "quote": "CHF",
+  "rate": "0.7734"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-24",
+  "quote": "JPY",
+  "rate": "155.6600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-25",
+  "quote": "USD",
+  "rate": "1.1804"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-25",
+  "quote": "USD",
+  "rate": "1.3552"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-25",
+  "quote": "CHF",
+  "rate": "0.7728"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-25",
+  "quote": "JPY",
+  "rate": "156.3000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-26",
+  "quote": "USD",
+  "rate": "1.1792"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-26",
+  "quote": "USD",
+  "rate": "1.3504"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-26",
+  "quote": "CHF",
+  "rate": "0.7738"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-26",
+  "quote": "JPY",
+  "rate": "156.1300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-02-27",
+  "quote": "USD",
+  "rate": "1.1822"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-02-27",
+  "quote": "USD",
+  "rate": "1.3455"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-27",
+  "quote": "CHF",
+  "rate": "0.7686"
+ },
+ {
+  "base": "USD",
+  "date": "2026-02-27",
+  "quote": "JPY",
+  "rate": "156.0500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-02",
+  "quote": "USD",
+  "rate": "1.1690"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-02",
+  "quote": "USD",
+  "rate": "1.3393"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-02",
+  "quote": "CHF",
+  "rate": "0.7797"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-02",
+  "quote": "JPY",
+  "rate": "157.4800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-03",
+  "quote": "USD",
+  "rate": "1.1604"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-03",
+  "quote": "USD",
+  "rate": "1.3330"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-03",
+  "quote": "CHF",
+  "rate": "0.7828"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-03",
+  "quote": "JPY",
+  "rate": "157.6900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-04",
+  "quote": "USD",
+  "rate": "1.1638"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-04",
+  "quote": "USD",
+  "rate": "1.3370"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-04",
+  "quote": "CHF",
+  "rate": "0.7798"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-04",
+  "quote": "JPY",
+  "rate": "156.9300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-05",
+  "quote": "USD",
+  "rate": "1.1585"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-05",
+  "quote": "USD",
+  "rate": "1.3320"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-05",
+  "quote": "CHF",
+  "rate": "0.7819"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-05",
+  "quote": "JPY",
+  "rate": "157.5800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-06",
+  "quote": "USD",
+  "rate": "1.1606"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-06",
+  "quote": "USD",
+  "rate": "1.3398"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-06",
+  "quote": "CHF",
+  "rate": "0.7778"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-06",
+  "quote": "JPY",
+  "rate": "157.6400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-09",
+  "quote": "USD",
+  "rate": "1.1592"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-09",
+  "quote": "USD",
+  "rate": "1.3395"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-09",
+  "quote": "CHF",
+  "rate": "0.7787"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-09",
+  "quote": "JPY",
+  "rate": "158.0800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-10",
+  "quote": "USD",
+  "rate": "1.1648"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-10",
+  "quote": "USD",
+  "rate": "1.3460"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-10",
+  "quote": "CHF",
+  "rate": "0.7753"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-10",
+  "quote": "JPY",
+  "rate": "157.6000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-11",
+  "quote": "USD",
+  "rate": "1.1566"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-11",
+  "quote": "USD",
+  "rate": "1.3399"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-11",
+  "quote": "CHF",
+  "rate": "0.7806"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-11",
+  "quote": "JPY",
+  "rate": "158.8300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-12",
+  "quote": "USD",
+  "rate": "1.1522"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-12",
+  "quote": "USD",
+  "rate": "1.3350"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-12",
+  "quote": "CHF",
+  "rate": "0.7844"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-12",
+  "quote": "JPY",
+  "rate": "159.2100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-13",
+  "quote": "USD",
+  "rate": "1.1444"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-13",
+  "quote": "USD",
+  "rate": "1.3240"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-13",
+  "quote": "CHF",
+  "rate": "0.7898"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-13",
+  "quote": "JPY",
+  "rate": "159.5400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-16",
+  "quote": "USD",
+  "rate": "1.1487"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-16",
+  "quote": "USD",
+  "rate": "1.3302"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-16",
+  "quote": "CHF",
+  "rate": "0.7887"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-16",
+  "quote": "JPY",
+  "rate": "159.3000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-17",
+  "quote": "USD",
+  "rate": "1.1525"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-17",
+  "quote": "USD",
+  "rate": "1.3345"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-17",
+  "quote": "CHF",
+  "rate": "0.7857"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-17",
+  "quote": "JPY",
+  "rate": "159.0300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-18",
+  "quote": "USD",
+  "rate": "1.1513"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-18",
+  "quote": "USD",
+  "rate": "1.3323"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-18",
+  "quote": "CHF",
+  "rate": "0.7892"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-18",
+  "quote": "JPY",
+  "rate": "159.4800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-19",
+  "quote": "USD",
+  "rate": "1.1515"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-19",
+  "quote": "USD",
+  "rate": "1.3361"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-19",
+  "quote": "CHF",
+  "rate": "0.7924"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-19",
+  "quote": "JPY",
+  "rate": "158.1900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-20",
+  "quote": "USD",
+  "rate": "1.1543"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-20",
+  "quote": "USD",
+  "rate": "1.3303"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-20",
+  "quote": "CHF",
+  "rate": "0.7890"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-20",
+  "quote": "JPY",
+  "rate": "159.2600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-23",
+  "quote": "USD",
+  "rate": "1.1587"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-23",
+  "quote": "USD",
+  "rate": "1.3385"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-23",
+  "quote": "CHF",
+  "rate": "0.7878"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-23",
+  "quote": "JPY",
+  "rate": "158.7000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-24",
+  "quote": "USD",
+  "rate": "1.1578"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-24",
+  "quote": "USD",
+  "rate": "1.3383"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-24",
+  "quote": "CHF",
+  "rate": "0.7914"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-24",
+  "quote": "JPY",
+  "rate": "158.9000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-25",
+  "quote": "USD",
+  "rate": "1.1570"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-25",
+  "quote": "USD",
+  "rate": "1.3373"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-25",
+  "quote": "CHF",
+  "rate": "0.7918"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-25",
+  "quote": "JPY",
+  "rate": "159.2000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-26",
+  "quote": "USD",
+  "rate": "1.1542"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-26",
+  "quote": "USD",
+  "rate": "1.3353"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-26",
+  "quote": "CHF",
+  "rate": "0.7935"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-26",
+  "quote": "JPY",
+  "rate": "159.6500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-27",
+  "quote": "USD",
+  "rate": "1.1520"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-27",
+  "quote": "USD",
+  "rate": "1.3293"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-27",
+  "quote": "CHF",
+  "rate": "0.7970"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-27",
+  "quote": "JPY",
+  "rate": "160.1600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-30",
+  "quote": "USD",
+  "rate": "1.1454"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-30",
+  "quote": "USD",
+  "rate": "1.3191"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-30",
+  "quote": "CHF",
+  "rate": "0.8001"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-30",
+  "quote": "JPY",
+  "rate": "159.4900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-03-31",
+  "quote": "USD",
+  "rate": "1.1518"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-03-31",
+  "quote": "USD",
+  "rate": "1.3184"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-31",
+  "quote": "CHF",
+  "rate": "0.8027"
+ },
+ {
+  "base": "USD",
+  "date": "2026-03-31",
+  "quote": "JPY",
+  "rate": "159.0800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-01",
+  "quote": "USD",
+  "rate": "1.1614"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-01",
+  "quote": "USD",
+  "rate": "1.3331"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-01",
+  "quote": "CHF",
+  "rate": "0.7933"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-01",
+  "quote": "JPY",
+  "rate": "158.6300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-02",
+  "quote": "USD",
+  "rate": "1.1546"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-02",
+  "quote": "USD",
+  "rate": "1.3241"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-02",
+  "quote": "CHF",
+  "rate": "0.7985"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-02",
+  "quote": "JPY",
+  "rate": "159.3400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-03",
+  "quote": "USD",
+  "rate": "1.1523"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-03",
+  "quote": "USD",
+  "rate": "1.3202"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-03",
+  "quote": "CHF",
+  "rate": "0.7999"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-03",
+  "quote": "JPY",
+  "rate": "159.6400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-06",
+  "quote": "USD",
+  "rate": "1.1545"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-06",
+  "quote": "USD",
+  "rate": "1.3235"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-06",
+  "quote": "CHF",
+  "rate": "0.7979"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-06",
+  "quote": "JPY",
+  "rate": "159.7100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-07",
+  "quote": "USD",
+  "rate": "1.1571"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-07",
+  "quote": "USD",
+  "rate": "1.3240"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-07",
+  "quote": "CHF",
+  "rate": "0.7997"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-07",
+  "quote": "JPY",
+  "rate": "159.9000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-08",
+  "quote": "USD",
+  "rate": "1.1686"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-08",
+  "quote": "USD",
+  "rate": "1.3439"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-08",
+  "quote": "CHF",
+  "rate": "0.7899"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-08",
+  "quote": "JPY",
+  "rate": "158.3900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-09",
+  "quote": "USD",
+  "rate": "1.1706"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-09",
+  "quote": "USD",
+  "rate": "1.3443"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-09",
+  "quote": "CHF",
+  "rate": "0.7889"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-09",
+  "quote": "JPY",
+  "rate": "158.8700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-10",
+  "quote": "USD",
+  "rate": "1.1723"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-10",
+  "quote": "USD",
+  "rate": "1.3460"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-10",
+  "quote": "CHF",
+  "rate": "0.7893"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-10",
+  "quote": "JPY",
+  "rate": "159.2200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-13",
+  "quote": "USD",
+  "rate": "1.1710"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-13",
+  "quote": "USD",
+  "rate": "1.3459"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-13",
+  "quote": "CHF",
+  "rate": "0.7876"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-13",
+  "quote": "JPY",
+  "rate": "159.7400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-14",
+  "quote": "USD",
+  "rate": "1.1791"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-14",
+  "quote": "USD",
+  "rate": "1.3563"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-14",
+  "quote": "CHF",
+  "rate": "0.7810"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-14",
+  "quote": "JPY",
+  "rate": "158.9100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-15",
+  "quote": "USD",
+  "rate": "1.1799"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-15",
+  "quote": "USD",
+  "rate": "1.3569"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-15",
+  "quote": "CHF",
+  "rate": "0.7815"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-15",
+  "quote": "JPY",
+  "rate": "159.0200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-16",
+  "quote": "USD",
+  "rate": "1.1783"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-16",
+  "quote": "USD",
+  "rate": "1.3540"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-16",
+  "quote": "CHF",
+  "rate": "0.7833"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-16",
+  "quote": "JPY",
+  "rate": "159.0700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-17",
+  "quote": "USD",
+  "rate": "1.1801"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-17",
+  "quote": "USD",
+  "rate": "1.3556"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-17",
+  "quote": "CHF",
+  "rate": "0.7795"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-17",
+  "quote": "JPY",
+  "rate": "158.1000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-20",
+  "quote": "USD",
+  "rate": "1.1785"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-20",
+  "quote": "USD",
+  "rate": "1.3542"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-20",
+  "quote": "CHF",
+  "rate": "0.7782"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-20",
+  "quote": "JPY",
+  "rate": "158.6600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-21",
+  "quote": "USD",
+  "rate": "1.1752"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-21",
+  "quote": "USD",
+  "rate": "1.3512"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-21",
+  "quote": "CHF",
+  "rate": "0.7800"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-21",
+  "quote": "JPY",
+  "rate": "159.3900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-22",
+  "quote": "USD",
+  "rate": "1.1714"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-22",
+  "quote": "USD",
+  "rate": "1.3505"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-22",
+  "quote": "CHF",
+  "rate": "0.7835"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-22",
+  "quote": "JPY",
+  "rate": "159.4900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-23",
+  "quote": "USD",
+  "rate": "1.1704"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-23",
+  "quote": "USD",
+  "rate": "1.3495"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-23",
+  "quote": "CHF",
+  "rate": "0.7843"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-23",
+  "quote": "JPY",
+  "rate": "159.4400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-24",
+  "quote": "USD",
+  "rate": "1.1718"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-24",
+  "quote": "USD",
+  "rate": "1.3518"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-24",
+  "quote": "CHF",
+  "rate": "0.7848"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-24",
+  "quote": "JPY",
+  "rate": "159.3500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-27",
+  "quote": "USD",
+  "rate": "1.1731"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-27",
+  "quote": "USD",
+  "rate": "1.3553"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-27",
+  "quote": "CHF",
+  "rate": "0.7845"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-27",
+  "quote": "JPY",
+  "rate": "159.2900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-28",
+  "quote": "USD",
+  "rate": "1.1715"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-28",
+  "quote": "USD",
+  "rate": "1.3513"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-28",
+  "quote": "CHF",
+  "rate": "0.7888"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-28",
+  "quote": "JPY",
+  "rate": "159.5300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-29",
+  "quote": "USD",
+  "rate": "1.1695"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-29",
+  "quote": "USD",
+  "rate": "1.3493"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-29",
+  "quote": "CHF",
+  "rate": "0.7902"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-29",
+  "quote": "JPY",
+  "rate": "160.2300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-04-30",
+  "quote": "USD",
+  "rate": "1.1729"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-04-30",
+  "quote": "USD",
+  "rate": "1.3580"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-30",
+  "quote": "CHF",
+  "rate": "0.7824"
+ },
+ {
+  "base": "USD",
+  "date": "2026-04-30",
+  "quote": "JPY",
+  "rate": "156.6600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-01",
+  "quote": "USD",
+  "rate": "1.1755"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-01",
+  "quote": "USD",
+  "rate": "1.3621"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-01",
+  "quote": "CHF",
+  "rate": "0.7796"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-01",
+  "quote": "JPY",
+  "rate": "156.7600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-04",
+  "quote": "USD",
+  "rate": "1.1698"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-04",
+  "quote": "USD",
+  "rate": "1.3535"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-04",
+  "quote": "CHF",
+  "rate": "0.7835"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-04",
+  "quote": "JPY",
+  "rate": "157.2100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-05",
+  "quote": "USD",
+  "rate": "1.1707"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-05",
+  "quote": "USD",
+  "rate": "1.3576"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-05",
+  "quote": "CHF",
+  "rate": "0.7822"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-05",
+  "quote": "JPY",
+  "rate": "157.6800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-06",
+  "quote": "USD",
+  "rate": "1.1753"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-06",
+  "quote": "USD",
+  "rate": "1.3597"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-06",
+  "quote": "CHF",
+  "rate": "0.7793"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-06",
+  "quote": "JPY",
+  "rate": "156.4400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-07",
+  "quote": "USD",
+  "rate": "1.1764"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-07",
+  "quote": "USD",
+  "rate": "1.3612"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-07",
+  "quote": "CHF",
+  "rate": "0.7777"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-07",
+  "quote": "JPY",
+  "rate": "156.4800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-08",
+  "quote": "USD",
+  "rate": "1.1773"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-08",
+  "quote": "USD",
+  "rate": "1.3625"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-08",
+  "quote": "CHF",
+  "rate": "0.7773"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-08",
+  "quote": "JPY",
+  "rate": "156.6400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-11",
+  "quote": "USD",
+  "rate": "1.1780"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-11",
+  "quote": "USD",
+  "rate": "1.3651"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-11",
+  "quote": "CHF",
+  "rate": "0.7773"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-11",
+  "quote": "JPY",
+  "rate": "157.0400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-12",
+  "quote": "USD",
+  "rate": "1.1733"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-12",
+  "quote": "USD",
+  "rate": "1.3528"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-12",
+  "quote": "CHF",
+  "rate": "0.7817"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-12",
+  "quote": "JPY",
+  "rate": "157.7100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-13",
+  "quote": "USD",
+  "rate": "1.1711"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-13",
+  "quote": "USD",
+  "rate": "1.3520"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-13",
+  "quote": "CHF",
+  "rate": "0.7825"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-13",
+  "quote": "JPY",
+  "rate": "157.8400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-14",
+  "quote": "USD",
+  "rate": "1.1678"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-14",
+  "quote": "USD",
+  "rate": "1.3480"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-14",
+  "quote": "CHF",
+  "rate": "0.7830"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-14",
+  "quote": "JPY",
+  "rate": "158.0800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-15",
+  "quote": "USD",
+  "rate": "1.1627"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-15",
+  "quote": "USD",
+  "rate": "1.3332"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-15",
+  "quote": "CHF",
+  "rate": "0.7868"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-15",
+  "quote": "JPY",
+  "rate": "158.6900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-18",
+  "quote": "USD",
+  "rate": "1.1649"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-18",
+  "quote": "USD",
+  "rate": "1.3420"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-18",
+  "quote": "CHF",
+  "rate": "0.7856"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-18",
+  "quote": "JPY",
+  "rate": "158.8300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-19",
+  "quote": "USD",
+  "rate": "1.1602"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-19",
+  "quote": "USD",
+  "rate": "1.3401"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-19",
+  "quote": "CHF",
+  "rate": "0.7897"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-19",
+  "quote": "JPY",
+  "rate": "159.1100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-20",
+  "quote": "USD",
+  "rate": "1.1620"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-20",
+  "quote": "USD",
+  "rate": "1.3441"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-20",
+  "quote": "CHF",
+  "rate": "0.7876"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-20",
+  "quote": "JPY",
+  "rate": "158.8400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-21",
+  "quote": "USD",
+  "rate": "1.1589"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-21",
+  "quote": "USD",
+  "rate": "1.3407"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-21",
+  "quote": "CHF",
+  "rate": "0.7893"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-21",
+  "quote": "JPY",
+  "rate": "159.1600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-22",
+  "quote": "USD",
+  "rate": "1.1603"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-22",
+  "quote": "USD",
+  "rate": "1.3439"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-22",
+  "quote": "CHF",
+  "rate": "0.7857"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-22",
+  "quote": "JPY",
+  "rate": "159.2000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-26",
+  "quote": "USD",
+  "rate": "1.1620"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-26",
+  "quote": "USD",
+  "rate": "1.3437"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-26",
+  "quote": "CHF",
+  "rate": "0.7860"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-26",
+  "quote": "JPY",
+  "rate": "159.3600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-27",
+  "quote": "USD",
+  "rate": "1.1631"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-27",
+  "quote": "USD",
+  "rate": "1.3431"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-27",
+  "quote": "CHF",
+  "rate": "0.7871"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-27",
+  "quote": "JPY",
+  "rate": "159.4700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-28",
+  "quote": "USD",
+  "rate": "1.1649"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-28",
+  "quote": "USD",
+  "rate": "1.3438"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-28",
+  "quote": "CHF",
+  "rate": "0.7845"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-28",
+  "quote": "JPY",
+  "rate": "159.2900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-05-29",
+  "quote": "USD",
+  "rate": "1.1679"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-05-29",
+  "quote": "USD",
+  "rate": "1.3476"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-29",
+  "quote": "CHF",
+  "rate": "0.7811"
+ },
+ {
+  "base": "USD",
+  "date": "2026-05-29",
+  "quote": "JPY",
+  "rate": "159.2300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-01",
+  "quote": "USD",
+  "rate": "1.1624"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-01",
+  "quote": "USD",
+  "rate": "1.3451"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-01",
+  "quote": "CHF",
+  "rate": "0.7868"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-01",
+  "quote": "JPY",
+  "rate": "159.6600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-02",
+  "quote": "USD",
+  "rate": "1.1642"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-02",
+  "quote": "USD",
+  "rate": "1.3481"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-02",
+  "quote": "CHF",
+  "rate": "0.7858"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-02",
+  "quote": "JPY",
+  "rate": "159.8600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-03",
+  "quote": "USD",
+  "rate": "1.1605"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-03",
+  "quote": "USD",
+  "rate": "1.3435"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-03",
+  "quote": "CHF",
+  "rate": "0.7908"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-03",
+  "quote": "JPY",
+  "rate": "159.9700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-04",
+  "quote": "USD",
+  "rate": "1.1629"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-04",
+  "quote": "USD",
+  "rate": "1.3441"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-04",
+  "quote": "CHF",
+  "rate": "0.7885"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-04",
+  "quote": "JPY",
+  "rate": "159.9700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-05",
+  "quote": "USD",
+  "rate": "1.1533"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-05",
+  "quote": "USD",
+  "rate": "1.3360"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-05",
+  "quote": "CHF",
+  "rate": "0.7955"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-05",
+  "quote": "JPY",
+  "rate": "160.2600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-08",
+  "quote": "USD",
+  "rate": "1.1545"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-08",
+  "quote": "USD",
+  "rate": "1.3347"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-08",
+  "quote": "CHF",
+  "rate": "0.7972"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-08",
+  "quote": "JPY",
+  "rate": "160.1200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-09",
+  "quote": "USD",
+  "rate": "1.1556"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-09",
+  "quote": "USD",
+  "rate": "1.3389"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-09",
+  "quote": "CHF",
+  "rate": "0.7971"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-09",
+  "quote": "JPY",
+  "rate": "160.2300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-10",
+  "quote": "USD",
+  "rate": "1.1550"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-10",
+  "quote": "USD",
+  "rate": "1.3392"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-10",
+  "quote": "CHF",
+  "rate": "0.7984"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-10",
+  "quote": "JPY",
+  "rate": "160.4700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-11",
+  "quote": "USD",
+  "rate": "1.1515"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-11",
+  "quote": "USD",
+  "rate": "1.3337"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-11",
+  "quote": "CHF",
+  "rate": "0.8007"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-11",
+  "quote": "JPY",
+  "rate": "160.5100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-12",
+  "quote": "USD",
+  "rate": "1.1573"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-12",
+  "quote": "USD",
+  "rate": "1.3414"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-12",
+  "quote": "CHF",
+  "rate": "0.7964"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-12",
+  "quote": "JPY",
+  "rate": "160.2400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-15",
+  "quote": "USD",
+  "rate": "1.1599"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-15",
+  "quote": "USD",
+  "rate": "1.3426"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-15",
+  "quote": "CHF",
+  "rate": "0.7937"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-15",
+  "quote": "JPY",
+  "rate": "160.2000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-16",
+  "quote": "USD",
+  "rate": "1.1615"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-16",
+  "quote": "USD",
+  "rate": "1.3438"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-16",
+  "quote": "CHF",
+  "rate": "0.7928"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-16",
+  "quote": "JPY",
+  "rate": "160.3900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-17",
+  "quote": "USD",
+  "rate": "1.1593"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-17",
+  "quote": "USD",
+  "rate": "1.3400"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-17",
+  "quote": "CHF",
+  "rate": "0.7930"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-17",
+  "quote": "JPY",
+  "rate": "160.2200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-18",
+  "quote": "USD",
+  "rate": "1.1470"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-18",
+  "quote": "USD",
+  "rate": "1.3228"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-18",
+  "quote": "CHF",
+  "rate": "0.8040"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-18",
+  "quote": "JPY",
+  "rate": "161.3700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-22",
+  "quote": "USD",
+  "rate": "1.1432"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-22",
+  "quote": "USD",
+  "rate": "1.3249"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-22",
+  "quote": "CHF",
+  "rate": "0.8091"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-22",
+  "quote": "JPY",
+  "rate": "161.5100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-23",
+  "quote": "USD",
+  "rate": "1.1383"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-23",
+  "quote": "USD",
+  "rate": "1.3192"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-23",
+  "quote": "CHF",
+  "rate": "0.8097"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-23",
+  "quote": "JPY",
+  "rate": "161.5500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-24",
+  "quote": "USD",
+  "rate": "1.1348"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-24",
+  "quote": "USD",
+  "rate": "1.3160"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-24",
+  "quote": "CHF",
+  "rate": "0.8126"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-24",
+  "quote": "JPY",
+  "rate": "161.7600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-25",
+  "quote": "USD",
+  "rate": "1.1385"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-25",
+  "quote": "USD",
+  "rate": "1.3216"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-25",
+  "quote": "CHF",
+  "rate": "0.8093"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-25",
+  "quote": "JPY",
+  "rate": "161.6700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-26",
+  "quote": "USD",
+  "rate": "1.1403"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-26",
+  "quote": "USD",
+  "rate": "1.3223"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-26",
+  "quote": "CHF",
+  "rate": "0.8082"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-26",
+  "quote": "JPY",
+  "rate": "161.6700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-29",
+  "quote": "USD",
+  "rate": "1.1425"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-29",
+  "quote": "USD",
+  "rate": "1.3255"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-29",
+  "quote": "CHF",
+  "rate": "0.8081"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-29",
+  "quote": "JPY",
+  "rate": "161.9300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-06-30",
+  "quote": "USD",
+  "rate": "1.1417"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-06-30",
+  "quote": "USD",
+  "rate": "1.3259"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-30",
+  "quote": "CHF",
+  "rate": "0.8082"
+ },
+ {
+  "base": "USD",
+  "date": "2026-06-30",
+  "quote": "JPY",
+  "rate": "162.6100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-01",
+  "quote": "USD",
+  "rate": "1.1384"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-01",
+  "quote": "USD",
+  "rate": "1.3280"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-01",
+  "quote": "CHF",
+  "rate": "0.8086"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-01",
+  "quote": "JPY",
+  "rate": "162.4100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-02",
+  "quote": "USD",
+  "rate": "1.1448"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-02",
+  "quote": "USD",
+  "rate": "1.3364"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-02",
+  "quote": "CHF",
+  "rate": "0.8022"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-02",
+  "quote": "JPY",
+  "rate": "160.9000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-06",
+  "quote": "USD",
+  "rate": "1.1426"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-06",
+  "quote": "USD",
+  "rate": "1.3369"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-06",
+  "quote": "CHF",
+  "rate": "0.8063"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-06",
+  "quote": "JPY",
+  "rate": "162.2800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-07",
+  "quote": "USD",
+  "rate": "1.1423"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-07",
+  "quote": "USD",
+  "rate": "1.3372"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-07",
+  "quote": "CHF",
+  "rate": "0.8069"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-07",
+  "quote": "JPY",
+  "rate": "161.9100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-08",
+  "quote": "USD",
+  "rate": "1.1396"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-08",
+  "quote": "USD",
+  "rate": "1.3362"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-08",
+  "quote": "CHF",
+  "rate": "0.8105"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-08",
+  "quote": "JPY",
+  "rate": "162.6700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-09",
+  "quote": "USD",
+  "rate": "1.1439"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-09",
+  "quote": "USD",
+  "rate": "1.3409"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-09",
+  "quote": "CHF",
+  "rate": "0.8063"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-09",
+  "quote": "JPY",
+  "rate": "162.2900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-10",
+  "quote": "USD",
+  "rate": "1.1438"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-10",
+  "quote": "USD",
+  "rate": "1.3421"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-10",
+  "quote": "CHF",
+  "rate": "0.8063"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-10",
+  "quote": "JPY",
+  "rate": "161.3100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-13",
+  "quote": "USD",
+  "rate": "1.1402"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-13",
+  "quote": "USD",
+  "rate": "1.3382"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-13",
+  "quote": "CHF",
+  "rate": "0.8123"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-13",
+  "quote": "JPY",
+  "rate": "162.3200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-14",
+  "quote": "USD",
+  "rate": "1.1428"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-14",
+  "quote": "USD",
+  "rate": "1.3383"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-14",
+  "quote": "CHF",
+  "rate": "0.8091"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-14",
+  "quote": "JPY",
+  "rate": "162.1400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-15",
+  "quote": "USD",
+  "rate": "1.1436"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-15",
+  "quote": "USD",
+  "rate": "1.3497"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-15",
+  "quote": "CHF",
+  "rate": "0.8067"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-15",
+  "quote": "JPY",
+  "rate": "162.1300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-16",
+  "quote": "USD",
+  "rate": "1.1447"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-16",
+  "quote": "USD",
+  "rate": "1.3485"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-16",
+  "quote": "CHF",
+  "rate": "0.8079"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-16",
+  "quote": "JPY",
+  "rate": "162.4200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-17",
+  "quote": "USD",
+  "rate": "1.1440"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-17",
+  "quote": "USD",
+  "rate": "1.3446"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-17",
+  "quote": "CHF",
+  "rate": "0.8069"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-17",
+  "quote": "JPY",
+  "rate": "162.4300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-20",
+  "quote": "USD",
+  "rate": "1.1411"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-20",
+  "quote": "USD",
+  "rate": "1.3420"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-20",
+  "quote": "CHF",
+  "rate": "0.8104"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-20",
+  "quote": "JPY",
+  "rate": "162.5900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-21",
+  "quote": "USD",
+  "rate": "1.1408"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-21",
+  "quote": "USD",
+  "rate": "1.3374"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-21",
+  "quote": "CHF",
+  "rate": "0.8122"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-21",
+  "quote": "JPY",
+  "rate": "163.0100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-22",
+  "quote": "USD",
+  "rate": "1.1414"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-22",
+  "quote": "USD",
+  "rate": "1.3378"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-22",
+  "quote": "CHF",
+  "rate": "0.8134"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-22",
+  "quote": "JPY",
+  "rate": "163.0800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-23",
+  "quote": "USD",
+  "rate": "1.1373"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-23",
+  "quote": "USD",
+  "rate": "1.3313"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-23",
+  "quote": "CHF",
+  "rate": "0.8172"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-23",
+  "quote": "JPY",
+  "rate": "163.8000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-24",
+  "quote": "USD",
+  "rate": "1.1385"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-24",
+  "quote": "USD",
+  "rate": "1.3344"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-24",
+  "quote": "CHF",
+  "rate": "0.8168"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-24",
+  "quote": "JPY",
+  "rate": "163.7100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-27",
+  "quote": "USD",
+  "rate": "1.1376"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-27",
+  "quote": "USD",
+  "rate": "1.3304"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-27",
+  "quote": "CHF",
+  "rate": "0.8187"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-27",
+  "quote": "JPY",
+  "rate": "163.7100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-28",
+  "quote": "USD",
+  "rate": "1.1401"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-28",
+  "quote": "USD",
+  "rate": "1.3311"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-28",
+  "quote": "CHF",
+  "rate": "0.8170"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-28",
+  "quote": "JPY",
+  "rate": "163.6500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-29",
+  "quote": "USD",
+  "rate": "1.1384"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-29",
+  "quote": "USD",
+  "rate": "1.3288"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-29",
+  "quote": "CHF",
+  "rate": "0.8199"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-29",
+  "quote": "JPY",
+  "rate": "163.8600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-30",
+  "quote": "USD",
+  "rate": "1.1522"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-30",
+  "quote": "USD",
+  "rate": "1.3463"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-30",
+  "quote": "CHF",
+  "rate": "0.8056"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-30",
+  "quote": "JPY",
+  "rate": "159.4700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-07-31",
+  "quote": "USD",
+  "rate": "1.1519"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-07-31",
+  "quote": "USD",
+  "rate": "1.3470"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-31",
+  "quote": "CHF",
+  "rate": "0.8081"
+ },
+ {
+  "base": "USD",
+  "date": "2026-07-31",
+  "quote": "JPY",
+  "rate": "159.1600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-03",
+  "quote": "USD",
+  "rate": "1.1509"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-03",
+  "quote": "USD",
+  "rate": "1.3434"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-03",
+  "quote": "CHF",
+  "rate": "0.8104"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-03",
+  "quote": "JPY",
+  "rate": "156.9600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-04",
+  "quote": "USD",
+  "rate": "1.1527"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-04",
+  "quote": "USD",
+  "rate": "1.3456"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-04",
+  "quote": "CHF",
+  "rate": "0.8092"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-04",
+  "quote": "JPY",
+  "rate": "157.4400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-05",
+  "quote": "USD",
+  "rate": "1.1547"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-05",
+  "quote": "USD",
+  "rate": "1.3462"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-05",
+  "quote": "CHF",
+  "rate": "0.8075"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-05",
+  "quote": "JPY",
+  "rate": "157.6300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-06",
+  "quote": "USD",
+  "rate": "1.1521"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-06",
+  "quote": "USD",
+  "rate": "1.3456"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-06",
+  "quote": "CHF",
+  "rate": "0.8129"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-06",
+  "quote": "JPY",
+  "rate": "158.4500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-07",
+  "quote": "USD",
+  "rate": "1.1559"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-07",
+  "quote": "USD",
+  "rate": "1.3498"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-07",
+  "quote": "CHF",
+  "rate": "0.8078"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-07",
+  "quote": "JPY",
+  "rate": "157.5400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-10",
+  "quote": "USD",
+  "rate": "1.1552"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-10",
+  "quote": "USD",
+  "rate": "1.3526"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-10",
+  "quote": "CHF",
+  "rate": "0.8089"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-10",
+  "quote": "JPY",
+  "rate": "158.9000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-11",
+  "quote": "USD",
+  "rate": "1.1543"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-11",
+  "quote": "USD",
+  "rate": "1.3516"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-11",
+  "quote": "CHF",
+  "rate": "0.8109"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-11",
+  "quote": "JPY",
+  "rate": "159.2500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-12",
+  "quote": "USD",
+  "rate": "1.1540"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-12",
+  "quote": "USD",
+  "rate": "1.3511"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-12",
+  "quote": "CHF",
+  "rate": "0.8117"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-12",
+  "quote": "JPY",
+  "rate": "159.2300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-13",
+  "quote": "USD",
+  "rate": "1.1531"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-13",
+  "quote": "USD",
+  "rate": "1.3497"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-13",
+  "quote": "CHF",
+  "rate": "0.8130"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-13",
+  "quote": "JPY",
+  "rate": "159.3500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-14",
+  "quote": "USD",
+  "rate": "1.1581"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-14",
+  "quote": "USD",
+  "rate": "1.3556"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-14",
+  "quote": "CHF",
+  "rate": "0.8116"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-14",
+  "quote": "JPY",
+  "rate": "159.2100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-17",
+  "quote": "USD",
+  "rate": "1.1591"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-17",
+  "quote": "USD",
+  "rate": "1.3564"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-17",
+  "quote": "CHF",
+  "rate": "0.8096"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-17",
+  "quote": "JPY",
+  "rate": "159.3400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-18",
+  "quote": "USD",
+  "rate": "1.1580"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-18",
+  "quote": "USD",
+  "rate": "1.3543"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-18",
+  "quote": "CHF",
+  "rate": "0.8121"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-18",
+  "quote": "JPY",
+  "rate": "159.5800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-19",
+  "quote": "USD",
+  "rate": "1.1664"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-19",
+  "quote": "USD",
+  "rate": "1.3608"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-19",
+  "quote": "CHF",
+  "rate": "0.7998"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-19",
+  "quote": "JPY",
+  "rate": "158.4500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-20",
+  "quote": "USD",
+  "rate": "1.1679"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-20",
+  "quote": "USD",
+  "rate": "1.3639"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-20",
+  "quote": "CHF",
+  "rate": "0.7998"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-20",
+  "quote": "JPY",
+  "rate": "158.8500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-21",
+  "quote": "USD",
+  "rate": "1.1684"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-21",
+  "quote": "USD",
+  "rate": "1.3644"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-21",
+  "quote": "CHF",
+  "rate": "0.8008"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-21",
+  "quote": "JPY",
+  "rate": "158.9100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-24",
+  "quote": "USD",
+  "rate": "1.1665"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-24",
+  "quote": "USD",
+  "rate": "1.3631"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-24",
+  "quote": "CHF",
+  "rate": "0.8024"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-24",
+  "quote": "JPY",
+  "rate": "159.1700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-25",
+  "quote": "USD",
+  "rate": "1.1673"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-25",
+  "quote": "USD",
+  "rate": "1.3644"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-25",
+  "quote": "CHF",
+  "rate": "0.8024"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-25",
+  "quote": "JPY",
+  "rate": "159.2100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-26",
+  "quote": "USD",
+  "rate": "1.1651"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-26",
+  "quote": "USD",
+  "rate": "1.3595"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-26",
+  "quote": "CHF",
+  "rate": "0.8054"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-26",
+  "quote": "JPY",
+  "rate": "159.3600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-27",
+  "quote": "USD",
+  "rate": "1.1654"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-27",
+  "quote": "USD",
+  "rate": "1.3600"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-27",
+  "quote": "CHF",
+  "rate": "0.8036"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-27",
+  "quote": "JPY",
+  "rate": "159.2600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-28",
+  "quote": "USD",
+  "rate": "1.1598"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-28",
+  "quote": "USD",
+  "rate": "1.3555"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-28",
+  "quote": "CHF",
+  "rate": "0.8085"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-28",
+  "quote": "JPY",
+  "rate": "159.9700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-08-31",
+  "quote": "USD",
+  "rate": "1.1617"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-08-31",
+  "quote": "USD",
+  "rate": "1.3550"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-31",
+  "quote": "CHF",
+  "rate": "0.8085"
+ },
+ {
+  "base": "USD",
+  "date": "2026-08-31",
+  "quote": "JPY",
+  "rate": "159.7400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-01",
+  "quote": "USD",
+  "rate": "1.1593"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-01",
+  "quote": "USD",
+  "rate": "1.3527"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-01",
+  "quote": "CHF",
+  "rate": "0.8117"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-01",
+  "quote": "JPY",
+  "rate": "160.0300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-02",
+  "quote": "USD",
+  "rate": "1.1592"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-02",
+  "quote": "USD",
+  "rate": "1.3503"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-02",
+  "quote": "CHF",
+  "rate": "0.8130"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-02",
+  "quote": "JPY",
+  "rate": "158.7900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-03",
+  "quote": "USD",
+  "rate": "1.1623"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-03",
+  "quote": "USD",
+  "rate": "1.3536"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-03",
+  "quote": "CHF",
+  "rate": "0.8073"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-03",
+  "quote": "JPY",
+  "rate": "155.3900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-04",
+  "quote": "USD",
+  "rate": "1.1618"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-04",
+  "quote": "USD",
+  "rate": "1.3521"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-04",
+  "quote": "CHF",
+  "rate": "0.8096"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-04",
+  "quote": "JPY",
+  "rate": "156.1100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-08",
+  "quote": "USD",
+  "rate": "1.1627"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-08",
+  "quote": "USD",
+  "rate": "1.3542"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-08",
+  "quote": "CHF",
+  "rate": "0.8091"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-08",
+  "quote": "JPY",
+  "rate": "154.2400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-09",
+  "quote": "USD",
+  "rate": "1.1627"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-09",
+  "quote": "USD",
+  "rate": "1.3549"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-09",
+  "quote": "CHF",
+  "rate": "0.8102"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-09",
+  "quote": "JPY",
+  "rate": "153.5000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-10",
+  "quote": "USD",
+  "rate": "1.1629"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-10",
+  "quote": "USD",
+  "rate": "1.3532"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-10",
+  "quote": "CHF",
+  "rate": "0.8113"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-10",
+  "quote": "JPY",
+  "rate": "154.0600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-11",
+  "quote": "USD",
+  "rate": "1.1604"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-11",
+  "quote": "USD",
+  "rate": "1.3524"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-11",
+  "quote": "CHF",
+  "rate": "0.8159"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-11",
+  "quote": "JPY",
+  "rate": "153.7100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-14",
+  "quote": "USD",
+  "rate": "1.1549"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-14",
+  "quote": "USD",
+  "rate": "1.3494"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-14",
+  "quote": "CHF",
+  "rate": "0.8173"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-14",
+  "quote": "JPY",
+  "rate": "154.4200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-15",
+  "quote": "USD",
+  "rate": "1.1542"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-15",
+  "quote": "USD",
+  "rate": "1.3479"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-15",
+  "quote": "CHF",
+  "rate": "0.8190"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-15",
+  "quote": "JPY",
+  "rate": "155.1100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-16",
+  "quote": "USD",
+  "rate": "1.1538"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-16",
+  "quote": "USD",
+  "rate": "1.3451"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-16",
+  "quote": "CHF",
+  "rate": "0.8191"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-16",
+  "quote": "JPY",
+  "rate": "155.0800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-17",
+  "quote": "USD",
+  "rate": "1.1479"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-17",
+  "quote": "USD",
+  "rate": "1.3347"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-17",
+  "quote": "CHF",
+  "rate": "0.8245"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-17",
+  "quote": "JPY",
+  "rate": "155.8500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-18",
+  "quote": "USD",
+  "rate": "1.1464"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-18",
+  "quote": "USD",
+  "rate": "1.3372"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-18",
+  "quote": "CHF",
+  "rate": "0.8242"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-18",
+  "quote": "JPY",
+  "rate": "156.8700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-21",
+  "quote": "USD",
+  "rate": "1.1469"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-21",
+  "quote": "USD",
+  "rate": "1.3371"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-21",
+  "quote": "CHF",
+  "rate": "0.8213"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-21",
+  "quote": "JPY",
+  "rate": "157.4600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-22",
+  "quote": "USD",
+  "rate": "1.1432"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-22",
+  "quote": "USD",
+  "rate": "1.3326"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-22",
+  "quote": "CHF",
+  "rate": "0.8219"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-22",
+  "quote": "JPY",
+  "rate": "157.5500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-23",
+  "quote": "USD",
+  "rate": "1.1394"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-23",
+  "quote": "USD",
+  "rate": "1.3253"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-23",
+  "quote": "CHF",
+  "rate": "0.8250"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-23",
+  "quote": "JPY",
+  "rate": "158.3000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-24",
+  "quote": "USD",
+  "rate": "1.1373"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-24",
+  "quote": "USD",
+  "rate": "1.3217"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-24",
+  "quote": "CHF",
+  "rate": "0.8286"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-24",
+  "quote": "JPY",
+  "rate": "158.9200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-25",
+  "quote": "USD",
+  "rate": "1.1400"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-25",
+  "quote": "USD",
+  "rate": "1.3250"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-25",
+  "quote": "CHF",
+  "rate": "0.8282"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-25",
+  "quote": "JPY",
+  "rate": "157.1800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-28",
+  "quote": "USD",
+  "rate": "1.1367"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-28",
+  "quote": "USD",
+  "rate": "1.3257"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-28",
+  "quote": "CHF",
+  "rate": "0.8322"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-28",
+  "quote": "JPY",
+  "rate": "157.4400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-29",
+  "quote": "USD",
+  "rate": "1.1336"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-29",
+  "quote": "USD",
+  "rate": "1.3212"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-29",
+  "quote": "CHF",
+  "rate": "0.8347"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-29",
+  "quote": "JPY",
+  "rate": "157.5000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-09-30",
+  "quote": "USD",
+  "rate": "1.1345"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-09-30",
+  "quote": "USD",
+  "rate": "1.3267"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-30",
+  "quote": "CHF",
+  "rate": "0.8348"
+ },
+ {
+  "base": "USD",
+  "date": "2026-09-30",
+  "quote": "JPY",
+  "rate": "157.2500"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-01",
+  "quote": "USD",
+  "rate": "1.1232"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-01",
+  "quote": "USD",
+  "rate": "1.3196"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-01",
+  "quote": "CHF",
+  "rate": "0.8314"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-01",
+  "quote": "JPY",
+  "rate": "157.6300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-02",
+  "quote": "USD",
+  "rate": "1.1259"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-02",
+  "quote": "USD",
+  "rate": "1.3234"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-02",
+  "quote": "CHF",
+  "rate": "0.8293"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-02",
+  "quote": "JPY",
+  "rate": "157.8100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-05",
+  "quote": "USD",
+  "rate": "1.1211"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-05",
+  "quote": "USD",
+  "rate": "1.3217"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-05",
+  "quote": "CHF",
+  "rate": "0.8313"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-05",
+  "quote": "JPY",
+  "rate": "157.9700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-06",
+  "quote": "USD",
+  "rate": "1.1262"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-06",
+  "quote": "USD",
+  "rate": "1.3281"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-06",
+  "quote": "CHF",
+  "rate": "0.8306"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-06",
+  "quote": "JPY",
+  "rate": "158.1200"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-07",
+  "quote": "USD",
+  "rate": "1.1187"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-07",
+  "quote": "USD",
+  "rate": "1.3213"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-07",
+  "quote": "CHF",
+  "rate": "0.8338"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-07",
+  "quote": "JPY",
+  "rate": "158.1100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-08",
+  "quote": "USD",
+  "rate": "1.1192"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-08",
+  "quote": "USD",
+  "rate": "1.3211"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-08",
+  "quote": "CHF",
+  "rate": "0.8335"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-08",
+  "quote": "JPY",
+  "rate": "158.3300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-09",
+  "quote": "USD",
+  "rate": "1.1193"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-09",
+  "quote": "USD",
+  "rate": "1.3229"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-09",
+  "quote": "CHF",
+  "rate": "0.8308"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-09",
+  "quote": "JPY",
+  "rate": "158.3400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-13",
+  "quote": "USD",
+  "rate": "1.1196"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-13",
+  "quote": "USD",
+  "rate": "1.3255"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-13",
+  "quote": "CHF",
+  "rate": "0.8326"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-13",
+  "quote": "JPY",
+  "rate": "158.3600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-14",
+  "quote": "USD",
+  "rate": "1.1123"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-14",
+  "quote": "USD",
+  "rate": "1.3155"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-14",
+  "quote": "CHF",
+  "rate": "0.8385"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-14",
+  "quote": "JPY",
+  "rate": "158.8400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-15",
+  "quote": "USD",
+  "rate": "1.1204"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-15",
+  "quote": "USD",
+  "rate": "1.3257"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-15",
+  "quote": "CHF",
+  "rate": "0.8297"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-15",
+  "quote": "JPY",
+  "rate": "158.1800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-16",
+  "quote": "USD",
+  "rate": "1.1231"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-16",
+  "quote": "USD",
+  "rate": "1.3330"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-16",
+  "quote": "CHF",
+  "rate": "0.8243"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-16",
+  "quote": "JPY",
+  "rate": "158.0000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-19",
+  "quote": "USD",
+  "rate": "1.1209"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-19",
+  "quote": "USD",
+  "rate": "1.3306"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-19",
+  "quote": "CHF",
+  "rate": "0.8267"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-19",
+  "quote": "JPY",
+  "rate": "158.4900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-20",
+  "quote": "USD",
+  "rate": "1.1232"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-20",
+  "quote": "USD",
+  "rate": "1.3377"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-20",
+  "quote": "CHF",
+  "rate": "0.8259"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-20",
+  "quote": "JPY",
+  "rate": "158.2000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-21",
+  "quote": "USD",
+  "rate": "1.1219"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-21",
+  "quote": "USD",
+  "rate": "1.3391"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-21",
+  "quote": "CHF",
+  "rate": "0.8253"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-21",
+  "quote": "JPY",
+  "rate": "158.1300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-22",
+  "quote": "USD",
+  "rate": "1.1212"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-22",
+  "quote": "USD",
+  "rate": "1.3381"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-22",
+  "quote": "CHF",
+  "rate": "0.8228"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-22",
+  "quote": "JPY",
+  "rate": "157.1100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-23",
+  "quote": "USD",
+  "rate": "1.1199"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-23",
+  "quote": "USD",
+  "rate": "1.3375"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-23",
+  "quote": "CHF",
+  "rate": "0.8248"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-23",
+  "quote": "JPY",
+  "rate": "156.8700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-26",
+  "quote": "USD",
+  "rate": "1.1178"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-26",
+  "quote": "USD",
+  "rate": "1.3351"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-26",
+  "quote": "CHF",
+  "rate": "0.8275"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-26",
+  "quote": "JPY",
+  "rate": "157.5800"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-27",
+  "quote": "USD",
+  "rate": "1.1144"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-27",
+  "quote": "USD",
+  "rate": "1.3317"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-27",
+  "quote": "CHF",
+  "rate": "0.8287"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-27",
+  "quote": "JPY",
+  "rate": "157.8600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-28",
+  "quote": "USD",
+  "rate": "1.1140"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-28",
+  "quote": "USD",
+  "rate": "1.3305"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-28",
+  "quote": "CHF",
+  "rate": "0.8301"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-28",
+  "quote": "JPY",
+  "rate": "158.2400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-29",
+  "quote": "USD",
+  "rate": "1.1165"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-29",
+  "quote": "USD",
+  "rate": "1.3375"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-29",
+  "quote": "CHF",
+  "rate": "0.8267"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-29",
+  "quote": "JPY",
+  "rate": "157.8300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-10-30",
+  "quote": "USD",
+  "rate": "1.1163"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-10-30",
+  "quote": "USD",
+  "rate": "1.3398"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-30",
+  "quote": "CHF",
+  "rate": "0.8230"
+ },
+ {
+  "base": "USD",
+  "date": "2026-10-30",
+  "quote": "JPY",
+  "rate": "157.4700"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-11-02",
+  "quote": "USD",
+  "rate": "1.1204"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-11-02",
+  "quote": "USD",
+  "rate": "1.3420"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-02",
+  "quote": "CHF",
+  "rate": "0.8185"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-02",
+  "quote": "JPY",
+  "rate": "157.8100"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-11-03",
+  "quote": "USD",
+  "rate": "1.1192"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-11-03",
+  "quote": "USD",
+  "rate": "1.3419"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-03",
+  "quote": "CHF",
+  "rate": "0.8208"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-03",
+  "quote": "JPY",
+  "rate": "158.5000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-11-04",
+  "quote": "USD",
+  "rate": "1.1217"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-11-04",
+  "quote": "USD",
+  "rate": "1.3459"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-04",
+  "quote": "CHF",
+  "rate": "0.8175"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-04",
+  "quote": "JPY",
+  "rate": "158.4400"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-11-05",
+  "quote": "USD",
+  "rate": "1.1235"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-11-05",
+  "quote": "USD",
+  "rate": "1.3483"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-05",
+  "quote": "CHF",
+  "rate": "0.8144"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-05",
+  "quote": "JPY",
+  "rate": "157.7600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-11-06",
+  "quote": "USD",
+  "rate": "1.1154"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-11-06",
+  "quote": "USD",
+  "rate": "1.3371"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-06",
+  "quote": "CHF",
+  "rate": "0.8192"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-06",
+  "quote": "JPY",
+  "rate": "158.2300"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-11-09",
+  "quote": "USD",
+  "rate": "1.1204"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-11-09",
+  "quote": "USD",
+  "rate": "1.3420"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-09",
+  "quote": "CHF",
+  "rate": "0.8211"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-09",
+  "quote": "JPY",
+  "rate": "157.9900"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-11-10",
+  "quote": "USD",
+  "rate": "1.1153"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-11-10",
+  "quote": "USD",
+  "rate": "1.3322"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-10",
+  "quote": "CHF",
+  "rate": "0.8263"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-10",
+  "quote": "JPY",
+  "rate": "158.7600"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-11-12",
+  "quote": "USD",
+  "rate": "1.1056"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-11-12",
+  "quote": "USD",
+  "rate": "1.3240"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-12",
+  "quote": "CHF",
+  "rate": "0.8348"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-12",
+  "quote": "JPY",
+  "rate": "159.6000"
+ },
+ {
+  "base": "EUR",
+  "date": "2026-11-13",
+  "quote": "USD",
+  "rate": "1.1034"
+ },
+ {
+  "base": "GBP",
+  "date": "2026-11-13",
+  "quote": "USD",
+  "rate": "1.3212"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-13",
+  "quote": "CHF",
+  "rate": "0.8389"
+ },
+ {
+  "base": "USD",
+  "date": "2026-11-13",
+  "quote": "JPY",
+  "rate": "159.9300"
+ }
+]

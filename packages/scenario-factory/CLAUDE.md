@@ -9,6 +9,7 @@ src/sl_factory/generate.py __main__.py one scenario; `python -m sl_factory gener
 src/sl_factory/categories.py           the 11 §5 scenario categories
 src/sl_factory/splits.py               dev / eval / blind templates + fingerprints
 src/sl_factory/attacks.py              applies OM-16 attack packs from data/attacks/
+src/sl_factory/refdata.py              the ONLY reader of data/reference: MANIFEST lookup + sha256 check (KG-02)
 src/sl_factory/canonical.py version.py  sorted compact JSON + sha256; GENERATOR_VERSION (bump if bytes change)
 ```
 Commands: `make factory SPLIT=dev N=40 [OUT=dir]` · `make factory-all` (KG-04) · `make test-factory` · `make leakage-check` (KG-05)

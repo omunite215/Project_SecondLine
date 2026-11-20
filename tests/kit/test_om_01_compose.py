@@ -63,6 +63,11 @@ class Compose(unittest.TestCase):
         core = sum(int(s["mem_limit"]) for s in self.services.values() if "core" in s["profiles"])
         self.assertLessEqual(core, 768 * MB)
 
+    def test_OM_01_grafana_mem_fits_measured_rss(self):
+        # grafana 13.3.0 settles at ~278 MiB anon (cgroup memory.stat, 2026-11-19); at 256m it was OOM-killed
+        # (exit 137) in CI stack runs on #35 #45 #51. 512m keeps ~1.8x headroom.
+        self.assertGreaterEqual(int(self.services["grafana"]["mem_limit"]), 512 * MB)
+
     def test_OM_01_images_pinned(self):
         for name, s in self.services.items():
             if "build" in s:
@@ -111,7 +116,10 @@ class Dockerfiles(unittest.TestCase):
             text = (ROOT / f"services/{svc}/Dockerfile").read_text()
             runtime = text.split("\nFROM ")[-1]
             self.assertRegex(runtime, r"(?m)^USER (?!root)\S+", svc)
-            self.assertIn("eclipse-temurin:21.0.12.1_1-jre-noble", runtime, svc)
+            # Exact Temurin 21 build tag (never a floating one); build and runtime stages on the same build.
+            tags = re.findall(r"(?m)^FROM eclipse-temurin:(21\.\d+\.\d+(?:\.\d+)?_\d+)-(jdk|jre)-noble\b", text)
+            self.assertEqual(sorted(k for _, k in tags), ["jdk", "jre"], svc)
+            self.assertEqual(len({v for v, _ in tags}), 1, f"{svc}: jdk and jre stages differ: {tags}")
             self.assertNotIn(":latest", text, svc)
 
     def test_OM_01_dockerignore_excludes_secrets_and_builds(self):

@@ -174,7 +174,7 @@ Database roles and truth isolation can be checked live with the core stack up: `
 | `core` | postgres :5432 · redis :6379 · opa :8181 | 768 MB |
 | `app` | ledger :8081 · gateway :8080 | 768 MB each |
 | `events` | kafka :9092 (KRaft) | 1 GB |
-| `obs` | otel-collector :4317/:4318 · jaeger :16686 · prometheus :9090 · grafana :3000 | 256 MB each |
+| `obs` | otel-collector :4317/:4318 · jaeger :16686 · prometheus :9090 · grafana :3000 | 256 MB each (grafana 512 MB) |
 | `ui` | console (OM-21) | n/a |
 | `chaos` | toxiproxy :8474 (postgres → :15432, redis → :16379) | 64 MB |
 

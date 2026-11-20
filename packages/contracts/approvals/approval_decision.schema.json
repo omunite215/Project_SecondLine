@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/approvals/approval_decision.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/approvals/approval_decision.schema.json",
   "title": "ApprovalDecision (§8 step 4)",
   "type": "object",
   "additionalProperties": false,

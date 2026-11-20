@@ -25,7 +25,7 @@ import yaml  # pyright: ignore[reportMissingModuleSource]
 from referencing import Registry, Resource  # pyright: ignore[reportMissingImports]
 
 ROOT = Path(__file__).resolve().parents[1]
-ID_BASE = "https://secondline.invalid/contracts/1/"
+ID_BASE = "https://secondline.invalid/contracts/2/"
 # Substring, case-insensitive: names, required entries and enum/const values (not prose descriptions).
 TRUTH_NAMES = re.compile(r"(?i)(truth|root[_-]?cause|allowed_outcomes|forbidden_outcomes|expected_state_delta|"
                          r"required_evidence_ids|oracle|canary|break_(type|kind)|injected|hidden)")

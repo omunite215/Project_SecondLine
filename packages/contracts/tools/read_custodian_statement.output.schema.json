@@ -1,19 +1,14 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/tools/read_custodian_statement.output.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/tools/read_custodian_statement.output.schema.json",
   "title": "Synthetic custodian statement \u2014 output",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "statement_id",
     "as_of_date",
-    "lines",
-    "record_version"
+    "lines"
   ],
   "properties": {
-    "statement_id": {
-      "$ref": "../common.schema.json#/$defs/opaque_id"
-    },
     "as_of_date": {
       "$ref": "../common.schema.json#/$defs/date"
     },
@@ -23,10 +18,19 @@
         "type": "object",
         "additionalProperties": false,
         "required": [
+          "record_id",
+          "record_version",
           "isin",
           "quantity"
         ],
         "properties": {
+          "record_id": {
+            "$ref": "../common.schema.json#/$defs/opaque_id"
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          },
           "isin": {
             "$ref": "../common.schema.json#/$defs/isin"
           },
@@ -35,10 +39,7 @@
           }
         }
       }
-    },
-    "record_version": {
-      "type": "integer",
-      "minimum": 1
     }
-  }
+  },
+  "description": "Latest CUSTODIAN_STATEMENT records as of a date; each line is one citable record (OM-04)."
 }

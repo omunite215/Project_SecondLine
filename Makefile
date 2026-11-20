@@ -125,7 +125,7 @@ lint-py: ## ruff + mypy over the Python workspace
 test-agent: ## Agent tests
 	$(call todo,KG-08)
 test-factory: ## Factory tests
-	$(call todo,KG-03)
+	@$(UV) run pytest packages/scenario-factory/tests
 test-eval: ## Grader / runner / stats tests
 	$(call todo,KG-06)
 test-supervisor: ## Monitor tests
@@ -136,8 +136,8 @@ leakage-check: ## Canary + truth-field scan
 	$(call todo,KG-05)
 refdata-verify: ## Re-hash reference snapshots
 	$(call todo,KG-02)
-factory: ## Generate scenarios: make factory SPLIT=dev N=40
-	$(call todo,KG-03)
+factory: ## Generate scenarios: make factory SPLIT=dev N=40 [OUT=data/generated]
+	@$(UV) run python -m sl_factory generate --split $(or $(SPLIT),dev) --n $(or $(N),40) --out $(or $(OUT),data/generated)
 factory-all: ## Generate dev + eval + blind
 	$(call todo,KG-04)
 run-one: ## One run: make run-one SCN=<id> CONTROLS=off|monitor|full STRATEGY=llm|rules

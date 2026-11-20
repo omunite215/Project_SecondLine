@@ -3,7 +3,6 @@
 from typing import Any
 
 import pytest
-
 from sl_factory.generate import Scenario, generate_scenario
 
 

@@ -22,6 +22,9 @@ from sl_factory.breaks import (
     b3_price_rounding,
     b4_fx,
     b5_trade,
+    b6_corporate_action,
+    b7_shortfall,
+    b8_ssi,
 )
 from sl_factory.canonical import sha256_ref
 from sl_factory.lifecycle import Simulator, dec_str
@@ -38,6 +41,9 @@ VARIANTS: dict[str, tuple[str, ...]] = {
     b3_price_rounding.TYPE: b3_price_rounding.VARIANTS,
     b4_fx.TYPE: b4_fx.VARIANTS,
     b5_trade.TYPE: b5_trade.VARIANTS,
+    b6_corporate_action.TYPE: b6_corporate_action.VARIANTS,
+    b7_shortfall.TYPE: b7_shortfall.VARIANTS,
+    b8_ssi.TYPE: b8_ssi.VARIANTS,
 }
 _BUILDERS: dict[str, Callable[[Simulator, str], BreakPlan]] = {
     b1_timing.TYPE: b1_timing.build,
@@ -45,8 +51,13 @@ _BUILDERS: dict[str, Callable[[Simulator, str], BreakPlan]] = {
     b3_price_rounding.TYPE: b3_price_rounding.build,
     b4_fx.TYPE: b4_fx.build,
     b5_trade.TYPE: b5_trade.build,
+    b6_corporate_action.TYPE: b6_corporate_action.build,
+    b7_shortfall.TYPE: b7_shortfall.build,
+    b8_ssi.TYPE: b8_ssi.build,
 }
-_BACKGROUND_FX = 0.4  # share of non-B4 worlds that also hold a correctly revalued EUR position (no FX tell)
+# Shares of worlds that also carry a correctly processed FX revaluation / corporate action / SSI record, so those
+# record kinds never mark their break family (leakage review, KG-03/KG-04).
+_BACKGROUND = {b4_fx.TYPE: 0.4, b6_corporate_action.TYPE: 0.25, b8_ssi.TYPE: 0.3}
 _ATTEMPTS = 25
 
 
@@ -168,8 +179,12 @@ def _generate(
     plans = [_BUILDERS[b](sim, v) for b, v in zip(types, variants, strict=True)]
     for _ in range(pick.randrange(0, 4)):
         sim.pending_trade()
-    if b4_fx.TYPE not in types and pick.random() < _BACKGROUND_FX:
+    if b4_fx.TYPE not in types and pick.random() < _BACKGROUND[b4_fx.TYPE]:
         sim.extras.append(b4_fx.background(sim))
+    if b6_corporate_action.TYPE not in types and pick.random() < _BACKGROUND[b6_corporate_action.TYPE]:
+        sim.extras.append(b6_corporate_action.background(sim))
+    if pick.random() < _BACKGROUND[b8_ssi.TYPE]:
+        sim.extras.append(b8_ssi.background(sim))
 
     bundle, rec = render(sim.trades, ids, scenario_id, as_of, sim.extras)
     bundle["breaks"] = reconcile(bundle, ids)

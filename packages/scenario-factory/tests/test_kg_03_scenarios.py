@@ -62,7 +62,7 @@ def test_KG_03_clean_lifecycle_balances_and_has_no_breaks(index: int) -> None:
     per_trade_isin: dict[tuple[str, str], int] = defaultdict(int)
     for m in s.bundle["securities_movements"]:
         q = int(m["quantity"])
-        per_trade_isin[(m["trade_id"], m["isin"])] += q if m["side"] == "DR" else -q
+        per_trade_isin[(m.get("trade_id", ""), m["isin"])] += q if m["side"] == "DR" else -q
     assert all(v == 0 for v in per_trade_isin.values())
     # no schema check here: a bundle must carry ≥1 break by contract, so a clean world is internal only
 

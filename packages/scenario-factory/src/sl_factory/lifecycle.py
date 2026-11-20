@@ -118,6 +118,11 @@ class Simulator:
         self.trades: list[TradeSim] = []
         self.extras: list[Any] = []  # render.Extra facts beyond trades (FX revaluation, CA, SSI); KG-04
         self.events: list[tuple[str, str, str, str]] = []  # scenario-level causes: (event_id, kind, at, note)
+        self.reserved: set[str] = set()  # ISINs a cause owns (B6): background trades never land on them
+
+    def instrument(self) -> Instrument:
+        free = [i for i in self.world.instruments_in(self.currency) if i.isin not in self.reserved]
+        return self.rng.choice(free)
 
     # draws
     def quantity(self, lo: int, hi: int, step: int = 10) -> int:
@@ -157,12 +162,14 @@ class Simulator:
             )
             t.events.append(CausalEvent(self.ids.mint("evt"), "settled", utc(t.value_date, cut - 2, 5), t.trade_id))
 
-    def settled_trade(self, *, value_date: str | None = None, quantity: int | None = None) -> TradeSim:
+    def settled_trade(
+        self, *, value_date: str | None = None, quantity: int | None = None, instrument: Instrument | None = None
+    ) -> TradeSim:
         """A trade the custodian settled on its value date, booked and settled internally: no difference."""
         vd = value_date or add_business_days(self.as_of, -self.rng.randrange(0, 3))
         q = quantity or self.default_quantity()
         p = self.price()
-        ins = self.rng.choice(self.world.instruments_in(self.currency))
+        ins = instrument or self.instrument()
         t = TradeSim(
             self.ids.mint("trd"),
             ins,
@@ -191,7 +198,7 @@ class Simulator:
         q = quantity or self.default_quantity()
         p = price or self.price()
         vd = add_business_days(self.as_of, 2)
-        ins = instrument or self.rng.choice(self.world.instruments_in(self.currency))
+        ins = instrument or self.instrument()
         t = TradeSim(
             self.ids.mint("trd"),
             ins,

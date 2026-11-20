@@ -116,7 +116,7 @@ def _isin(rng: random.Random, used: set[str]) -> str:
             return isin
 
 
-def build_world(streams: Streams, ids: IdMinter, per_currency: int = 3) -> World:
+def build_world(streams: Streams, ids: IdMinter, per_currency: int = 5) -> World:
     rng = streams.stream("world")
     used: set[str] = set()
     instruments = []

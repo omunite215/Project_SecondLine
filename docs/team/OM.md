@@ -79,11 +79,12 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 ## M-3 Safety boundary
 
 ### OM-07 · Ledger trust boundary: auth realms & bypass test
-- meta: P0 | M-3 | 1d | mcs | deps: OM-04, OM-05 | status: todo
+- meta: P0 | M-3 | 1d | mcs | deps: OM-04, OM-05 | status: review
 - refs: §11 §8 | REQ-016 REQ-005 | T-SEC-01 | SEC-02 | F9 | NFR-04
 - skills: insecure-defaults
 - build: Spring Security filter chains: /internal/** accepts only the gateway service JWT (aud=ledger); /admin/** operator credential; /review/** human users (OM-20); agent run tokens rejected on every ledger route; ns scope taken from token claims and checked against the path.
 - done: T-SEC-01: agent token ⇒ 401/403 on all write routes with state-hash unchanged; cross-ns read/write denied; tests named T_SEC_01_*.
+- evidence: T_SEC_01_LedgerRealmsTest 7/7 (agent run token 403 on every ledger-*.yaml route, state hash unchanged; cross-ns read/write denied; forged/expired/wrong-key tokens denied) + T_SEC_01_RealmConfigTest 3/3; gateway 78/78, ledger 224/224, contracts-java 36/36; mutation check: dropping the ns or typ check fails T-SEC-01
 
 ### OM-08 · Pre-commit verifier & domain write transactions
 - meta: P0 | M-3 | 4d | mcs | learn | deps: OM-04, SH-04 | status: todo

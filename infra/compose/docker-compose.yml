@@ -81,6 +81,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:?run make bootstrap}?currentSchema=ledger
       SPRING_DATASOURCE_USERNAME: ledger_svc
       SPRING_DATASOURCE_PASSWORD: ${LEDGER_SVC_PASSWORD:?run make bootstrap}
+      # OM-07 realms: only the PUBLIC half of the gateway's service key, and the harness operator bearer.
+      LEDGER_GATEWAY_JWK_PATH: /run/secrets/gateway-service.pub.jwk
+      LEDGER_OPERATOR_TOKEN: ${LEDGER_OPERATOR_TOKEN:?run make bootstrap}
+    volumes:
+      - ../../secrets/gateway-service.pub.jwk:/run/secrets/gateway-service.pub.jwk:ro
     ports: ["127.0.0.1:8081:8081"]
     mem_limit: 768m
     healthcheck:
@@ -99,11 +104,13 @@ services:
     environment:
       JAVA_TOOL_OPTIONS: "-Xmx512m -XX:+ExitOnOutOfMemoryError"
       GATEWAY_SIGNING_JWK_PATH: /run/secrets/gateway-signing.jwk
+      GATEWAY_SERVICE_JWK_PATH: /run/secrets/gateway-service.jwk
       GATEWAY_OPERATOR_TOKEN: ${GATEWAY_OPERATOR_TOKEN:?run make bootstrap}
       GATEWAY_LEDGER_URL: http://ledger:8081
       GATEWAY_OPA_URL: http://opa:8181
     volumes:
       - ../../secrets/gateway-signing.jwk:/run/secrets/gateway-signing.jwk:ro
+      - ../../secrets/gateway-service.jwk:/run/secrets/gateway-service.jwk:ro
     ports: ["127.0.0.1:8080:8080"]
     mem_limit: 768m
     healthcheck:

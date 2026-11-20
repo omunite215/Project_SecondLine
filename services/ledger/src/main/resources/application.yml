@@ -7,6 +7,11 @@ spring:
     enabled: false
 server:
   port: 8081
+# OM-07 realms. No defaults: unset is a startup failure. The key file is the PUBLIC half of the gateway's service key.
+ledger:
+  auth:
+    gateway-jwk-path: ${LEDGER_GATEWAY_JWK_PATH:}
+    operator-token: ${LEDGER_OPERATOR_TOKEN:}
 management:
   endpoints:
     web:

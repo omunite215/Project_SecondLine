@@ -7,6 +7,7 @@ import com.secondline.contracts.ContractException;
 import com.secondline.contracts.Contracts;
 import com.secondline.contracts.generated.ErrorCode;
 import com.secondline.ledger.LedgerException;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import com.secondline.ledger.export.NamespaceExporter;
 import com.secondline.ledger.export.StateHash;
 import com.secondline.ledger.load.LoadResult;
@@ -29,13 +30,14 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * Harness-only namespace lifecycle (contracts openapi/ledger-admin.yaml, ADR-015, ADR-019): create → :load →
  * export / state-hash → retire, plus the agent_runs registry. Bodies are parsed strictly (duplicate keys and
- * trailing tokens rejected), so the bundle that is hashed is the bundle that was sent. Realm authentication
- * arrives with OM-07, a gate for SH-07. Until then compose publishes the port on 127.0.0.1 only (kit test), but
- * other containers on the compose network can reach these routes: no agent-side container may join it before OM-07.
+ * trailing tokens rejected), so the bundle that is hashed is the bundle that was sent. Realm authentication (OM-07,
+ * security/LedgerSecurityConfig): the operator credential, plus the gateway's service JWT on POST /runs for its own ns.
  */
 @RestController
 @RequestMapping("/admin/v1")
 public class AdminController {
+    /** Set by security.RealmFilter when the gateway (not the operator) calls; see LedgerSecurityConfig. */
+    public static final String TOKEN_NS = "secondline.ledger.token-ns";
     private static final Set<String> RUN_KEYS = Set.of("ns", "controls", "agent_id", "manifest_ref");
     private static final Pattern OPAQUE = Pattern.compile("^[a-z]{2,6}_[0-9A-Za-z]{8,32}$");
 
@@ -80,7 +82,8 @@ public class AdminController {
     }
 
     @PostMapping("/runs")
-    public ResponseEntity<ObjectNode> registerRun(@RequestBody String body) {
+    public ResponseEntity<ObjectNode> registerRun(@RequestBody String body,
+            @RequestAttribute(name = TOKEN_NS, required = false) UUID tokenNs) {
         JsonNode req = strict(body);
         if (!req.isObject() || !RUN_KEYS.equals(keys(req)) || !RUN_KEYS.stream().allMatch(k -> req.get(k).isTextual())) {
             throw LedgerException.domainInvalid("run registration needs exactly the string fields " + new java.util.TreeSet<>(RUN_KEYS));
@@ -91,6 +94,8 @@ public class AdminController {
         } catch (IllegalArgumentException e) {
             throw LedgerException.domainInvalid("malformed parameter ns");
         }
+        // OM-07: the gateway's service token may register runs only for the ns it is scoped to (the operator for any).
+        if (tokenNs != null && !tokenNs.equals(ns)) throw new LedgerException(ErrorCode.PERMISSION_DENIED, "run ns is outside the caller's scope");
         String controls = req.get("controls").asText();
         String agentId = req.get("agent_id").asText();
         if (!Set.of("off", "monitor", "full").contains(controls)) throw LedgerException.domainInvalid("malformed parameter controls");

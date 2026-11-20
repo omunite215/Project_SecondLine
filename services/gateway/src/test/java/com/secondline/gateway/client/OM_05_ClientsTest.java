@@ -169,6 +169,7 @@ class OM_05_ClientsTest {
         assertThat(jwt.getJWTClaimsSet().getAudience()).containsExactly("ledger");
         assertThat(jwt.getJWTClaimsSet().getSubject()).isEqualTo("gateway");
         assertThat(jwt.getJWTClaimsSet().getExpirationTime().toInstant()).isEqualTo(NOW.plusSeconds(60));
+        assertThat(jwt.getJWTClaimsSet().getStringClaim("ns")).isEqualTo(NS.toString()); // OM-07: the ledger binds it to the path
     }
 
     @Test

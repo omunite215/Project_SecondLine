@@ -14,7 +14,11 @@ import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
-/** G12: a fresh 60 s service JWT per ledger call (aud=ledger, sub=gateway). The ledger verifies it in OM-07. */
+/**
+ * G12: a fresh 60 s service JWT per ledger call (aud=ledger, sub=gateway, ns = the one namespace this call may touch).
+ * Signed with the gateway's SERVICE key, never the run-token key (OM-07): the ledger trusts only this key's public half,
+ * so no agent run token can verify there. The ledger's verifier is security/ServiceTokenVerifier.
+ */
 public final class ServiceTokens {
     static final Duration TTL = Duration.ofSeconds(60);
     /** Explicit typing (RFC 8725 §3.11), distinct from run tokens; OM-07's ledger verifier must check it. */
@@ -27,12 +31,13 @@ public final class ServiceTokens {
         this.clock = clock;
     }
 
-    public String bearer() {
+    public String bearer(UUID ns) {
+        if (ns == null) throw new IllegalArgumentException("a service token is always scoped to one ns");
         Instant now = clock.instant();
         JWTClaimsSet claims = new JWTClaimsSet.Builder()
                 .issuer("secondline-gateway").subject("gateway").audience("ledger")
                 .issueTime(Date.from(now)).notBeforeTime(Date.from(now)).expirationTime(Date.from(now.plus(TTL)))
-                .jwtID(UUID.randomUUID().toString()).build();
+                .jwtID(UUID.randomUUID().toString()).claim("ns", ns.toString()).build();
         SignedJWT jwt = new SignedJWT(new JWSHeader.Builder(JWSAlgorithm.EdDSA).keyID(keys.kid()).type(TYPE).build(), claims);
         try {
             jwt.sign(new Ed25519Signer(keys.privateJwk()));

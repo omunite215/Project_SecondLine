@@ -55,21 +55,28 @@ public class LedgerClient {
             if (value != null) query.add(enc(q) + "=" + enc(value));
         }
         if (!query.isEmpty()) path.append('?').append(String.join("&", query));
-        return call(HttpRequest.newBuilder(Http.uri(base, path.toString())).GET(), route.tool());
+        return call(HttpRequest.newBuilder(Http.uri(base, path.toString())).GET(), route.tool(), ns);
     }
 
     /** A write: the ProposedAction goes to the ledger byte-for-byte as JCS (the ledger re-validates it). */
     public LedgerResponse postAction(UUID ns, JsonNode action) {
-        return call(json(Http.uri(base, "/internal/v1/ns/" + ns + "/actions"), action), "ledger");
+        return call(json(Http.uri(base, "/internal/v1/ns/" + ns + "/actions"), action), "ledger", ns);
     }
 
     /** ledger-admin register_run: {ns, controls, agent_id, manifest_ref} → {run_id, ns, controls}. */
     public LedgerResponse registerRun(JsonNode registration) {
-        return call(json(Http.uri(base, "/admin/v1/runs"), registration), "ledger");
+        UUID ns;
+        try {
+            ns = UUID.fromString(registration.path("ns").asText());
+        } catch (IllegalArgumentException e) {
+            throw new GatewayException(ErrorCode.DOMAIN_INVALID, "malformed parameter ns");
+        }
+        // The token is scoped to the registration's ns; the ledger re-checks that the body names the same one (OM-07).
+        return call(json(Http.uri(base, "/admin/v1/runs"), registration), "ledger", ns);
     }
 
     public LedgerResponse appendDecision(UUID ns, JsonNode entry) {
-        return call(json(Http.uri(base, "/internal/v1/ns/" + ns + "/decisions"), entry), "decision log");
+        return call(json(Http.uri(base, "/internal/v1/ns/" + ns + "/decisions"), entry), "decision log", ns);
     }
 
     private HttpRequest.Builder json(java.net.URI uri, JsonNode body) {
@@ -77,8 +84,8 @@ public class LedgerClient {
                 .POST(HttpRequest.BodyPublishers.ofString(CanonicalJson.canonicalize(body), StandardCharsets.UTF_8));
     }
 
-    private LedgerResponse call(HttpRequest.Builder req, String what) {
-        Http.Answer a = Http.send(req.header("Authorization", "Bearer " + tokens.bearer())
+    private LedgerResponse call(HttpRequest.Builder req, String what, UUID ns) {
+        Http.Answer a = Http.send(req.header("Authorization", "Bearer " + tokens.bearer(ns))
                 .header("Accept", "application/json"), timeout, what);
         if (a.status() >= 300 && a.status() < 400) throw Http.unavailable(what, null); // a redirect is never an outcome
         if (a.status() >= 400 && !SCHEMAS.validate("error_response.schema.json", a.body()).isEmpty()) {

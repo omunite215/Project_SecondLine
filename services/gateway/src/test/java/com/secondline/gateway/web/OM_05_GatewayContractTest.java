@@ -49,6 +49,7 @@ class OM_05_GatewayContractTest {
     @DynamicPropertySource
     static void config(DynamicPropertyRegistry r) {
         r.add("gateway.signing-jwk-path", TestKeys::path);
+        r.add("gateway.service-jwk-path", TestKeys::servicePath);
         r.add("gateway.ledger-url", () -> "http://127.0.0.1:1");
         r.add("gateway.opa-url", () -> "http://127.0.0.1:1");
     }
@@ -170,7 +171,19 @@ class OM_05_GatewayContractTest {
     void OM_05_weakOperatorTokenStopsStartup() {
         // insecure-defaults: a set-but-short operator secret is a guessable credential; unset still means deny-all.
         assertThatThrownBy(() -> new SpringApplicationBuilder(GatewayApplication.class)
-                .run("--server.port=0", "--gateway.signing-jwk-path=" + TestKeys.path(), "--gateway.operator-token=changeme").close())
+                .run("--server.port=0", "--gateway.signing-jwk-path=" + TestKeys.path(), "--gateway.service-jwk-path=" + TestKeys.servicePath(),
+                        "--gateway.operator-token=changeme").close())
                 .hasStackTraceContaining("at least 32");
+    }
+
+    @Test
+    void OM_07_gatewayRefusesToStartWithoutASeparateServiceKey() {
+        assertThatThrownBy(() -> new SpringApplicationBuilder(GatewayApplication.class)
+                .run("--server.port=0", "--gateway.signing-jwk-path=" + TestKeys.path(), "--gateway.service-jwk-path=").close())
+                .hasStackTraceContaining("gateway.service-jwk-path (GATEWAY_SERVICE_JWK_PATH) is not set");
+        // One key for both would let a run token's signature verify at the ledger.
+        assertThatThrownBy(() -> new SpringApplicationBuilder(GatewayApplication.class)
+                .run("--server.port=0", "--gateway.signing-jwk-path=" + TestKeys.path(), "--gateway.service-jwk-path=" + TestKeys.path()).close())
+                .hasStackTraceContaining("different key");
     }
 }

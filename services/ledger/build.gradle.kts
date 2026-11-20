@@ -7,6 +7,10 @@ dependencies {
     implementation(libs.spring.boot.starter.web)
     implementation(libs.spring.boot.starter.actuator)
     implementation(libs.spring.boot.starter.jdbc)
+    // OM-07: one filter chain per realm; the gateway service JWT is Ed25519 (Nimbus needs Tink for OKP).
+    implementation(libs.spring.boot.starter.security)
+    implementation(libs.nimbus.jose.jwt)
+    implementation(libs.tink)
     implementation(libs.flyway.core)
     implementation(libs.flyway.database.postgresql)
     runtimeOnly(libs.postgresql)
@@ -17,6 +21,7 @@ dependencies {
     testImplementation(libs.archunit.junit5)
     // OM-05 Task 6: the real gateway pipeline driven against the real ledger (gateway → ledger only; not the reverse).
     testImplementation(project(":services:gateway"))
+    testImplementation("org.yaml:snakeyaml") // version from the Boot BOM; T-SEC-01 walks every route in ledger-*.yaml
 }
 
 tasks.bootJar {

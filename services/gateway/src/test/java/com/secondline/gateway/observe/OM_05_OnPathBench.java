@@ -94,6 +94,7 @@ class OM_05_OnPathBench {
     static void config(DynamicPropertyRegistry r) {
         String url = "http://127.0.0.1:" + STUBS.getAddress().getPort();
         r.add("gateway.signing-jwk-path", TestKeys::path);
+        r.add("gateway.service-jwk-path", TestKeys::servicePath);
         r.add("gateway.ledger-url", () -> url);
         r.add("gateway.opa-url", () -> url);
         r.add("gateway.budget.max-calls", () -> "100000");

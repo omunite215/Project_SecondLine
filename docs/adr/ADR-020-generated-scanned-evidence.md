@@ -19,7 +19,7 @@ Date: 2026-11-19 · Resolves: course requirement for an image-generation compone
 3. **Rule-based degradation only (Augraphy, MIT):** cheap and faithful, but nothing is learned. It doesn't meet the course requirement and gives no GAN-vs-VAE evidence.
 
 ## Decision
-Option 1, as an **optional, exploratory** track (RQ4) that never changes H1–H3:
+Option 1. The **scan generator, its OCR gate and the generator evaluation (pix2pix vs conditional VAE vs Augraphy) are a committed course deliverable** (the AAI 6665 proposal promises a working image generation system by Module 15). Only the **agent image arm** (RQ4) is exploratory, and it never changes H1–H3:
 1. **Render (factory side, deterministic):** an evidence record becomes a clean page image (template, 200 dpi) with a visible `SYNTHETIC` watermark. It uses only the fictional bank's names and identifiers, with no real logos, letterheads or signatures.
 2. **Degrade:** the scan generator (pix2pix; conditional VAE and Augraphy for comparison) works on 256×256 tiles.
 3. **Verify (fail closed):** OCR reads every numeric field back (quantity, price, amount, date, identifier).
@@ -38,7 +38,7 @@ Option 1, as an **optional, exploratory** track (RQ4) that never changes H1–H3
   - It uses a paired subset of 50 evaluation scenarios (text vs image evidence, everything else fixed).
   - Generator metrics: FID, KID, SSIM, and OCR character error rate on numeric fields.
   - Visual prompt-injection variants join OM-16.
-- **Cut order:** after the console extras and load scale (PLAN §7). Drop the agent image runs first and keep the generator evaluation.
+- **Cut order:** the generator, OCR gate and generator evaluation are protected, as a course deliverable. Only the agent image-arm runs can be cut (PLAN §7, after the console extras and load scale).
 - **Risks:**
   - The generator alters a digit → the OCR gate catches it.
   - Alignment fails → CycleGAN.

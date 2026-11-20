@@ -64,11 +64,11 @@ Each phase ≈ one week of solid part-time work each. Estimates are unassisted f
 ## 7. Minimum credible scope (MCS) & cut order (§20)
 MCS = cards tagged `mcs` (`mcs=Xd` = reduced scope); totals in §3. Cut in this order:
 1. **Console extras + load scale:** OM-22 → static result pages; OM-19 → 10 concurrent runs; OM-21 → approvals + run trace only.
-2. **Image track (SH-20, exploratory):** drop the agent image-arm runs first; keep the generator evaluation (FID/KID/SSIM/OCR CER) if the corpus exists.
+2. **Image-evidence agent arm (SH-20, exploratory):** drop the agent image-arm runs. The scan generator, OCR gate and generator evaluation stay, because they are a committed course deliverable.
 3. **Crypto anchors + broad chaos:** OM-14 → unsigned chain + checkpoints; OM-18 → four key faults; OM-17 → Jaeger only; KG-14 → bypass, race, toxic sequence.
 4. **Commercial-model expansion:** shrink or drop the frontier arm (300 runs) and disclose it; drop KG-21 (console reads result files); fewer paired-live replications in KG-20.
 
-**Protected:** correct financial model (OM-03/04/08) · real tool-using LLM (OM-05/06, KG-08/09/10) · pre-commit safety (OM-07…11) · independent grading (KG-06) · core 3-condition experiment (OM-13, KG-11, KG-15…19) · honest evidence (SH-15/16/18).
+**Protected:** image generator + OCR gate + GAN-vs-VAE evaluation (SH-20, course deliverable) · correct financial model (OM-03/04/08) · real tool-using LLM (OM-05/06, KG-08/09/10) · pre-commit safety (OM-07…11) · independent grading (KG-06) · core 3-condition experiment (OM-13, KG-11, KG-15…19) · honest evidence (SH-15/16/18).
 **Experiment shortfall rule:** decide in KG-17, before any eval run, as an AMENDMENT. Cut the frontier arm before cutting repeats — H3 needs 5 repeats per scenario.
 
 ## 8. Collaboration protocol

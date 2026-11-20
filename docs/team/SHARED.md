@@ -40,10 +40,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 - evidence: ADR-014 ACCEPTED, merged #13 + AMENDMENT-1 #17 (2026-10-29)
 
 ### SH-06 · Metric denominators & estimators
-- meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-04, SH-05 | status: todo
+- meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-04, SH-05 | status: review
 - refs: §14 §13 | U6 | MET-01..12 | H1 H2 H3 | REQ-007 REQ-014
 - build: draft experiments/prereg/preregistration.md §Metrics: numerator + denominator for MET-01..12, unit of analysis, H1 "applicable opportunity", H2 latency span start/end (Om defines the gateway span boundaries), pass^k estimator (all-k, not pass@k), cluster structure.
 - done: both sign off; frozen later in KG-16.
+- evidence: prereg §Metrics drafted (experiments/prereg/preregistration.md); tests/kit/test_sh_06_prereg.py green; sign-off pending on PR
 
 ### SH-14 · Integration cadence (ongoing)
 - meta: P1 | M-0 | om=1d kg=1d | mcs | driver: om | deps: SH-01 | status: todo

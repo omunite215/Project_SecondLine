@@ -65,11 +65,12 @@ class Parsers(unittest.TestCase):
     def test_KG_02_raw_downloads_stored_with_lf(self) -> None:
         self.assertEqual(refdata.lf(b"a,b\r\nc,d"), b"a,b\nc,d\n")
 
-    def test_KG_02_iso_codes_cited_and_flagged_verify(self) -> None:
+    def test_KG_02_iso_codes_cited_and_verified(self) -> None:
+        # SH-13: confirmed against ECB T2S sources; CYCL wasn't found and is dropped
         rows = refdata.iso_codes()
-        codes = {r["code"] for r in rows}
-        self.assertTrue({"LACK", "MONY", "CLAC", "CMON"} <= codes)
-        self.assertTrue(all(r["verify"] is True and r["citation"].startswith("https://") for r in rows))
+        self.assertEqual({r["code"] for r in rows}, {"LACK", "MONY", "CLAC", "CMON", "LATE"})
+        self.assertTrue(all(r["verify"] is False and r["citation"].startswith("https://www.ecb.europa.eu/")
+                            for r in rows))
 
 
 class Snapshots(unittest.TestCase):

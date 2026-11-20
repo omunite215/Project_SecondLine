@@ -9,3 +9,15 @@ Append-only. Never edit `experiments/prereg/frozen/**`; record changes to the re
 - Timing: decided **before** any results exist. No dev, pilot, eval or blind run has been executed, the prereg isn't frozen yet (`experiments/prereg/frozen/` doesn't exist), and no outcome data was seen.
 - Affected: H1 (pressure effect: now pressure framing plus the L3 hint, with constant opportunity); MET attempted-violation rate per level; H2 is unaffected (ADR-014 already keeps the surface identical across off/monitor/full). Reporting: no pre-amendment results exist, so all results follow this design. The report states the §14 wording, this amendment and the residual limitation that the L3 contrast bundles severity with the hint (L0–L2 vs L3 can't separate the two).
 - Approved by: om ☑ kunal ☑ (PR #17, 2026-10-29)
+
+## EXPLORATORY-1 · Image-evidence arm and scan-generator comparison (RQ4) (2026-11-19)
+- Type: EXPLORATORY (adds an analysis; does **not** change the registered design)
+- Task: SH-20 · ADR-020 · §6 §13 §15 · F3 F4
+- What is added: RQ4: does presenting evidence as generated scanned images instead of structured text change the correct-resolution rate, and which generator (pix2pix vs conditional VAE vs Augraphy rules) best preserves numeric fields?
+  - Design: a paired subset of 50 evaluation scenarios, run with text evidence and with generated-scan evidence, everything else fixed.
+  - Generator metrics: FID, KID, SSIM, and OCR character error rate on numeric fields.
+  - Visual prompt-injection variants are scored like the text injections.
+- What is not changed: H1–H3, their metrics, denominators, sample sizes, splits and decision rules. Image-arm runs are extra and excluded from every H1–H3 analysis.
+- Rationale: realistic evidence format (scans) and the course's image-generation requirement, without touching preregistered claims. Results are labeled EXPLORATORY wherever they appear.
+- Timing: proposed before any results exist; no image pipeline, corpus or run exists yet.
+- Approved by: om ☐ kunal ☐

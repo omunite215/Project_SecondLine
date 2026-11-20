@@ -81,6 +81,15 @@ The driver owns the outcome and schedules the session; the other person contribu
 - evidence: ADR-018 PROPOSED (this PR): attacker models A1–A4 with chain-only vs checkpoint detection, Ed25519-over-receipt_hash profile, key id/storage/rotation/expiry, signed checkpoints anchored by git-committed digest, claim limit; done = ACCEPTED by both
 
 ## M-4 Science
+### SH-20 · Image track: generated scanned evidence (exploratory, RQ4)
+- meta: P1 | M-4 | om=2.5d kg=2d | driver: om | deps: SH-07, KG-04, KG-05 | status: todo
+- refs: §6 §10 §13 §15 | ADR-020
+- build: per ADR-020. The generator, OCR gate and generator evaluation are a committed course deliverable (the AAI 6665 proposal). The agent image arm is exploratory (EXPLORATORY-1).
+  - **Kunal:** a deterministic page renderer in the factory (template → 200 dpi page with a SYNTHETIC watermark, fictional bank only); the image-arm switch in the runner (paired 50-scenario subset); and the OCR canary scan in KG-05.
+  - **Om:** print-and-scan corpus (~300 pages, two printers, two flatbeds and one phone app; manifest and hashes under data/generated/, split by template); pix2pix, conditional VAE and Augraphy baseline trained on the RTX 3050 (no Explorer training, per SH-19); the fail-closed OCR gate; the evidence tool's image variant through a contracts bump (`/handoff`); and visual-injection variants in OM-16.
+- done: the OCR gate rejects a page with one changed digit and serves the baseline (test); a planted canary fails KG-05 (test); the chosen generator passes the OCR gate (every numeric field exact) on ≥ 95% of held-out template-split pages, a per-page target because the feasibility check showed page accuracy collapses long before field accuracy; FID, KID, SSIM and OCR CER are reported for all three generators, labeled EXPLORATORY; weights are not published.
+- notes: spec edits (§13 E9, §6 dataset, §15 visual injection) need a human-authored MASTER_SPEC change-log entry; Claude is deny-listed from the spec. Cut order: only the agent image arm can be cut (PLAN §7). The generator is protected.
+
 
 ### SH-10 · Pilot-grounded budgets & thresholds
 - meta: P1 | M-4 | om=0.25d kg=0.25d | driver: kg | deps: KG-17 | status: todo

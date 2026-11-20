@@ -26,6 +26,7 @@ Status values: ADOPTED (in the spec) · PROPOSED · ACCEPTED (both approved in a
 | 016 | Accounting model & precision | ACCEPTED (SH-03, PR #10) | U1 | ADR-016-accounting-model.md |
 | 017 | Evidence semantics & detection gap | ACCEPTED (SH-04, PR #16) | U5 | ADR-017-evidence-semantics.md |
 | 018 | Audit threat model & receipt signature profile | PROPOSED (SH-09) | U9 | ADR-018-audit-signature-profile.md |
+| 020 | Generated scanned-evidence images (image track, exploratory) | PROPOSED (SH-20) | — | ADR-020-generated-scanned-evidence.md |
 
 ## Unresolved decisions (§25 items 1–13 → U1–U13)
 | U | topic | resolved by | status |

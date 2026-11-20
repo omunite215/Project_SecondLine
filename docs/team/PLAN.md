@@ -15,10 +15,10 @@ Status: PROPOSED — confirm or edit in SH-01, then run `make board-check`. Spec
 <!-- BEGIN:summary -->
 | person | own tasks | shared share | total | P0 | MCS (min. credible scope) | cards |
 |---|---:|---:|---:|---:|---:|---:|
-| Om | 56.0d | 11.8d | **67.8d** | 39.2d | 49.5d | 46 |
-| Kunal | 51.5d | 12.0d | **63.5d** | 44.5d | 50.2d | 41 |
+| Om | 56.0d | 14.2d | **70.2d** | 39.2d | 49.5d | 47 |
+| Kunal | 51.5d | 14.0d | **65.5d** | 44.5d | 50.2d | 42 |
 
-Balance gap: 6.3% of the larger load. Estimates = focused days without AI assistance; use them to compare load, not to schedule. Re-estimate after M-1.
+Balance gap: 6.8% of the larger load. Estimates = focused days without AI assistance; use them to compare load, not to schedule. Re-estimate after M-1.
 <!-- END:summary -->
 
 ## 4. Interfaces — build against mocks, integrate at gates
@@ -56,18 +56,19 @@ Each phase ≈ one week of solid part-time work each. Estimates are unassisted f
 | 2 | OM-03, OM-04 | KG-03, KG-05, KG-04 (start) | |
 | 3 | OM-04 (finish), OM-05, OM-06 | KG-04, KG-06, KG-07 | M-1 |
 | 4 | OM-05/06 (finish), OM-07, OM-08, SH-19 | KG-08, KG-09, KG-10, SH-07, SH-19 | M-2 |
-| 5 | OM-08, OM-09, OM-10, OM-11 | KG-11, KG-13, KG-15, KG-12 | |
-| 6 | OM-12, OM-13, OM-14, OM-15, OM-16 | KG-15, KG-16, KG-17, KG-14 | M-3 + pilot gate |
-| 7 | OM-17, OM-18, OM-20, OM-21 + campaign shard 2/2 | KG-18, KG-20, KG-19 (start) | |
+| 5 | OM-08, OM-09, OM-10, OM-11, SH-20 (scan corpus) | KG-11, KG-13, KG-15, KG-12, SH-20 (renderer) | |
+| 6 | OM-12, OM-13, OM-14, OM-15, OM-16, SH-20 (generator + OCR gate) | KG-15, KG-16, KG-17, KG-14 | M-3 + pilot gate |
+| 7 | OM-17, OM-18, OM-20, OM-21 + campaign shard 2/2 | KG-18 (+ SH-20 image arm), KG-20, KG-19 (start) | |
 | 8 | OM-19, OM-22, OM-23, OM-24, SH-16/17 | KG-19, KG-21, KG-22, SH-13, SH-15 | M-5 + SH-18 |
 
 ## 7. Minimum credible scope (MCS) & cut order (§20)
 MCS = cards tagged `mcs` (`mcs=Xd` = reduced scope); totals in §3. Cut in this order:
 1. **Console extras + load scale:** OM-22 → static result pages; OM-19 → 10 concurrent runs; OM-21 → approvals + run trace only.
-2. **Crypto anchors + broad chaos:** OM-14 → unsigned chain + checkpoints; OM-18 → four key faults; OM-17 → Jaeger only; KG-14 → bypass, race, toxic sequence.
-3. **Commercial-model expansion:** shrink or drop the frontier arm (300 runs) and disclose it; drop KG-21 (console reads result files); fewer paired-live replications in KG-20.
+2. **Image-evidence agent arm (SH-20, exploratory):** drop the agent image-arm runs. The scan generator, OCR gate and generator evaluation stay, because they are a committed course deliverable.
+3. **Crypto anchors + broad chaos:** OM-14 → unsigned chain + checkpoints; OM-18 → four key faults; OM-17 → Jaeger only; KG-14 → bypass, race, toxic sequence.
+4. **Commercial-model expansion:** shrink or drop the frontier arm (300 runs) and disclose it; drop KG-21 (console reads result files); fewer paired-live replications in KG-20.
 
-**Protected:** correct financial model (OM-03/04/08) · real tool-using LLM (OM-05/06, KG-08/09/10) · pre-commit safety (OM-07…11) · independent grading (KG-06) · core 3-condition experiment (OM-13, KG-11, KG-15…19) · honest evidence (SH-15/16/18).
+**Protected:** image generator + OCR gate + GAN-vs-VAE evaluation (SH-20, course deliverable) · correct financial model (OM-03/04/08) · real tool-using LLM (OM-05/06, KG-08/09/10) · pre-commit safety (OM-07…11) · independent grading (KG-06) · core 3-condition experiment (OM-13, KG-11, KG-15…19) · honest evidence (SH-15/16/18).
 **Experiment shortfall rule:** decide in KG-17, before any eval run, as an AMENDMENT. Cut the frontier arm before cutting repeats — H3 needs 5 repeats per scenario.
 
 ## 8. Collaboration protocol

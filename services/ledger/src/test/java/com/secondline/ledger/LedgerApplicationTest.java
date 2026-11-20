@@ -24,6 +24,7 @@ class LedgerApplicationTest {
         r.add("spring.datasource.url", LedgerDb::jdbcUrl);
         r.add("spring.datasource.username", () -> "ledger_svc");
         r.add("spring.datasource.password", () -> LedgerDb.APP_PW);
+        LedgerAuth.register(r); // OM-07: no realm credentials, no start
     }
 
     @Test
@@ -35,8 +36,11 @@ class LedgerApplicationTest {
 
     @Test
     void OM01_onlyHealthExposed() {
+        // OM-07: unlisted paths are denied by the catch-all realm (403) before routing, so nothing reveals what exists.
         for (String path : new String[] {"/actuator/env", "/actuator/beans", "/actuator/configprops"}) {
-            assertThat(http.getForEntity(path, String.class).getStatusCode()).as(path).isEqualTo(HttpStatus.NOT_FOUND);
+            var r = http.getForEntity(path, String.class);
+            assertThat(r.getStatusCode()).as(path).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThat(r.getBody()).as(path).contains("PERMISSION_DENIED").doesNotContain("propertySources", "beans");
         }
     }
 

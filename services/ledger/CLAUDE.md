@@ -1,7 +1,7 @@
 # services/ledger — financial authority (owner: Om)
 Spring Boot · Java 21 · PostgreSQL 17 via Flyway · Testcontainers. The ONLY component that mutates financial state (ADR-002).
 
-## Layout (keep updated — part of DoD). Built = OM-03 + OM-04; the rest is planned.
+## Layout (keep updated — part of DoD). Built = OM-03 + OM-04 + OM-07; the rest is planned.
 ```text
 com.secondline.ledger
   LedgerException  typed failure (contracts ErrorCode; grader-only codes refused); nothing was written
@@ -21,8 +21,12 @@ com.secondline.ledger
   approvals/     maker-checker bound to ActionDigest (ADR-011)
   idempotency/   UNIQUE(actor_scope, operation_type, key) + payload digest
   outbox/ receipts/   same-transaction outbox; per-run receipt hash chain
-  api/internal   gateway service JWT only · api/admin operator · api/review humans
-  security/      one filter chain per realm
+  security/      LedgerSecurityConfig: one filter chain per realm, default deny, every refusal 403
+                 PERMISSION_DENIED · /internal/** gateway service JWT (ServiceTokenVerifier: EdDSA, kid of
+                 GatewayTrust = PUBLIC half of the gateway's service key, typ sl-svc+jwt, iss/sub/aud, 30 s skew,
+                 ≤ 5 min life, ns claim == path ns) · /admin/** OperatorCredential (LEDGER_OPERATOR_TOKEN, ≥ 32,
+                 constant time) + gateway JWT on POST /admin/v1/runs for its own ns · health open · /review/**
+                 (OM-20) and the rest closed. Unset key/token = no start (not in profile migrate)        [built]
 resources/db/migration/   V###__*.sql (.claude/rules/migrations.md)
   V001 namespaces · V002 domains + reference data · V003 operational records · V004 two ledgers,
   deferred balance triggers (P0002 cash / P0003 securities), immutability triggers (P0001), positions ·
@@ -35,7 +39,8 @@ resources/db/migration/   V###__*.sql (.claude/rules/migrations.md)
 UPDATE only on `breaks(status, state_version)`, `positions` and `namespaces(snapshot_id, status, loaded_at,
 state_version)` (guarded by trigger), never DELETE/CREATE. Retiring a namespace keeps its rows (ADR-019 Addendum A). Tests use
 `LedgerDb` (one Testcontainers Postgres initialised with the shipped `infra/db/init`), `Services` (real
-services + standalone MockMvc for the read/admin routes) and `Bundles` (the contracts WorldBundle example).
+services + standalone MockMvc for the read/admin routes) and `Bundles` (the contracts WorldBundle example). Booted contexts also need `LedgerAuth.register(r)` (OM-07 test
+credentials; `LedgerAuth.service(ns)` / `operator()` for requests).
 ## Commands
 `make test-ledger` (Testcontainers; ~5 min incl. the jqwik properties) · `make test-int` · `./gradlew :services:ledger:bootRun`
 ## Conventions

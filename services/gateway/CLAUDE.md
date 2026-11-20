@@ -4,12 +4,13 @@ Spring Boot · Java 21. Stateless except Redis. Each tool call: token → schema
 ## Layout (OM-05; [Om] = Om writes it, learn card)
 ```text
 com.secondline.gateway
-  token/     RunTokens [Om] (Ed25519 run JWTs, G2/G3), SigningKeys (JWK file, missing → no start), KeyGen
+  token/     RunTokens [Om] (Ed25519 run JWTs, G2/G3), SigningKeys (JWK file, missing → no start), KeyGen (+ <name>.pub.jwk)
   pipeline/  ToolPipeline.handle [Om] (stage order, conditions, fail-closed mapping); ToolCall/ToolResult/Stage
   web/       ToolController (strict JSON object bodies), RunController, ErrorAdvice (contract errors only)
   runs/      RunService: POST /v1/runs, operator token, Idempotency-Key, ledger registers the run first
   route/     ToolRoutes: every INDEX.json tool → READ | ACTION | SIMULATED | UNROUTED (parity-tested vs ledger-internal.yaml)
-  client/    LedgerClient (service JWT, 4xx pass-through only for contract errors), PolicyClient (OPA, 200 ms), DecisionLog
+  client/    LedgerClient (service JWT scoped to one ns, signed by the SEPARATE service key GATEWAY_SERVICE_JWK_PATH — OM-07;
+             4xx pass-through only for contract errors), PolicyClient (OPA, 200 ms), DecisionLog
   guard/     RunGuard / InMemoryRunGuard: call budget, halt, C_msg (OM-12 replaces with ledger-backed flags)
   schema/    InputSchemas: DOMAIN_INVALID that never echoes input
   observe/   OnPathFilter: `gateway.onpath` timer (SLO buckets 1–500 ms; tool ∈ §10 or "unknown"; status)

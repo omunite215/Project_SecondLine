@@ -43,9 +43,16 @@ public class GatewayConfig {
     }
 
     @Bean
-    LedgerClient ledgerClient(SigningKeys keys, Clock clock, @Value("${gateway.ledger-url}") String url,
-                              @Value("${gateway.ledger-timeout:2s}") Duration timeout) {
-        return new LedgerClient(url, new ServiceTokens(keys, clock), timeout);
+    LedgerClient ledgerClient(SigningKeys runKeys, Clock clock, @Value("${gateway.service-jwk-path:}") String servicePath,
+                              @Value("${gateway.ledger-url}") String url, @Value("${gateway.ledger-timeout:2s}") Duration timeout) {
+        // OM-07: a separate service key (the ledger trusts only its public half); one key for both would let any
+        // run token's signature verify at the ledger, leaving typ/aud as the only barrier.
+        if (servicePath.isBlank()) throw new IllegalStateException("gateway.service-jwk-path (GATEWAY_SERVICE_JWK_PATH) is not set");
+        SigningKeys serviceKeys = SigningKeys.load(Path.of(servicePath));
+        if (serviceKeys.kid().equals(runKeys.kid()) || serviceKeys.publicJwk().getX().equals(runKeys.publicJwk().getX())) {
+            throw new IllegalStateException("gateway.service-jwk-path must be a different key from gateway.signing-jwk-path");
+        }
+        return new LedgerClient(url, new ServiceTokens(serviceKeys, clock), timeout);
     }
 
     @Bean

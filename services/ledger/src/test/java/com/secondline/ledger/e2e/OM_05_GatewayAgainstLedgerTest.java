@@ -20,8 +20,8 @@ import com.secondline.gateway.route.ToolRoutes;
 import com.secondline.gateway.schema.InputSchemas;
 import com.secondline.gateway.token.RunGrant;
 import com.secondline.gateway.token.RunTokens;
-import com.secondline.gateway.token.SigningKeys;
 import com.secondline.ledger.Bundles;
+import com.secondline.ledger.LedgerAuth;
 import com.secondline.ledger.LedgerDb;
 import com.sun.net.httpserver.HttpServer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -60,6 +60,7 @@ class OM_05_GatewayAgainstLedgerTest {
         r.add("spring.datasource.url", LedgerDb::jdbcUrl);
         r.add("spring.datasource.username", () -> "ledger_svc");
         r.add("spring.datasource.password", () -> LedgerDb.APP_PW);
+        LedgerAuth.register(r);
     }
 
     @BeforeAll
@@ -90,11 +91,13 @@ class OM_05_GatewayAgainstLedgerTest {
     JsonNode post(String path, String json) throws Exception {
         HttpHeaders h = new HttpHeaders();
         h.setContentType(MediaType.APPLICATION_JSON);
+        h.setBearerAuth(LedgerAuth.OPERATOR); // the harness, in the admin realm (OM-07)
         return Contracts.MAPPER.readTree(http.postForEntity(path, new HttpEntity<>(json, h), String.class).getBody());
     }
 
     String stateHash(UUID ns) throws Exception {
-        return Contracts.MAPPER.readTree(http.getForEntity("/admin/v1/ns/" + ns + "/state-hash", String.class).getBody())
+        return Contracts.MAPPER.readTree(http.exchange("/admin/v1/ns/" + ns + "/state-hash", org.springframework.http.HttpMethod.GET,
+                        new HttpEntity<>(LedgerAuth.operator()), String.class).getBody())
                 .get("state_hash").asText();
     }
 
@@ -106,9 +109,9 @@ class OM_05_GatewayAgainstLedgerTest {
                 .put("controls", "full").put("agent_id", "agt_00000001")
                 .put("manifest_ref", "experiments/manifests/pilot-001.json").toString()).get("run_id").asText());
 
-        SigningKeys keys = SigningKeys.generate("gw-e2e000000000001");
-        RunTokens tokens = new RunTokens(keys, Clock.systemUTC(), Duration.ofMinutes(30));
-        LedgerClient ledger = new LedgerClient("http://127.0.0.1:" + port, new ServiceTokens(keys, Clock.systemUTC()), Duration.ofSeconds(5));
+        // OM-07: run tokens and service tokens come from different keys; the ledger trusts only the service key.
+        RunTokens tokens = new RunTokens(LedgerAuth.RUN, Clock.systemUTC(), Duration.ofMinutes(30));
+        LedgerClient ledger = new LedgerClient("http://127.0.0.1:" + port, new ServiceTokens(LedgerAuth.SERVICE, Clock.systemUTC()), Duration.ofSeconds(5));
         ToolPipeline pipeline = new ToolPipeline(tokens, new InputSchemas(SchemaRegistry.load()), new InMemoryRunGuard(100),
                 new PolicyClient("http://127.0.0.1:" + opa.getAddress().getPort(), Duration.ofMillis(500)), ledger,
                 new DecisionLog(ledger, SchemaRegistry.load()), Clock.systemUTC(), new SimpleMeterRegistry());

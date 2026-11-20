@@ -9,6 +9,7 @@ import java.nio.file.Path;
 /** A throwaway signing key on disk for Spring contexts (the real one comes from make bootstrap, G4). */
 public final class TestKeys {
     private static Path file;
+    private static Path serviceFile;
 
     private TestKeys() {}
 
@@ -23,5 +24,19 @@ public final class TestKeys {
             }
         }
         return file.toString();
+    }
+
+    /** OM-07: the separate service-signing key (gateway → ledger JWTs). */
+    public static synchronized String servicePath() {
+        if (serviceFile == null) {
+            try {
+                serviceFile = Files.createTempFile("gateway-service", ".jwk");
+                Files.writeString(serviceFile, SigningKeys.generate("gw-svc-test-v1").privateJwk().toJSONString());
+                serviceFile.toFile().deleteOnExit();
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        }
+        return serviceFile.toString();
     }
 }

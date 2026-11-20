@@ -19,6 +19,8 @@ import java.util.HexFormat;
  * single-file source program on both laptops: {@code java KeyGen.java secrets/gateway-signing.jwk}.
  * Never overwrites an existing key and never prints key material. File 0644 (the container's non-root user reads
  * the bind mount), directory 0700 (other host users can't reach it); secrets/ is git- and docker-ignored.
+ * OM-07: also writes {@code <name>.pub.jwk}, the public half only (no "d"), which is all the ledger may mount; for a key
+ * made before OM-07 it is derived from the existing file.
  */
 public final class KeyGen {
     private KeyGen() {}
@@ -31,6 +33,7 @@ public final class KeyGen {
         Path out = Path.of(args[0]);
         if (Files.exists(out)) {
             System.out.println(out + ": exists, left unchanged");
+            writePublic(out, Files.readString(out, StandardCharsets.UTF_8));
             return;
         }
         Path dir = out.toAbsolutePath().getParent();
@@ -40,6 +43,31 @@ public final class KeyGen {
                 StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
         Files.setPosixFilePermissions(out, PosixFilePermissions.fromString("rw-r--r--"));
         System.out.println(out + ": created (Ed25519 signing key)");
+        // A new key (first run or a rotation: delete the private file) replaces any public file left from the old one.
+        Files.deleteIfExists(publicPath(out));
+        writePublic(out, Files.readString(out, StandardCharsets.UTF_8));
+    }
+
+    /** The public JWK next to the private one; left alone if present. */
+    static void writePublic(Path privateFile, String privateJwk) throws IOException {
+        Path pub = publicPath(privateFile);
+        if (Files.exists(pub)) return;
+        Files.writeString(pub, publicOnly(privateJwk), StandardCharsets.UTF_8, StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE);
+        Files.setPosixFilePermissions(pub, PosixFilePermissions.fromString("rw-r--r--"));
+        System.out.println(pub + ": created (public half)");
+    }
+
+    static Path publicPath(Path privateFile) {
+        String name = privateFile.getFileName().toString();
+        return privateFile.resolveSibling((name.endsWith(".jwk") ? name.substring(0, name.length() - 4) : name) + ".pub.jwk");
+    }
+
+    /** Drops the private "d" member (a regex: KeyGen is JDK-only so make bootstrap needs no build); refuses anything that still looks private afterwards. */
+    static String publicOnly(String privateJwk) {
+        String pub = privateJwk.replaceAll(",\\s*\"d\"\\s*:\\s*\"[A-Za-z0-9_-]*\"", "")
+                .replaceAll("\"d\"\\s*:\\s*\"[A-Za-z0-9_-]*\"\\s*,", "");
+        if (pub.contains("\"d\"") || !pub.contains("\"x\"")) throw new IllegalStateException("cannot derive a public JWK");
+        return pub;
     }
 
     /** RFC 8037 OKP JWK. Raw keys are the last 32 bytes of the PKCS#8 / X.509 encodings (fixed RFC 8410 prefixes). */

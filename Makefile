@@ -59,6 +59,7 @@ bootstrap: ## One-time dependency install (OM-01 + KG-01)
 	@docker compose version --short | awk -F. '{ if ($$1 < 2 || ($$1 == 2 && $$2 < 17)) { print "need docker compose >= 2.17"; exit 1 } }'
 	@$(PY) scripts/bootstrap_env.py
 	@java services/gateway/src/main/java/com/secondline/gateway/token/KeyGen.java secrets/gateway-signing.jwk
+	@java services/gateway/src/main/java/com/secondline/gateway/token/KeyGen.java secrets/gateway-service.jwk
 	@if [ ! -f .pre-commit-config.yaml ]; then :; elif command -v uv >/dev/null; then uvx pre-commit install --allow-missing-config; else echo "install uv, then: uvx pre-commit install --allow-missing-config"; fi
 up: ## Start profiles, e.g. make up PROFILES="core app" (core app events obs ui chaos)
 	$(need_env)

@@ -19,6 +19,7 @@ class GatewayApplicationTest {
     @org.springframework.test.context.DynamicPropertySource
     static void config(org.springframework.test.context.DynamicPropertyRegistry r) {
         r.add("gateway.signing-jwk-path", TestKeys::path);
+        r.add("gateway.service-jwk-path", TestKeys::servicePath);
         r.add("gateway.ledger-url", () -> "http://127.0.0.1:1");
         r.add("gateway.opa-url", () -> "http://127.0.0.1:1");
     }

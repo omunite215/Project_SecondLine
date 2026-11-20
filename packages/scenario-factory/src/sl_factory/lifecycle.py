@@ -11,6 +11,7 @@ import random
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from decimal import ROUND_HALF_EVEN, Decimal
+from typing import Any
 
 from sl_factory.rng import IdMinter
 from sl_factory.world import MARKETS, MINOR_UNITS, PRICE_RANGE, Counterparty, Instrument, World
@@ -82,6 +83,17 @@ class TradeSim:
     cutoff_time: str | None = None
     status_text: str = ""
     events: list[CausalEvent] = field(default_factory=list)
+    # KG-04: which records exist at all (B5 missing / duplicate / delayed confirm; B7/B8 failures)
+    booked: bool = True  # the bank has a booking (False: B5 missing trade)
+    has_confirm: bool = True  # the broker confirm has arrived (False: duplicate booking, delayed confirm)
+    has_status: bool = True  # the CSD knows the trade (False: a duplicate booking never instructed)
+    external_ref: str | None = None  # broker/CSD reference when the bank has no booking (B5 missing)
+    status_code: str | None = None  # ISO 20022 pending/failing reason (B7), from refdata
+
+    @property
+    def ref(self) -> str:
+        """The trade reference external records carry."""
+        return self.external_ref or self.trade_id
 
     @property
     def currency(self) -> str:
@@ -104,6 +116,8 @@ class Simulator:
         self.rng, self.ids, self.world, self.currency, self.as_of = rng, ids, world, currency, as_of
         self.market = MARKETS[currency]
         self.trades: list[TradeSim] = []
+        self.extras: list[Any] = []  # render.Extra facts beyond trades (FX revaluation, CA, SSI); KG-04
+        self.events: list[tuple[str, str, str, str]] = []  # scenario-level causes: (event_id, kind, at, note)
 
     # draws
     def quantity(self, lo: int, hi: int, step: int = 10) -> int:

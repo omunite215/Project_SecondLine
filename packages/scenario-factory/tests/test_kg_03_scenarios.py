@@ -135,7 +135,9 @@ def test_KG_03_b2_booking_error_rebooks_at_evidenced_quantity(index: int) -> Non
 
 def _booked_gross(s: Scenario, tid: str) -> str:
     entry = next(
-        e for e in s.bundle["journal_entries"] if e["trade_id"] == tid and e["lines"][0]["account"].startswith("1300")
+        e
+        for e in s.bundle["journal_entries"]
+        if e.get("trade_id") == tid and e["lines"][0]["account"].startswith("1300")
     )
     return str(entry["lines"][0]["amount"])
 

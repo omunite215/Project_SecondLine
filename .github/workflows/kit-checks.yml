@@ -73,3 +73,18 @@ jobs:
         run: |
           make codegen-py
           test -z "$(git status --porcelain -- packages/contracts/py)" || (git status --short -- packages/contracts/py; echo "run: make codegen-py" && exit 1)
+  leakage:
+    # KG-05: runs on every PR (a console, gateway or trace change can leak too). Generates the dev split so the
+    # scan collects its real canaries; eval/blind are never generated here.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          enable-cache: true
+      - name: Sync
+        run: uv sync --frozen
+      - name: Generate dev split
+        run: make factory SPLIT=dev N=40
+      - name: Leakage check
+        run: make leakage-check

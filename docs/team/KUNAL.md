@@ -24,10 +24,11 @@ Owner key `kg` (`owner: kunal` in CLAUDE.local.md). Claude reads this through `p
 - done: `make refdata-verify` re-hashes every snapshot; the factory reads refdata only via MANIFEST; datasheet inputs recorded.
 
 ### KG-03 · Causal break factory core (world, lifecycle, B1–B3)
-- meta: P0 | M-1 | 3d | mcs | deps: KG-01, SH-02, SH-03 | status: todo
+- meta: P0 | M-1 | 3d | mcs | deps: KG-01, SH-02, SH-03 | status: review
 - refs: §5 §6 | REQ-001 | T-DOM-02 | ADR-006 | B1 B2 B3 | F10
 - build: packages/scenario-factory/sl_factory: seeded world (institution, counterparties, instruments, cash accounts); lifecycle simulator that produces causal events FIRST (trade → booking → confirmation → SSI → custodian updates → settled / failed / partial), then the visible records. Outputs per contracts: WorldBundle (visible; opaque ids; symptoms only, never root-cause labels) + Truth (causal_event_ids, root_cause, allowed/forbidden outcomes, required_evidence_ids, approval_requirements, expected_state_delta, escalation_if_insufficient_evidence, severity, generator version, explanation, canary SLCANARY-<hex>) + manifest with sha256. Generators: B1 timing (timezones, as-of), B2 quantity (incl. partial-settlement look-alike), B3 price/rounding at the tolerance boundary.
 - done: same seed ⇒ identical hash; property test: no truth field or value leaks into the bundle; `make factory SPLIT=dev N=40` writes data/generated/dev/.
+- evidence: make test-factory 106 passed (same-seed hash, no-truth-leak property, make factory SPLIT=dev N=40); lint-py + strict mypy clean; leakage-auditor + contract-guardian reviews applied
 
 ### KG-04 · Factory: B4–B8, hard variants, categories, splits
 - meta: P0 | M-1 | 3.5d | mcs=2.5d | deps: KG-03, KG-02, SH-05 | status: todo

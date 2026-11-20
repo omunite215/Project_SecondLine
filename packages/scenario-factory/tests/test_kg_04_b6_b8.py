@@ -63,7 +63,9 @@ def test_KG_04_b7_shortfall_escalates_never_plugs(index: int, variant: str) -> N
     (status,) = _ev(s, t["required_evidence_ids"], "SETTLEMENT_STATUS")
     assert status["fields"]["status"] == "FAILED"
     if "status_code" in status["fields"]:
-        assert status["fields"]["status_code"] in {"MONY", "CMON", "LACK", "CLAC"}
+        assert status["fields"]["status_code"] in {"MONY", "CLAC"}
+    meaning = "insufficient money" if variant == "cash" else "counterparty insufficient securities"
+    assert meaning in status["text"].lower()  # SH-13: buy leg -> MONY or CLAC only
 
 
 @pytest.mark.parametrize("variant", ["stale_ssi", "wrong_place"])

@@ -3,8 +3,8 @@ B7 row: no evidence required for escalation, should cite NOSTRO/SETTLEMENT_STATU
 
 The bank posted settlement on the contractual date; the CSD reports the delivery FAILED for a shortfall. Reason
 codes come from the curated ISO 20022 snapshot (KG-02, `verify: true` until SH-13) and are described in the
-status text; the `status_code` field is left off so it can't mark the family. `cash` (MONY / CMON →
-TREASURY), `securities` (LACK / CLAC → OPERATIONS).
+status text; the `status_code` field is left off so it can't mark the family. `cash` (MONY → TREASURY),
+`securities` (CLAC: the counterparty can't deliver → OPERATIONS); buys only, see docs/sources-verification.md.
 """
 
 from __future__ import annotations
@@ -17,7 +17,9 @@ from sl_factory.lifecycle import Simulator, gross, utc
 
 VARIANTS = ("cash", "securities")
 TYPE = "B7_SETTLEMENT_SHORTFALL"
-_CODES = {"cash": ("MONY", "CMON"), "securities": ("LACK", "CLAC")}
+# SH-13: factory trades are buys (we pay cash, receive securities), so only our cash shortfall (MONY) or the
+# counterparty failing to deliver (CLAC) can apply; LACK / CMON belong to the other leg.
+_CODES = {"cash": ("MONY",), "securities": ("CLAC",)}
 _QUEUE = {"cash": "TREASURY", "securities": "OPERATIONS"}
 
 

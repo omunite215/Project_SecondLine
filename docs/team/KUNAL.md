@@ -13,7 +13,7 @@ Owner key `kg` (`owner: kunal` in CLAUDE.local.md). Claude reads this through `p
 - refs: §7 §19 §21 | NFR-06 NFR-11 | T-DOC-01
 - build: uv workspace (Python 3.12) with members services/agent, services/mcp-adapter (Om's code, your workspace), services/supervisor, packages/scenario-factory, packages/evaluation, packages/audit-verifier, packages/contracts/py; ruff + mypy (strict for factory/evaluation) + pytest + hypothesis config; `make codegen-py` (datamodel-code-generator → `sl_contracts` pydantic models, Decimal for money); multi-arch Dockerfiles for Python services; path-filtered CI job.
 - done: `make test-py` green on both machines; codegen deterministic (CI fails on diff).
-- evidence: tests/workspace 23 passed (make test-py, M4 arm64); make lint-py clean; codegen deterministic (test_KG_01_codegen_deterministic, test_KG_01_committed_models_are_current, CI porcelain check); images buildx amd64+arm64, no sl_factory/sl_eval; make kit-check green. Om's machine: VERIFY on PR
+- evidence: PR #14: make test-py 24 passed, lint-py clean, codegen-py deterministic (CI python job diff check green)
 
 ## M-1 Truthful simulator (truth side)
 

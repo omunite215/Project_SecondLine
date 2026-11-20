@@ -103,10 +103,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 - done: every row links a test or states the gap; the claims rule passes.
 
 ### SH-13 · Source reconciliation & citation verification
-- meta: P1 | M-5 | om=0.25d kg=0.5d | driver: kg | deps: SH-01 | status: todo
+- meta: P1 | M-5 | om=0.25d kg=0.5d | driver: kg | deps: SH-01 | status: review
 - refs: §2 §16 §24 §6 | U13 | RSK-15 | B7 B8
 - build: try to reconcile PoC 1,035 vs 729 from the original logs (else keep both as POC-REPORTED with a note); verify ISO 20022 / T2S codes (LACK, MONY, CLAC, CMON, LATE) and BIC↔LEI caveats against official sources; verify the DOI/URL of every reference used in the report; mark each VERIFY item resolved or unresolved.
 - done: docs/sources-verification.md with a status per claim.
+- evidence: docs/sources-verification.md: PoC 1,035 vs 729 UNRESOLVED (no logs; units differ, both POC-REPORTED); LACK/MONY/CLAC/CMON/LATE RESOLVED vs ECB T2S, CYCL unresolved; BIC-LEI caveat RESOLVED; 36 references checked (SR 11-7 CORRECTED -> SR 26-2)
 
 ### SH-15 · Final report / paper
 - meta: P0 | M-5 | om=2d kg=2.5d | mcs | driver: kg | deps: KG-19, OM-24 | status: todo

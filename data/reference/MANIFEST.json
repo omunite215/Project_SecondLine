@@ -110,7 +110,8 @@
   },
   {
    "caveats": [
-    "every code is verify: true until SH-13 checks it (RSK-15)"
+    "meanings confirmed against ECB T2S sources in SH-13 (docs/sources-verification.md)",
+    "factory trades are buys: only MONY and CLAC apply to B7 (SH-13)"
    ],
    "coverage_gaps": [
     "curated, not fetched: pending/failing reason codes used by B1/B7 only"
@@ -118,21 +119,22 @@
    "date": "2026-11-20",
    "files": [
     {
-     "bytes": 1301,
+     "bytes": 1496,
      "path": "iso20022/2026-11-20/settlement_codes.json",
      "rows": 5,
-     "sha256": "sha256:c53f35593c30a26dea9a6ab62f58f8145fe6258c3e49cd498b6dd8884991d8a7"
+     "sha256": "sha256:7b884a9554db4d7ac7fe495e23da478e97b37d9528c71e22e239f518f0f07a95"
     }
    ],
-   "license": "curated from public ISO 20022 documentation (codes and meanings only)",
+   "license": "curated from public ISO 20022 / ECB T2S documentation (codes and meanings only)",
    "license_url": "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets",
    "ref": "iso20022@2026-11-20",
-   "retrieved_at": "2026-11-20T02:43:32Z",
+   "retrieved_at": "2026-11-20T03:26:00Z",
    "source": "iso20022",
    "url": [
+    "https://www.ecb.europa.eu/paym/target/t2s/profuse/shared/pdf/insights_on_multiple_statuses_in_a_status_notification.pdf",
     "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets"
    ],
-   "verify": true
+   "verify": false
   }
  ]
 }

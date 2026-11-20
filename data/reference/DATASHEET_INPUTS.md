@@ -59,13 +59,15 @@ Do not edit by hand. Synthetic-world inputs only: public reference data, no clie
 
 ## iso20022@2026-11-20
 
-- source: iso20022 · retrieved_at: 2026-11-20T02:43:32Z
-- license: curated from public ISO 20022 documentation (codes and meanings only) (https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets)
-- needs verification (SH-13): yes
+- source: iso20022 · retrieved_at: 2026-11-20T03:26:00Z
+- license: curated from public ISO 20022 / ECB T2S documentation (codes and meanings only) (https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets)
+- needs verification (SH-13): no
+- url: https://www.ecb.europa.eu/paym/target/t2s/profuse/shared/pdf/insights_on_multiple_statuses_in_a_status_notification.pdf
 - url: https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets
 - coverage gap: curated, not fetched: pending/failing reason codes used by B1/B7 only
-- caveat: every code is verify: true until SH-13 checks it (RSK-15)
+- caveat: meanings confirmed against ECB T2S sources in SH-13 (docs/sources-verification.md)
+- caveat: factory trades are buys: only MONY and CLAC apply to B7 (SH-13)
 
 | file | rows | sha256 |
 |---|---|---|
-| iso20022/2026-11-20/settlement_codes.json | 5 | `sha256:c53f35593c30…` |
+| iso20022/2026-11-20/settlement_codes.json | 5 | `sha256:7b884a9554db…` |

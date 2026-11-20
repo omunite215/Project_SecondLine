@@ -35,12 +35,16 @@ TOP_LEVEL = {"MANIFEST.json", "DATASHEET_INPUTS.md"}
 
 # R4: curated, not fetched. Every row stays `verify: true` until SH-13 checks it against the ISO code set.
 ISO_CITATION = "https://www.iso20022.org/catalogue-messages/additional-content-messages/external-code-sets"
+# SH-13 (docs/sources-verification.md §2): meanings confirmed against the ECB T2S Programme Office slides
+# (bibliography #12) and T2S change requests 0355-URD / 0621-SYS. CYCL was not found and is dropped.
+T2S_CITATION = ("https://www.ecb.europa.eu/paym/target/t2s/profuse/shared/pdf/"
+                "insights_on_multiple_statuses_in_a_status_notification.pdf")
 _ISO = [
-    ("LACK", "pending_reason", "Lack of securities: insufficient securities on the delivering account", "B7"),
-    ("MONY", "pending_reason", "Insufficient money: insufficient cash on the receiving account", "B7"),
-    ("CLAC", "pending_reason", "Counterparty insufficient securities", "B7"),
-    ("CMON", "pending_reason", "Counterparty insufficient money", "B7"),
-    ("CYCL", "pending_reason", "Awaiting next settlement cycle", "B1"),
+    ("LACK", "pending_reason", "Lack of securities: the delivering party lacks the securities", "B7 (sell leg)"),
+    ("MONY", "pending_reason", "Insufficient money: the paying party lacks the cash", "B7 (buy: our cash)"),
+    ("CLAC", "pending_reason", "Counterparty insufficient securities", "B7 (buy: counterparty can't deliver)"),
+    ("CMON", "pending_reason", "Counterparty insufficient money", "B7 (sell leg)"),
+    ("LATE", "pending_reason", "Market deadline missed", "B1"),
 ]
 
 
@@ -100,7 +104,7 @@ def parse_gleif(pages: list[dict[str, Any]]) -> list[dict[str, str]]:
 
 
 def iso_codes() -> list[dict[str, Any]]:
-    return [{"code": c, "kind": k, "meaning": m, "used_by": u, "citation": ISO_CITATION, "verify": True}
+    return [{"code": c, "kind": k, "meaning": m, "used_by": u, "citation": T2S_CITATION, "verify": False}
             for c, k, m, u in _ISO]
 
 
@@ -252,15 +256,21 @@ def fetch(root: Path, snap_date: str) -> None:
                                          "; not representative", "no BIC or settlement-account mapping fetched",
                                          f"{excluded} SOLE_PROPRIETOR record(s) excluded (natural persons)"],
                        "caveats": ["an LEI identifies a legal entity, not a settlement account (§6)"]})
+    write_iso(root, snap_date)
+    (root / "DATASHEET_INPUTS.md").write_text(datasheet(_load_manifest(root)))
+
+
+def write_iso(root: Path, snap_date: str) -> None:
+    """The curated ISO 20022 / T2S code snapshot (no network)."""
     iso = iso_codes()
     write_snapshot(root, source="iso20022", date=snap_date, files={"settlement_codes.json": dump_rows(iso)},
                    rows={"settlement_codes.json": len(iso)}, meta={
-                       "url": [ISO_CITATION], "retrieved_at": _now(), "verify": True,
-                       "license": "curated from public ISO 20022 documentation (codes and meanings only)",
+                       "url": [T2S_CITATION, ISO_CITATION], "retrieved_at": _now(), "verify": False,
+                       "license": "curated from public ISO 20022 / ECB T2S documentation (codes and meanings only)",
                        "license_url": ISO_CITATION,
                        "coverage_gaps": ["curated, not fetched: pending/failing reason codes used by B1/B7 only"],
-                       "caveats": ["every code is verify: true until SH-13 checks it (RSK-15)"]})
-    (root / "DATASHEET_INPUTS.md").write_text(datasheet(_load_manifest(root)))
+                       "caveats": ["meanings confirmed against ECB T2S sources in SH-13 (docs/sources-verification.md)",
+                                   "factory trades are buys: only MONY and CLAC apply to B7 (SH-13)"]})
 
 
 def main(argv: list[str]) -> int:
@@ -270,10 +280,15 @@ def main(argv: list[str]) -> int:
     f = sub.add_parser("fetch")
     f.add_argument("--date", required=True)
     sub.add_parser("verify")
+    i = sub.add_parser("iso", help="rewrite only the curated ISO 20022 snapshot (no network)")
+    i.add_argument("--date", required=True)
     a = ap.parse_args(argv)
     if a.cmd == "fetch":
         a.root.mkdir(parents=True, exist_ok=True)
         fetch(a.root, a.date)
+    if a.cmd == "iso":
+        write_iso(a.root, a.date)
+        (a.root / "DATASHEET_INPUTS.md").write_text(datasheet(_load_manifest(a.root)))
     errors = verify(a.root)
     ds = a.root / "DATASHEET_INPUTS.md"
     if not ds.is_file() or ds.read_text() != datasheet(_load_manifest(a.root)):

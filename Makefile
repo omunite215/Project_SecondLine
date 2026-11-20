@@ -128,8 +128,8 @@ test-factory: ## Factory tests
 	$(call todo,KG-03)
 test-eval: ## Grader / runner / stats tests
 	$(call todo,KG-06)
-test-supervisor: ## Monitor tests
-	$(call todo,KG-11)
+test-supervisor: ## Monitor tests (I9–I12, once-per-state-change alerts, halts)
+	@$(UV) run pytest services/supervisor/tests
 test-redteam: ## Platform red-team suite by family
 	$(call todo,KG-14)
 leakage-check: ## Canary + truth-field scan

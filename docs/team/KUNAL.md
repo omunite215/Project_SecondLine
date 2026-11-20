@@ -77,10 +77,11 @@ Owner key `kg` (`owner: kunal` in CLAUDE.local.md). Claude reads this through `p
 ## M-3 Detection, verification, runner
 
 ### KG-11 · Supervisor: async monitors & kill switch
-- meta: P1 | M-3 | 3.5d | mcs | deps: SH-02, KG-01 | status: todo
+- meta: P1 | M-3 | 3.5d | mcs | deps: SH-02, KG-01 | status: review
 - refs: §8 §12 §7 | REQ-008 REQ-010 | T-SEC-03 T-SWE-03 | I9 I10 I11 I12 | MET-10 | F5 F7 | ADR-004
 - build: services/supervisor: Kafka consumer (dedupe by event_id; ordering only per key), per-run state, detective invariants I9 suspense growth, I10 cross-action transitions, I11 freshness / as-of consistency, I12 audit-sequence gaps; once-per-state-change alerting (the PoC's repeat-alert defect); on alarm: Redis halt + OM-12 :halt endpoint + incident record; metrics: lag, detection delay. Develop on sample events JSONL, then integrate with OM-13. Om reviews the monitor rules (independence); rules frozen before KG-18.
 - done: scripted violation sequences detected without repeat alerts; the legitimate-sequence suite raises 0 alarms; monitor-only condition works in a real run.
+- evidence: test_KG_11_scripted_violations_detected_once (I9-I12, one alert while violation persists), test_KG_11_legitimate_sequences_raise_no_alarms; make test-supervisor 10 passed; real-run criterion blocked on OM-12/OM-13 + ledger read endpoint
 
 ### KG-12 · Independent audit-chain verifier CLI
 - meta: P1 | M-3 | 1d | mcs | deps: SH-08 | status: todo

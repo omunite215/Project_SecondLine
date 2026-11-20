@@ -61,6 +61,8 @@ select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "S"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S603"]   # asserts and subprocess are how tests work
+"services/*/tests/**" = ["S101", "S603", "S607"]
+"services/supervisor/**" = ["RUF001", "RUF002", "RUF003"]   # ×, −, – in invariant prose are intended
 "scripts/codegen_py.py" = ["S603"]   # runs datamodel-codegen with fixed args, no shell
 
 [tool.mypy]

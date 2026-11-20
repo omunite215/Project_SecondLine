@@ -74,10 +74,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 - done: Java (OM-14) and Python (KG-12) both pass the same vectors in CI.
 
 ### SH-09 · ADR-018 audit threat model
-- meta: P1 | M-3 | om=0.5d kg=0.25d | driver: om | deps: SH-02 | status: todo
+- meta: P1 | M-3 | om=0.5d kg=0.25d | driver: om | deps: SH-02 | status: review
 - refs: §11 §12 | U9 | ADR-012 | SEC-09 | T-SEC-05 | RSK-09
 - build: attacker models addressed (accidental corruption, non-privileged tamper, privileged DB rewrite with / without an external anchor); key storage (outside the repo, path via env), rotation / expiry; anchor technique (periodic checkpoint file + git-committed digest); what the verifier can and cannot detect.
 - done: ACCEPTED; OM-14 and KG-12 implement it.
+- evidence: ADR-018 PROPOSED (this PR): attacker models A1–A4 with chain-only vs checkpoint detection, Ed25519-over-receipt_hash profile, key id/storage/rotation/expiry, signed checkpoints anchored by git-committed digest, claim limit; done = ACCEPTED by both
 
 ## M-4 Science
 

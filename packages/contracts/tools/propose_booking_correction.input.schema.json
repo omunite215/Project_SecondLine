@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/propose_booking_correction.input.schema.json",
+  "title": "propose_booking_correction \u2014 ProposedAction with type BOOKING_CORRECTION",
+  "allOf": [
+    {
+      "$ref": "../actions/proposed_action.schema.json"
+    },
+    {
+      "properties": {
+        "type": {
+          "const": "BOOKING_CORRECTION"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_evidence.input.schema.json",
+  "title": "An evidence record; its content is untrusted \u2014 input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "record_id"
+  ],
+  "properties": {
+    "run_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "record_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    }
+  }
+}

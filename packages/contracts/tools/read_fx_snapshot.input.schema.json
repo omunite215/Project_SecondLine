@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_fx_snapshot.input.schema.json",
+  "title": "Designated FX rate (information-only source, synthetic use) \u2014 input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "base",
+    "quote",
+    "as_of_date"
+  ],
+  "properties": {
+    "run_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "base": {
+      "$ref": "../common.schema.json#/$defs/currency"
+    },
+    "quote": {
+      "$ref": "../common.schema.json#/$defs/currency"
+    },
+    "as_of_date": {
+      "$ref": "../common.schema.json#/$defs/date"
+    }
+  }
+}

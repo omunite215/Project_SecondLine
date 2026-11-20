@@ -1,0 +1,863 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/scenario/world_bundle.schema.json",
+  "title": "WorldBundle",
+  "description": "Initial state the ledger loads into a fresh ns (ADR-015). Symptoms only, never causes; truth-named evidence keys and SLCANARY- in any free-text field fail validation. Values per ADR-016 / docs/domain.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "bundle_version",
+    "scenario_id",
+    "as_of",
+    "reference_snapshots",
+    "instruments",
+    "accounts",
+    "fx_rates",
+    "trades",
+    "journal_entries",
+    "securities_movements",
+    "evidence",
+    "breaks"
+  ],
+  "properties": {
+    "bundle_version": {
+      "const": "1.0"
+    },
+    "scenario_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "as_of": {
+      "$ref": "../common.schema.json#/$defs/date"
+    },
+    "reference_snapshots": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference_snapshot"
+      }
+    },
+    "instruments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/instrument"
+      },
+      "minItems": 1
+    },
+    "accounts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/account"
+      },
+      "minItems": 1
+    },
+    "fx_rates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/fx_rate"
+      }
+    },
+    "trades": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/trade"
+      }
+    },
+    "journal_entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/journal_entry"
+      }
+    },
+    "securities_movements": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/securities_movement"
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_record"
+      }
+    },
+    "breaks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/break_symptom"
+      },
+      "minItems": 1
+    }
+  },
+  "$defs": {
+    "safe_text": {
+      "type": "string",
+      "maxLength": 4000,
+      "not": {
+        "pattern": "SLCANARY-"
+      }
+    },
+    "reference_snapshot": {
+      "description": "Public reference data: source, retrieval time, license and hash are mandatory (§6, golden rule 2).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ref",
+        "source",
+        "retrieved_at",
+        "license",
+        "sha256"
+      ],
+      "properties": {
+        "ref": {
+          "$ref": "manifest.schema.json#/properties/source_snapshot_refs/items"
+        },
+        "source": {
+          "enum": [
+            "gleif",
+            "iso20022",
+            "ecb",
+            "iso4217",
+            "synthetic"
+          ]
+        },
+        "retrieved_at": {
+          "$ref": "../common.schema.json#/$defs/utc_timestamp"
+        },
+        "license": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120,
+          "not": {
+            "pattern": "SLCANARY-"
+          }
+        },
+        "sha256": {
+          "$ref": "../common.schema.json#/$defs/sha256_ref"
+        }
+      }
+    },
+    "instrument": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "isin",
+        "currency",
+        "name"
+      ],
+      "properties": {
+        "isin": {
+          "$ref": "../common.schema.json#/$defs/isin"
+        },
+        "currency": {
+          "$ref": "../common.schema.json#/$defs/currency"
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 80,
+          "not": {
+            "pattern": "SLCANARY-"
+          }
+        }
+      }
+    },
+    "account": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "account",
+        "kind"
+      ],
+      "properties": {
+        "account": {
+          "anyOf": [
+            {
+              "$ref": "../common.schema.json#/$defs/cash_account"
+            },
+            {
+              "$ref": "../common.schema.json#/$defs/security_account"
+            }
+          ]
+        },
+        "kind": {
+          "enum": [
+            "cash",
+            "security"
+          ]
+        }
+      }
+    },
+    "fx_rate": {
+      "description": "Information-only reference rate, never an executable price (§6).",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rate_id",
+        "base",
+        "quote",
+        "rate",
+        "source",
+        "as_of"
+      ],
+      "properties": {
+        "rate_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "base": {
+          "$ref": "../common.schema.json#/$defs/currency"
+        },
+        "quote": {
+          "$ref": "../common.schema.json#/$defs/currency"
+        },
+        "rate": {
+          "$ref": "../common.schema.json#/$defs/positive_decimal"
+        },
+        "source": {
+          "enum": [
+            "ecb",
+            "synthetic"
+          ]
+        },
+        "as_of": {
+          "$ref": "../common.schema.json#/$defs/date"
+        }
+      }
+    },
+    "trade": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "trade_id",
+        "version",
+        "isin",
+        "side",
+        "quantity",
+        "price",
+        "currency",
+        "trade_date",
+        "settlement_date",
+        "status"
+      ],
+      "properties": {
+        "trade_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "isin": {
+          "$ref": "../common.schema.json#/$defs/isin"
+        },
+        "side": {
+          "enum": [
+            "BUY",
+            "SELL"
+          ]
+        },
+        "quantity": {
+          "allOf": [
+            {
+              "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+            },
+            {
+              "not": {
+                "const": "0"
+              }
+            }
+          ]
+        },
+        "price": {
+          "$ref": "../common.schema.json#/$defs/positive_decimal"
+        },
+        "currency": {
+          "$ref": "../common.schema.json#/$defs/currency"
+        },
+        "trade_date": {
+          "$ref": "../common.schema.json#/$defs/date"
+        },
+        "settlement_date": {
+          "$ref": "../common.schema.json#/$defs/date"
+        },
+        "status": {
+          "enum": [
+            "BOOKED",
+            "SETTLED",
+            "FAILED",
+            "CANCELLED"
+          ]
+        }
+      }
+    },
+    "journal_entry": {
+      "description": "Cash journal entry; balance per currency is checked by the ledger loader (I1), not by shape.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entry_id",
+        "booked_at",
+        "lines"
+      ],
+      "properties": {
+        "entry_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "booked_at": {
+          "$ref": "../common.schema.json#/$defs/utc_timestamp"
+        },
+        "trade_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "lines": {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "account",
+              "side",
+              "amount",
+              "currency"
+            ],
+            "properties": {
+              "account": {
+                "$ref": "../common.schema.json#/$defs/cash_account"
+              },
+              "side": {
+                "enum": [
+                  "DR",
+                  "CR"
+                ]
+              },
+              "amount": {
+                "$ref": "../common.schema.json#/$defs/positive_decimal"
+              },
+              "currency": {
+                "$ref": "../common.schema.json#/$defs/currency"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securities_movement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "movement_id",
+        "booked_at",
+        "account",
+        "isin",
+        "side",
+        "quantity"
+      ],
+      "properties": {
+        "movement_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "booked_at": {
+          "$ref": "../common.schema.json#/$defs/utc_timestamp"
+        },
+        "trade_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "account": {
+          "$ref": "../common.schema.json#/$defs/security_account"
+        },
+        "isin": {
+          "$ref": "../common.schema.json#/$defs/isin"
+        },
+        "side": {
+          "enum": [
+            "DR",
+            "CR"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/trade/properties/quantity"
+        }
+      }
+    },
+    "evidence_record": {
+      "description": "What the agent can read. Counterparty text is untrusted (may carry dev injections) but never truth. Field keys are allowlisted per kind (ADR-017), so no field name can carry a cause.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "record_id",
+        "version",
+        "kind",
+        "source_system",
+        "received_at",
+        "fields",
+        "text"
+      ],
+      "properties": {
+        "record_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "kind": {
+          "$ref": "../common.schema.json#/$defs/evidence_record_kind"
+        },
+        "source_system": {
+          "type": "string",
+          "pattern": "^[a-z0-9_-]{2,32}$",
+          "not": {
+            "pattern": "([dD][eE][vV]|[eE][vV][aA][lL]|[bB][lL][iI][nN][dD]|[tT][eE][sS][tT])"
+          }
+        },
+        "received_at": {
+          "$ref": "../common.schema.json#/$defs/utc_timestamp"
+        },
+        "fields": {
+          "type": "object",
+          "maxProperties": 16,
+          "propertyNames": {
+            "pattern": "^[a-z][a-z0-9_]{0,39}$"
+          },
+          "additionalProperties": {
+            "type": "string",
+            "maxLength": 200,
+            "not": {
+              "pattern": "SLCANARY-"
+            }
+          }
+        },
+        "text": {
+          "$ref": "#/$defs/safe_text"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "BROKER_CONFIRM"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "trade_ref",
+                    "isin",
+                    "side",
+                    "quantity",
+                    "price",
+                    "gross",
+                    "currency",
+                    "trade_date",
+                    "settle_date",
+                    "counterparty"
+                  ]
+                },
+                "properties": {
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  },
+                  "isin": {
+                    "$ref": "../common.schema.json#/$defs/isin"
+                  },
+                  "side": {
+                    "enum": [
+                      "BUY",
+                      "SELL"
+                    ]
+                  },
+                  "quantity": {
+                    "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+                  },
+                  "price": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "gross": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "trade_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "settle_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "CUSTODIAN_STATEMENT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "account",
+                    "isin",
+                    "quantity",
+                    "as_of",
+                    "settle_date",
+                    "trade_ref"
+                  ]
+                },
+                "properties": {
+                  "isin": {
+                    "$ref": "../common.schema.json#/$defs/isin"
+                  },
+                  "quantity": {
+                    "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+                  },
+                  "as_of": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "settle_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "NOSTRO_STATEMENT"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "account",
+                    "currency",
+                    "debit_amount",
+                    "credit_amount",
+                    "balance",
+                    "value_date",
+                    "trade_ref"
+                  ]
+                },
+                "properties": {
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "debit_amount": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "credit_amount": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "balance": {
+                    "$ref": "../common.schema.json#/$defs/decimal"
+                  },
+                  "value_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "SETTLEMENT_STATUS"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "trade_ref",
+                    "status",
+                    "status_code",
+                    "value_date",
+                    "settle_date",
+                    "cutoff_time",
+                    "currency",
+                    "amount",
+                    "quantity"
+                  ]
+                },
+                "properties": {
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  },
+                  "status": {
+                    "enum": [
+                      "PENDING",
+                      "MATCHED",
+                      "SETTLED",
+                      "PARTIALLY_SETTLED",
+                      "FAILED",
+                      "CANCELLED"
+                    ]
+                  },
+                  "status_code": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{4}$",
+                    "description": "ISO 20022 4-letter code; the list is cited in KG-02 (verify: true until SH-13)."
+                  },
+                  "value_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "settle_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "cutoff_time": {
+                    "$ref": "../common.schema.json#/$defs/utc_timestamp"
+                  },
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "amount": {
+                    "$ref": "../common.schema.json#/$defs/decimal"
+                  },
+                  "quantity": {
+                    "$ref": "../common.schema.json#/$defs/non_negative_quantity"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "CA_NOTICE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "isin",
+                    "event_type",
+                    "ratio_new",
+                    "ratio_old",
+                    "ex_date",
+                    "record_date",
+                    "pay_date",
+                    "cash_in_lieu_price",
+                    "currency"
+                  ]
+                },
+                "properties": {
+                  "isin": {
+                    "$ref": "../common.schema.json#/$defs/isin"
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{4}$",
+                    "description": "ISO 20022 4-letter code; the list is cited in KG-02 (verify: true until SH-13)."
+                  },
+                  "ratio_new": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "ratio_old": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "ex_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "record_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "pay_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  },
+                  "cash_in_lieu_price": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "SSI_RECORD"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "counterparty",
+                    "currency",
+                    "account",
+                    "bic",
+                    "place_of_settlement",
+                    "effective_date"
+                  ]
+                },
+                "properties": {
+                  "currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "effective_date": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "FX_RATE_NOTICE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "base_currency",
+                    "quote_currency",
+                    "rate",
+                    "as_of",
+                    "rate_source"
+                  ]
+                },
+                "properties": {
+                  "base_currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "quote_currency": {
+                    "$ref": "../common.schema.json#/$defs/currency"
+                  },
+                  "rate": {
+                    "$ref": "../common.schema.json#/$defs/positive_decimal"
+                  },
+                  "as_of": {
+                    "$ref": "../common.schema.json#/$defs/date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "COUNTERPARTY_MESSAGE"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "fields": {
+                "propertyNames": {
+                  "enum": [
+                    "counterparty",
+                    "trade_ref",
+                    "subject",
+                    "channel"
+                  ]
+                },
+                "properties": {
+                  "trade_ref": {
+                    "$ref": "../common.schema.json#/$defs/opaque_id"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "break_symptom": {
+      "description": "What reconciliation sees: a difference, not its cause.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "break_id",
+        "opened_at",
+        "symptom",
+        "evidence_ids"
+      ],
+      "properties": {
+        "break_id": {
+          "$ref": "../common.schema.json#/$defs/opaque_id"
+        },
+        "opened_at": {
+          "$ref": "../common.schema.json#/$defs/utc_timestamp"
+        },
+        "symptom": {
+          "enum": [
+            "CASH_DIFFERENCE",
+            "POSITION_DIFFERENCE",
+            "UNMATCHED_TRADE",
+            "SETTLEMENT_FAILURE",
+            "REFERENCE_MISMATCH"
+          ]
+        },
+        "currency": {
+          "$ref": "../common.schema.json#/$defs/currency"
+        },
+        "isin": {
+          "$ref": "../common.schema.json#/$defs/isin"
+        },
+        "cash_difference": {
+          "$ref": "../common.schema.json#/$defs/decimal"
+        },
+        "quantity_difference": {
+          "$ref": "../common.schema.json#/$defs/quantity"
+        },
+        "trade_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "../common.schema.json#/$defs/opaque_id"
+          },
+          "uniqueItems": true
+        },
+        "evidence_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "../common.schema.json#/$defs/opaque_id"
+          },
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

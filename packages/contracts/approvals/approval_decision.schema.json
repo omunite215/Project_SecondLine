@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/approvals/approval_decision.schema.json",
+  "title": "ApprovalDecision (§8 step 4)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "approval_id",
+    "action_digest",
+    "checker_id",
+    "decision",
+    "reason_code",
+    "decided_at"
+  ],
+  "properties": {
+    "approval_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "action_digest": {
+      "$ref": "../common.schema.json#/$defs/sha256_ref"
+    },
+    "checker_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "decision": {
+      "enum": [
+        "APPROVE",
+        "REJECT"
+      ]
+    },
+    "reason_code": {
+      "enum": [
+        "CUTOFF_TIMING",
+        "PARTIAL_SETTLEMENT",
+        "QUANTITY_MISMATCH",
+        "ROUNDING_DIFFERENCE",
+        "PRICE_MISMATCH",
+        "FX_RATE_SOURCE",
+        "MISSING_TRADE",
+        "DUPLICATE_TRADE",
+        "CORPORATE_ACTION_SPLIT",
+        "CORPORATE_ACTION_OTHER",
+        "CASH_SHORTFALL",
+        "SSI_MISMATCH",
+        "INSUFFICIENT_EVIDENCE",
+        "OTHER_ESCALATION",
+        "CHECKER_APPROVED"
+      ]
+    },
+    "decided_at": {
+      "$ref": "../common.schema.json#/$defs/utc_timestamp"
+    }
+  },
+  "description": "Server rejects checker_id == maker_id and any digest or state that no longer matches."
+}

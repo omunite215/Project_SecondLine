@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_positions.output.schema.json",
+  "title": "Projected positions (ADR-016) \u2014 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "positions",
+    "state_version"
+  ],
+  "properties": {
+    "positions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "isin",
+          "trading_position",
+          "settled_position",
+          "cost",
+          "currency"
+        ],
+        "properties": {
+          "isin": {
+            "$ref": "../common.schema.json#/$defs/isin"
+          },
+          "trading_position": {
+            "$ref": "../common.schema.json#/$defs/quantity"
+          },
+          "settled_position": {
+            "$ref": "../common.schema.json#/$defs/quantity"
+          },
+          "cost": {
+            "$ref": "../common.schema.json#/$defs/decimal"
+          },
+          "currency": {
+            "$ref": "../common.schema.json#/$defs/currency"
+          }
+        }
+      }
+    },
+    "state_version": {
+      "$ref": "../common.schema.json#/$defs/state_version"
+    }
+  }
+}

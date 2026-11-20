@@ -5,35 +5,39 @@ The driver owns the outcome and schedules the session; the other person contribu
 ## M-0 Contracts & decisions
 
 ### SH-01 · Kickoff: confirm split, calendar, machines, repo
-- meta: P0 | M-0 | om=0.25d kg=0.25d | mcs | driver: om | deps: — | status: review
+- meta: P0 | M-0 | om=0.25d kg=0.25d | mcs | driver: om | deps: — | status: done
 - refs: §20 §21 | U12 | RSK-12
 - build: 45-minute call: walk PLAN.md and both boards, edit anything you disagree with, rerun `make board-check`; fill the PLAN.md §10 calendar; Kunal records exact chip/RAM in KUNAL.md and CLAUDE.local.md; create the private repo, add both, protect main (1 approving review + CODEOWNERS), Om adds Kunal as collaborator (Write) and applies the ruleset (OM-25); each person creates CLAUDE.local.md + .claude/settings.local.json from the examples, then runs `make skills-install BIN=1` → `make skills-check` (GREEN required before any other card); Kunal files the Explorer access request (SH-19).
 - done: docs/adr/README.md marks U12 resolved; skills gate GREEN and `make kit-check` green on both machines; this kit merged through a cross-reviewed PR.
-- evidence: U12 resolved in docs/adr/README.md; kit merged via PR #1 (approved by Kunal); skills gate GREEN + make kit-check green on Om's machine 2026-10-28, Kunal reports GREEN; PLAN §10 dates TBD
+- evidence: merged PR #6 (2026-10-29, rule suite 4785959665: all main rules pass); U12 resolved; both skills gates GREEN; kit merged via PR #1
 
 ### SH-02 · Contracts v1: schemas, errors, OpenAPI skeletons
-- meta: P0 | M-0 | om=1d kg=1d | mcs | driver: om | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=1d kg=1d | mcs | driver: om | deps: SH-01 | status: done
 - refs: §9 §10 §8 §12 §4 | REQ-004 REQ-005 REQ-007 | T-DOM-03 | ADR-005 ADR-013 ADR-015 | U3 U10
 - build: packages/contracts: tools/<tool>.{input,output}.schema.json for every §10 tool; actions/proposed_action; receipts/decision_receipt; scenario/{manifest, world_bundle, truth (x-privileged)}; attacks/attack_pack; events/envelope (§12 fields); errors.json (§8 codes); openapi/{gateway-tools, ledger-internal, ledger-admin, review, eval}.yaml skeletons; examples/ (§9 documents, minimal world bundle, minimal ns export); VERSION 1.0.0; scripts/contracts_check.py. Om drafts gateway / ledger / receipt / event / errors; Kunal drafts world_bundle / truth / manifest / attack_pack. One API v1 with idempotency + reason codes; the legacy v1/v2 deprecation demo is skipped and recorded (U10). Pin MCP SDK + spec revision in ADR-013 (U3).
 - done: `make contracts-check` passes; both approve; git tag contracts-v1.0.0; ADR-013 and ADR-015 ACCEPTED.
+- evidence: contracts v1 merged #11; Kunal's half + ADR-017 evidence alignment #27; follow-ups #28 (Kunal approved at d1ccf4d; merged 3e11880); make contracts-check OK on 3e11880; annotated tag contracts-v1.0.0 → 3e11880; ADR-013 + ADR-015 ACCEPTED
 
 ### SH-03 · ADR-016 accounting model & precision
-- meta: P0 | M-0 | om=0.75d kg=0.25d | mcs | driver: om | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=0.75d kg=0.25d | mcs | driver: om | deps: SH-01 | status: done
 - refs: §5 §9 §1 | U1 | ADR-001 ADR-002 | REQ-002 | I1 I2 | B1..B8 | NFR-02
 - build: docs/adr/ADR-016-accounting-model.md + docs/domain.md: cash journal vs securities position ledger; position projection; synthetic chart of accounts (nostro cash, custody, suspense, rounding P&L, FX revaluation); precision per ISO 4217 minor units, quantity, price, FX; rounding + B3 tolerance policy; permitted adjustment categories; reversal semantics; expected state delta for each B1–B8 pattern; one synthetic bank only.
 - done: ACCEPTED by both; its tables are referenced by KG-03/KG-04 truth and OM-08 validators.
+- evidence: ADR-016 ACCEPTED, merged #10 (2026-10-29)
 
 ### SH-04 · ADR-017 evidence semantics & detection gap
-- meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-01 | status: done
 - refs: §5 §8 §25 | U5 | REQ-006 | I5 | T-DOM-04 | F3
 - build: per break type: which record is authoritative (custodian statement vs internal booking vs settlement status), which evidence_refs a valid action must cite, which wrong outcomes the runtime verifier can detect synchronously (no truth access) vs only the oracle — list the detection-gap cases explicitly.
 - done: ACCEPTED; the table is consumed by OM-08 and KG-06.
+- evidence: ADR-017 ACCEPTED (om ☑ kunal ☑), merged #16 (2026-10-29)
 
 ### SH-05 · ADR-014 control conditions, policy matrix, shortcut affordances
-- meta: P0 | M-0 | om=0.5d kg=0.5d | mcs | driver: om | deps: SH-01 | status: todo
+- meta: P0 | M-0 | om=0.5d kg=0.5d | mcs | driver: om | deps: SH-01 | status: done
 - refs: §10 §11 §13 §14 | U4 | REQ-005 REQ-010 | H1 H2 | F1 F2
 - build: finalize the PROPOSED draft docs/adr/ADR-014: behavior of off / monitor / full at gateway, ledger and supervisor; tool surface + shortcut affordances per pressure level (keep the surface identical across conditions); role-action matrix, approval thresholds, suspense rules and posting limits derived from the generated value distribution (no magic numbers).
 - done: ACCEPTED before OM-10, OM-16, KG-04 and KG-09 start; copied into the prereg (KG-16).
+- evidence: ADR-014 ACCEPTED, merged #13 + AMENDMENT-1 #17 (2026-10-29)
 
 ### SH-06 · Metric denominators & estimators
 - meta: P0 | M-0 | om=0.25d kg=0.75d | mcs | driver: kg | deps: SH-04, SH-05 | status: todo
@@ -70,10 +74,11 @@ The driver owns the outcome and schedules the session; the other person contribu
 - done: Java (OM-14) and Python (KG-12) both pass the same vectors in CI.
 
 ### SH-09 · ADR-018 audit threat model
-- meta: P1 | M-3 | om=0.5d kg=0.25d | driver: om | deps: SH-02 | status: todo
+- meta: P1 | M-3 | om=0.5d kg=0.25d | driver: om | deps: SH-02 | status: review
 - refs: §11 §12 | U9 | ADR-012 | SEC-09 | T-SEC-05 | RSK-09
 - build: attacker models addressed (accidental corruption, non-privileged tamper, privileged DB rewrite with / without an external anchor); key storage (outside the repo, path via env), rotation / expiry; anchor technique (periodic checkpoint file + git-committed digest); what the verifier can and cannot detect.
 - done: ACCEPTED; OM-14 and KG-12 implement it.
+- evidence: ADR-018 PROPOSED (this PR): attacker models A1–A4 with chain-only vs checkpoint detection, Ed25519-over-receipt_hash profile, key id/storage/rotation/expiry, signed checkpoints anchored by git-committed digest, claim limit; done = ACCEPTED by both
 
 ## M-4 Science
 

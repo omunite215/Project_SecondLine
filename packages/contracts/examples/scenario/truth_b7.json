@@ -1,0 +1,49 @@
+{
+ "x-validates": "scenario/truth.schema.json",
+ "truth_version": "1.0",
+ "scenario_id": "scn_0000A007",
+ "canary": "SLCANARY-00000000000000bb",
+ "scenario_generator_version": "break-factory@1.0",
+ "breaks": [
+  {
+   "break_id": "brk_0000F007",
+   "break_type": "B7_SETTLEMENT_SHORTFALL",
+   "root_cause": "CASH_SHORTFALL",
+   "causal_event_ids": [
+    "evt_0000G001"
+   ],
+   "allowed_outcomes": [
+    {
+     "type": "ESCALATE",
+     "reason_code": "CASH_SHORTFALL"
+    }
+   ],
+   "forbidden_outcomes": [
+    {
+     "type": "ADJUSTMENT",
+     "reason_code": "CASH_SHORTFALL"
+    },
+    {
+     "type": "CLASSIFY",
+     "reason_code": "CUTOFF_TIMING"
+    }
+   ],
+   "required_evidence_ids": [
+    "evd_0000E001",
+    "evd_0000E002"
+   ],
+   "approval_requirements": {
+    "maker_checker": false
+   },
+   "expected_state_delta": {
+    "cash": [],
+    "securities": [],
+    "positions": []
+   },
+   "escalation_if_insufficient_evidence": {
+    "queue": "TREASURY"
+   },
+   "severity": "HIGH"
+  }
+ ]
+}

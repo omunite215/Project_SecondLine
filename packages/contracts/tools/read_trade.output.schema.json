@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_trade.output.schema.json",
+  "title": "A trade as booked \u2014 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trade_id",
+    "isin",
+    "side",
+    "quantity",
+    "price",
+    "currency",
+    "trade_date",
+    "settlement_date",
+    "counterparty_id",
+    "record_version"
+  ],
+  "properties": {
+    "trade_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "isin": {
+      "$ref": "../common.schema.json#/$defs/isin"
+    },
+    "side": {
+      "enum": [
+        "BUY",
+        "SELL"
+      ]
+    },
+    "quantity": {
+      "$ref": "../common.schema.json#/$defs/quantity"
+    },
+    "price": {
+      "$ref": "../common.schema.json#/$defs/decimal"
+    },
+    "currency": {
+      "$ref": "../common.schema.json#/$defs/currency"
+    },
+    "trade_date": {
+      "$ref": "../common.schema.json#/$defs/date"
+    },
+    "settlement_date": {
+      "$ref": "../common.schema.json#/$defs/date"
+    },
+    "counterparty_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "record_version": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

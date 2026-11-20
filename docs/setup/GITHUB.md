@@ -16,14 +16,14 @@ Source of truth: **`.github/settings.json`** (merge options, collaborators, labe
 | `gate-tags-create` | `refs/tags/m*` | restrict creation | Repository admin, always |
 | `gate-tags-immutable` | `refs/tags/m*` | no update · no deletion · no force push | none |
 
-Rulesets evaluate independently: when Om merges, `merge-gate` shows `bypass` in the rule-suite log (by design) while `main` must still `pass`. A `main` = `bypass` entry means something is wrong. Rulesets on a private repo need GitHub Pro (free with the Student Developer Pack).
+Rulesets evaluate independently. An Om merge is logged as suite result `bypass` with `merge-gate update: fail` (the bypass) and every `main` rule `pass` (verified on PR #7, rule suite 4776053357). Any `main` rule that isn't `pass` on a merge means something is wrong: `gh api "repos/omunite215/Project_SecondLine/rulesets/rule-suites?ref=refs/heads/main"`. Rulesets on a private repo need GitHub Pro (free with the Student Developer Pack).
 
 ## One-time setup (Om, already done unless `make gh-check` says otherwise)
 1. **Collaborator:** Settings → Collaborators → Kunal with Write. He works in this repo, not a fork, so Actions and secrets work on his PRs.
 2. **Merging:** squash only; "Automatically delete head branches" on; auto-merge off.
 3. **Rulesets + label:** `make gh-apply`, review, then `python3 scripts/gh_settings.py apply --yes`. It creates new restrictions before removing old bypasses, so there's no window where Kunal can merge.
 4. **AI first-pass review** (optional; uses Om's Claude usage):
-   - In Claude Code, run `/install-github-app` to install the Claude GitHub App on the repo.
+   - No GitHub App is needed. The job is configured to post with its own `GITHUB_TOKEN` (contents: read, pull-requests: write), passed to the action as `github_token`. The App path failed on run 41112559314 with "Invalid OIDC token". VERIFY: the first labelled run after this is on `main`.
    - Environment `claude-review` with a deployment-branch policy allowing only `main`. Put the token there, never in repo secrets: a repo secret is readable by any workflow on a same-repo PR. In your own terminal: `gh secret set CLAUDE_CODE_OAUTH_TOKEN --env claude-review` (value from `claude setup-token`, Pro/Max).
    - The workflow uses `pull_request_target` (runs from protected `main`, so a PR can't edit it) and only runs when **Om** adds the `ai-review` label. Required reviewers would need GitHub Enterprise on a private repo; the branch policy doesn't. Never add `ref:` to its checkout.
    - To use an API key instead, add `ANTHROPIC_API_KEY` and switch the workflow input to `anthropic_api_key`.
@@ -32,15 +32,16 @@ Rulesets evaluate independently: when Om merges, `merge-gate` shows `bypass` in 
 ## Flow
 - **Kunal's PR:** `/finish-task` → `/open-pr` → CI → Om runs `/review-pr <n>` → `gh pr review <n> --approve` (or `--request-changes`) → Om squash-merges → `python3 scripts/board.py set <ID> done`.
 - **Om's PR:** `/open-pr` with Kunal as reviewer → CI → Kunal approves → Om squash-merges.
-- **Om's merge command:** `gh pr merge <n> --squash` (VERIFY in OM-25 Task 5: if `merge-gate` refuses it, `--admin`). `--admin` only uses bypasses Om actually has, i.e. `merge-gate`; `main` has none, so approval and CI are still enforced.
+- **Before merging:** resolve every review thread, including a reviewer's *applied* suggestions. They stay open and `required_review_thread_resolution` blocks the merge (`main pull_request: fail` in the rule suite; seen on PR #6).
+- **Om's merge command:** `gh pr merge <n> --squash --admin`. Plain `--squash` is refused ("base branch policy prohibits the merge") because of `merge-gate`. `--admin` only uses bypasses Om actually has, i.e. `merge-gate`; `main` has none, so approval and CI are still enforced (verified on PR #7).
 - **Dependabot PR:** Om reviews and approves → Om merges. When two touch neighbouring lines, merge one, comment `@dependabot rebase` on the other, re-approve after its CI.
-- Branch behind `main`? The PR **author** updates it (`gh api -X PUT repos/omunite215/Project_SecondLine/pulls/<n>/update-branch` or the Update button) and the reviewer re-approves after CI. Never update or push to the other person's PR: you become the last pusher, and last-push approval means nobody can approve it. There's no way around the strict check.
+- Branch behind `main`? Update it with a merge from `main` (`gh api -X PUT repos/omunite215/Project_SecondLine/pulls/<n>/update-branch` or the Update button). A merge-only update keeps existing approvals, even when the reviewer does it (verified on PR #16, 2026-10-29). Never push **changes** to the other person's PR: you become the last pusher, and last-push approval means nobody can approve it. There's no way around the strict check.
 
 ## Milestone tags
 At each gate (§5 of PLAN.md) Om tags the merge commit: `git tag -a m0 -m "M-0 gate" <sha> && git push origin m0`. Only Om can create `m*` tags, and nobody can move or delete them once pushed. Never push a throwaway `m*` tag.
 
 ## Required checks (grow with the services)
-`kit` now. Later `java` (Gradle + Testcontainers), `python` (uv + pytest), `policy` (opa test), `console` (pnpm + Playwright), `leakage` (KG-05) and contracts drift. The day a job exists, add its id to `main`'s `required_status_checks` in `.github/settings.json`, apply, and `make gh-check`. `test_OM_25_required_checks_are_pr_jobs` fails if a required check names a job that doesn't run on `pull_request`, which would block every merge. `test_OM_25_dependabot_covers_build_files` fails if a `build.gradle.kts`, `pyproject.toml` or `package.json` lands without a Dependabot entry.
+`kit` (kit-checks.yml) and, from OM-01, `lint` (pre-commit), `java` (Gradle) and `stack` (compose + DB roles) in ci.yml. Later `python` (uv + pytest, KG-01), `policy` (opa test), `console` (pnpm + Playwright, OM-21), `leakage` (KG-05) and contracts drift. Path filtering happens inside ci.yml (`changes` job + `if: needs.changes.outputs.<job> == 'true'`), never on the trigger: a skipped job satisfies a required check, a workflow that never runs blocks it forever. The day a job exists, add its id to `main`'s `required_status_checks` in `.github/settings.json`, apply, and `make gh-check`. `test_OM_25_required_checks_are_pr_jobs` fails if a required check names a job that doesn't run on `pull_request`, which would block every merge. `test_OM_25_dependabot_covers_build_files` fails if a `build.gradle.kts`, `pyproject.toml` or `package.json` lands without a Dependabot entry.
 
 ## Break-glass
 Only when a merge can't wait for the other person (e.g. submission deadline, Kunal unreachable): Om adds himself as a bypass actor on `main` in the GitHub UI, merges, removes it, and adds a row below. `make gh-check` stays red until the bypass is removed.
@@ -48,3 +49,20 @@ Only when a merge can't wait for the other person (e.g. submission deadline, Kun
 ### Break-glass log
 | date | PR | why | bypass removed |
 |---|---|---|---|
+
+## Acceptance evidence (OM-25, from the ruleset log)
+Read with `gh api "repos/omunite215/Project_SecondLine/rulesets/rule-suites/<id>"`. Rule suites are kept about a month, so these lines are the durable copy.
+
+| check | rule suite | what it shows |
+|---|---|---|
+| Kunal's PR → Om approves → Om merges | 4800117078 (#27, a517245) | every `main` rule `pass`; only `merge-gate` bypassed (admin) |
+| Om's PR → Kunal approves → Om merges | 4822524643 (#28, 3e11880) · 4823776227 (#31, baaed0d) | every `main` rule `pass`; only `merge-gate` bypassed |
+| Om gets no bypass of `main` | 4799287382 (refused: required check `kit` missing) · 4785942812 (refused: unresolved conversation) | `main` rules fail → push refused although Om is admin |
+| Only Om creates `m*` tags | 4775954466 (Kunal, `refs/tags/m-test`) | `gate-tags-create/creation: fail` |
+| Settings match the file | `make gh-check` → `OK` (2026-11-01) | no drift |
+
+Still to show:
+- Kunal's own `gh pr merge` refused.
+- Om's merge refused for **missing approval** specifically.
+- A claude-review run that posts (needs this PR on `main`; the workflow runs from `main`).
+- `git push origin :m0` refused, once the first real gate tag exists.

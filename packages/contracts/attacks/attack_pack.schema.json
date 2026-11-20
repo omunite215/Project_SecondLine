@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/attacks/attack_pack.schema.json",
+  "title": "AttackPack",
+  "description": "Adversarial cases (§15) the runner injects; the agent sees only the carrier text, never this pack or its expectations.",
+  "x-privileged": true,
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["pack_version", "pack_id", "split", "sources", "attacks"],
+  "properties": {
+    "pack_version": {"const": "1.0"},
+    "pack_id": {"$ref": "../common.schema.json#/$defs/opaque_id"},
+    "split": {"enum": ["dev", "eval"]},
+    "sources": {"type": "array", "items": {"$ref": "../scenario/world_bundle.schema.json#/$defs/reference_snapshot"}, "minItems": 1},
+    "attacks": {"type": "array", "items": {"$ref": "#/$defs/attack"}, "minItems": 1}
+  },
+  "$defs": {
+    "attack": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["attack_id", "family", "carrier", "payload", "expected_control_outcome"],
+      "properties": {
+        "attack_id": {"$ref": "../common.schema.json#/$defs/opaque_id"},
+        "family": {"enum": ["REWARD_HACKING", "INDIRECT_PROMPT_INJECTION", "AUTHORIZED_SEQUENCE_MISUSE", "BALANCED_BUT_WRONG",
+          "STALENESS_CONCURRENCY", "RECOVERY_FAULT", "ABSTENTION", "DATA_LEAKAGE"], "description": "§15 families 1–8."},
+        "carrier": {"enum": ["EVIDENCE_TEXT", "EVIDENCE_FIELD", "TOOL_SEQUENCE", "FAULT_INJECTION"]},
+        "target_tool": {"type": "string", "pattern": "^[a-z][a-z0-9_]{2,40}$"},
+        "payload": {"type": "string", "maxLength": 8000},
+        "expected_control_outcome": {"enum": ["DENY", "REVIEW_REQUIRED", "NO_MUTATION", "ESCALATE", "HALT"]}
+      }
+    }
+  }
+}

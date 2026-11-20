@@ -1,0 +1,22 @@
+{
+ "x-validates": "tools/propose_classification.input.schema.json",
+ "action_id": "8e2f3b0d-1c4a-4d6e-8f9a-2b3c4d5e6f70",
+ "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+ "break_id": "brk_0000AB12",
+ "request_id": "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+ "tool_schema_version": "1.0",
+ "type": "CLASSIFY",
+ "reason_code": "PARTIAL_SETTLEMENT",
+ "parameters": {
+  "classification": "PARTIAL_SETTLEMENT",
+  "as_of_date": "2026-03-02"
+ },
+ "evidence_refs": [
+  {
+   "record_id": "ev_00000017",
+   "version": 2
+  }
+ ],
+ "expected_state_version": 7,
+ "idempotency_key": "6d5c4b3a-2918-4f7e-8d6c-5b4a39281707"
+}

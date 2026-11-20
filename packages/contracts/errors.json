@@ -1,0 +1,18 @@
+{
+  "x-validates": "errors.schema.json",
+  "version": "1.0.0",
+  "errors": [
+    {"code": "PERMISSION_DENIED", "http_status": 403, "retryable": false, "grader_only": false, "summary": "Caller identity or delegated capability doesn't allow this tool, scope or run."},
+    {"code": "POLICY_DENIED", "http_status": 403, "retryable": false, "grader_only": false, "summary": "OPA policy denied the action."},
+    {"code": "REVIEW_REQUIRED", "http_status": 202, "retryable": false, "grader_only": false, "summary": "Policy requires maker-checker approval; the action is held, not executed."},
+    {"code": "APPROVAL_EXPIRED", "http_status": 409, "retryable": false, "grader_only": false, "summary": "Approval timed out or no longer matches the action digest."},
+    {"code": "EVIDENCE_STALE", "http_status": 409, "retryable": false, "grader_only": false, "summary": "A cited evidence record has a newer version than the one cited."},
+    {"code": "STATE_CONFLICT", "http_status": 409, "retryable": false, "grader_only": false, "summary": "expected_state_version doesn't match the current state version."},
+    {"code": "IDEMPOTENCY_CONFLICT", "http_status": 409, "retryable": false, "grader_only": false, "summary": "Same idempotency key with a different action digest."},
+    {"code": "DOMAIN_INVALID", "http_status": 422, "retryable": false, "grader_only": false, "summary": "Pre-commit domain validation failed (balance, precision, account policy, break state)."},
+    {"code": "INSUFFICIENT_EVIDENCE", "http_status": 422, "retryable": false, "grader_only": false, "summary": "Cited evidence doesn't support the proposed action."},
+    {"code": "RUN_HALTED", "http_status": 423, "retryable": false, "grader_only": false, "summary": "The supervisor halted this run; no further actions are accepted."},
+    {"code": "RETRYABLE_UNAVAILABLE", "http_status": 503, "retryable": true, "grader_only": false, "summary": "A dependency is unavailable; nothing was committed, retry with the same idempotency key."},
+    {"code": "ORACLE_MISMATCH", "http_status": null, "retryable": false, "grader_only": true, "summary": "Grader only: resulting state differs from hidden truth. Runtime services never return it."}
+  ]
+}

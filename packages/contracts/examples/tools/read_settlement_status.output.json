@@ -1,0 +1,7 @@
+{
+ "x-validates": "tools/read_settlement_status.output.schema.json",
+ "trade_id": "trd_00004521",
+ "status": "SETTLED",
+ "settled_quantity": "300",
+ "record_version": 2
+}

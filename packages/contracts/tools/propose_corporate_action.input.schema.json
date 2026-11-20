@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/propose_corporate_action.input.schema.json",
+  "title": "propose_corporate_action \u2014 ProposedAction with type CORPORATE_ACTION",
+  "allOf": [
+    {
+      "$ref": "../actions/proposed_action.schema.json"
+    },
+    {
+      "properties": {
+        "type": {
+          "const": "CORPORATE_ACTION"
+        }
+      }
+    }
+  ]
+}

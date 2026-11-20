@@ -1,5 +1,5 @@
 # ADR-015: Run namespaces, snapshots and hidden-truth isolation
-Status: PROPOSED (accept in SH-02) · Spec: §5 §7 §9 §12 (replay protections) · REQ-006, REQ-011, T-DOM-03, T-EVAL-03
+Status: ACCEPTED (om ☑ kunal ☑, SH-02, PR #11, 2026-10-29) · Spec: §5 §7 §9 §12 (replay protections) · REQ-006, REQ-011, T-DOM-03, T-EVAL-03
 
 ## Decision (proposed)
 - Every run executes in a fresh namespace `ns` (UUID). All ledger rows carry `ns`; keys are (ns, id); run tokens bind run → ns and the ledger checks token ns against path ns. Optional hardening: Postgres row-level security keyed on `app.ns`.

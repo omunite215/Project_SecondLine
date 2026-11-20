@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/runs/run_token.schema.json",
+  "title": "Issued run token",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "token",
+    "expires_at"
+  ],
+  "properties": {
+    "run_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "token": {
+      "type": "string",
+      "minLength": 32,
+      "maxLength": 4096
+    },
+    "expires_at": {
+      "$ref": "../common.schema.json#/$defs/utc_timestamp"
+    }
+  },
+  "description": "Short-lived bearer token bound to run_id + ns; every tool call's run_id must match it."
+}

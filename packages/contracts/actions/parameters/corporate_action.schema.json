@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/actions/parameters/corporate_action.schema.json",
+  "title": "CORPORATE_ACTION parameters",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ca_event_id",
+    "isin",
+    "ratio_numerator",
+    "ratio_denominator"
+  ],
+  "properties": {
+    "ca_event_id": {
+      "$ref": "../../common.schema.json#/$defs/opaque_id"
+    },
+    "isin": {
+      "$ref": "../../common.schema.json#/$defs/isin"
+    },
+    "ratio_numerator": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "ratio_denominator": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

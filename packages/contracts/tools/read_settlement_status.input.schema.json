@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_settlement_status.input.schema.json",
+  "title": "Settlement status of a trade \u2014 input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "trade_id"
+  ],
+  "properties": {
+    "run_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "trade_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    }
+  }
+}

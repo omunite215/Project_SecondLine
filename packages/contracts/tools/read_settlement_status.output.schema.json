@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_settlement_status.output.schema.json",
+  "title": "Settlement status of a trade \u2014 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "trade_id",
+    "status",
+    "settled_quantity",
+    "record_version"
+  ],
+  "properties": {
+    "trade_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "status": {
+      "enum": [
+        "PENDING",
+        "SETTLED",
+        "PARTIAL",
+        "FAILED"
+      ]
+    },
+    "settled_quantity": {
+      "$ref": "../common.schema.json#/$defs/quantity"
+    },
+    "reason_code": {
+      "type": "string",
+      "maxLength": 8,
+      "description": "ISO 20022 / T2S status reason code (KG-02 snapshot)."
+    },
+    "record_version": {
+      "type": "integer",
+      "minimum": 1
+    }
+  }
+}

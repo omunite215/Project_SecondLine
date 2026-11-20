@@ -165,7 +165,7 @@ class SkillsGateWhileRed(unittest.TestCase):
             self.assertEqual(self.edit(rel), 2, rel)
 
     def test_OM_26_gate_allows_setup_edits(self):
-        for rel in ("CLAUDE.local.md", "docs/setup/GITHUB.md", "START_HERE.md"):
+        for rel in ("CLAUDE.local.md", "docs/setup/GITHUB.md", "docs/ai/README.md"):
             self.assertEqual(self.edit(rel), 0, rel)
 
     def test_OM_26_guardrail_edits_always_ask_the_human(self):

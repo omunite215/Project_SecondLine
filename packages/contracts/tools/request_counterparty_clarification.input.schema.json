@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/request_counterparty_clarification.input.schema.json",
+  "title": "Simulated message to a counterparty — input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "run_id",
+    "break_id",
+    "question",
+    "idempotency_key"
+  ],
+  "properties": {
+    "run_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "break_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "question": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "idempotency_key": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    }
+  },
+  "description": "Simulated message. Same idempotency_key returns the first result and spends C_msg once (ADR-014)."
+}

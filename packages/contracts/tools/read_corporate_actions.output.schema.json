@@ -1,0 +1,57 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/read_corporate_actions.output.schema.json",
+  "title": "Corporate-action events for a security \u2014 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "events"
+  ],
+  "properties": {
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "ca_event_id",
+          "isin",
+          "type",
+          "ex_date",
+          "record_version"
+        ],
+        "properties": {
+          "ca_event_id": {
+            "$ref": "../common.schema.json#/$defs/opaque_id"
+          },
+          "isin": {
+            "$ref": "../common.schema.json#/$defs/isin"
+          },
+          "type": {
+            "enum": [
+              "SPLIT",
+              "REVERSE_SPLIT",
+              "DIVIDEND",
+              "OTHER"
+            ]
+          },
+          "ex_date": {
+            "$ref": "../common.schema.json#/$defs/date"
+          },
+          "ratio_numerator": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "ratio_denominator": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  }
+}

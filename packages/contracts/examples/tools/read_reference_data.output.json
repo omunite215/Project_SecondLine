@@ -1,0 +1,10 @@
+{
+ "x-validates": "tools/read_reference_data.output.schema.json",
+ "record_id": "ssi_0000US01",
+ "record_type": "SSI",
+ "attributes": {
+  "currency": "USD",
+  "agent": "SYNTHETIC-AGENT-1"
+ },
+ "record_version": 1
+}

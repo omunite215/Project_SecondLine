@@ -1,0 +1,16 @@
+{
+ "x-validates": "approvals/approval_request.schema.json",
+ "approval_id": "1a2b3c4d-5e6f-4a7b-8c9d-0e1f2a3b4c5d",
+ "action_id": "7d1e2a9c-0b3f-4c5d-9e8f-1a2b3c4d5e6f",
+ "action_digest": "sha256:abababababababababababababababababababababababababababababababab",
+ "evidence_versions": [
+  {
+   "record_id": "ev_00000017",
+   "version": 2
+  }
+ ],
+ "state_version": 7.5,
+ "maker_id": "agt_run3f2e1d0c",
+ "requested_at": "2026-03-02T17:05:00Z",
+ "expires_at": "2026-03-02T17:35:00Z"
+}

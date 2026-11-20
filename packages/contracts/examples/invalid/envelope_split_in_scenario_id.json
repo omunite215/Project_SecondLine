@@ -1,0 +1,23 @@
+{
+ "x-validates": "events/envelope.schema.json",
+ "event_id": "5e6f7081-92a3-4b4c-8d5e-6f708192a3b4",
+ "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+ "scenario_id": "scn_eval0042A",
+ "break_id": "brk_0000AB12",
+ "actor_id": "agt_run3f2e1d0c",
+ "action_id": "7d1e2a9c-0b3f-4c5d-9e8f-1a2b3c4d5e6f",
+ "event_type": "ledger.adjustment_posted",
+ "schema_version": "1.0",
+ "occurred_at": "2026-03-02T17:12:31Z",
+ "committed_at": "2026-03-02T17:12:31Z",
+ "aggregate_id": "brk_0000AB12",
+ "aggregate_version": 8,
+ "correlation_id": "0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d",
+ "policy_decision_id": "3c4d5e6f-7081-4b9c-8d1e-2f3a4b5c6d7e",
+ "payload_hash": "sha256:abababababababababababababababababababababababababababababababab",
+ "evidence_hashes": [
+  "sha256:1212121212121212121212121212121212121212121212121212121212121212"
+ ],
+ "transaction_id": "4d5e6f70-8192-4a0b-9c1d-2e3f4a5b6c7d",
+ "redaction_class": "INTERNAL"
+}

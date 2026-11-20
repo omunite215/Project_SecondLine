@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/escalate_break.input.schema.json",
+  "title": "escalate_break \u2014 ProposedAction with type ESCALATE",
+  "allOf": [
+    {
+      "$ref": "../actions/proposed_action.schema.json"
+    },
+    {
+      "properties": {
+        "type": {
+          "const": "ESCALATE"
+        }
+      }
+    }
+  ]
+}

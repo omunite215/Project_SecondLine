@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/list_breaks.output.schema.json",
+  "title": "List the run's breaks \u2014 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "breaks"
+  ],
+  "properties": {
+    "breaks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "break_id",
+          "status",
+          "symptom",
+          "record_version",
+          "state_version"
+        ],
+        "properties": {
+          "break_id": {
+            "$ref": "../common.schema.json#/$defs/opaque_id"
+          },
+          "status": {
+            "enum": [
+              "OPEN",
+              "CLASSIFIED",
+              "PENDING_APPROVAL",
+              "RESOLVED",
+              "ESCALATED"
+            ]
+          },
+          "symptom": {
+            "enum": [
+              "CASH_DIFFERENCE",
+              "POSITION_DIFFERENCE",
+              "UNMATCHED_TRADE",
+              "STATUS_MISMATCH"
+            ],
+            "description": "Visible symptom only; never the root cause (ADR-015)."
+          },
+          "currency": {
+            "$ref": "../common.schema.json#/$defs/currency"
+          },
+          "isin": {
+            "$ref": "../common.schema.json#/$defs/isin"
+          },
+          "difference": {
+            "$ref": "../common.schema.json#/$defs/decimal"
+          },
+          "record_version": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "state_version": {
+            "$ref": "../common.schema.json#/$defs/state_version"
+          }
+        }
+      },
+      "maxItems": 200
+    }
+  }
+}

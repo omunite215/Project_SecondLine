@@ -1,0 +1,14 @@
+{
+ "x-validates": "tools/list_breaks.output.schema.json",
+ "breaks": [
+  {
+   "break_id": "brk_0000AB12",
+   "status": "OPEN",
+   "symptom": "CASH_DIFFERENCE",
+   "currency": "USD",
+   "difference": "0.01",
+   "record_version": 1,
+   "state_version": 7
+  }
+ ]
+}

@@ -1,0 +1,15 @@
+{
+ "x-validates": "receipts/decision_receipt.schema.json",
+ "receipt_version": "1.0",
+ "receipt_id": "2b3c4d5e-6f70-4a8b-9c0d-1e2f3a4b5c6d",
+ "action_id": "7d1e2a9c-0b3f-4c5d-9e8f-1a2b3c4d5e6f",
+ "action_digest": "sha256:abababababababababababababababababababababababababababababababab",
+ "decision": "EXECUTED",
+ "policy_decision_id": "3c4d5e6f-7081-4b9c-8d1e-2f3a4b5c6d7e",
+ "policy_bundle_hash": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd",
+ "evidence_validation": "VALID",
+ "ledger_transaction_id": "4d5e6f70-8192-4a0b-9c1d-2e3f4a5b6c7d",
+ "previous_receipt_hash": "GENESIS",
+ "receipt_hash": "sha256:efefefefefefefefefefefefefefefefefefefefefefefefefefefefefefefef",
+ "issued_at": "2026-03-02T17:12:31.204Z"
+}

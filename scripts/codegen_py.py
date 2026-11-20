@@ -10,11 +10,13 @@ usage: codegen_py.py [--schemas DIR] [--out DIR]
 from __future__ import annotations
 
 import argparse
+import json
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "packages" / "contracts"
@@ -46,6 +48,28 @@ def schema_files(root: Path) -> list[Path]:
     return sorted(p for p in root.rglob("*.schema.json") if "py" not in p.relative_to(root).parts)
 
 
+def _stage(node: Any) -> Any:
+    """Staged copy for the generator: refs point at the renamed local files and the https `$id`s are gone.
+
+    With `$id` kept, datamodel-codegen resolves a ref inside a ref'd schema against the referrer's base
+    (root → actions/parameters/x → ../../common became actions/parameters/common, a remote URL), so refs
+    must be plain file-relative paths."""
+    if isinstance(node, dict):
+        out = {}
+        for k, v in node.items():
+            if k == "$id":
+                continue
+            if k == "$ref" and isinstance(v, str):
+                path, sep, frag = v.partition("#")
+                if path.endswith(".schema.json"):
+                    v = path.removesuffix(".schema.json") + ".json" + sep + frag
+            out[k] = _stage(v)
+        return out
+    if isinstance(node, list):
+        return [_stage(v) for v in node]
+    return node
+
+
 def generate(schemas: Path, out: Path) -> None:
     files = schema_files(schemas)
     with tempfile.TemporaryDirectory() as tmp:
@@ -54,7 +78,7 @@ def generate(schemas: Path, out: Path) -> None:
         for f in files:
             dest = staged / f.relative_to(schemas).with_name(f.name.removesuffix(".schema.json") + ".json")
             dest.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(f, dest)
+            dest.write_text(json.dumps(_stage(json.loads(f.read_text())), indent=2) + "\n")
         if files:
             r = subprocess.run(
                 [

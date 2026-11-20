@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/propose_booking_correction.output.schema.json",
+  "title": "propose_booking_correction \u2014 DecisionReceipt",
+  "$ref": "../receipts/decision_receipt.schema.json"
+}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/tools/get_approval_status.output.schema.json",
+  "title": "Status of a held action (idempotent) \u2014 output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "approval_id",
+    "status",
+    "action_digest"
+  ],
+  "properties": {
+    "approval_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "status": {
+      "enum": [
+        "PENDING",
+        "APPROVED",
+        "REJECTED",
+        "EXPIRED"
+      ]
+    },
+    "action_digest": {
+      "$ref": "../common.schema.json#/$defs/sha256_ref"
+    }
+  }
+}

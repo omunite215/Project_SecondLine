@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/errors.schema.json",
+  "title": "Typed error codes (§8)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "errors"],
+  "properties": {
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "http_status", "retryable", "grader_only", "summary"],
+        "properties": {
+          "code": {"type": "string", "pattern": "^[A-Z][A-Z_]+$"},
+          "http_status": {"type": ["integer", "null"], "minimum": 200, "maximum": 599},
+          "retryable": {"type": "boolean"},
+          "grader_only": {"type": "boolean"},
+          "summary": {"type": "string", "maxLength": 200}
+        }
+      }
+    }
+  }
+}

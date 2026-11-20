@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/receipts/decision_receipt.schema.json",
+  "title": "DecisionReceipt (§9, C1/C2/C5/C9)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "receipt_version",
+    "receipt_id",
+    "action_id",
+    "action_digest",
+    "decision",
+    "policy_decision_id",
+    "policy_bundle_hash",
+    "evidence_validation",
+    "previous_receipt_hash",
+    "receipt_hash",
+    "issued_at"
+  ],
+  "properties": {
+    "receipt_version": {
+      "const": "1.0"
+    },
+    "receipt_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "action_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "action_digest": {
+      "$ref": "../common.schema.json#/$defs/sha256_ref"
+    },
+    "decision": {
+      "enum": [
+        "ALLOW",
+        "DENY",
+        "REVIEW_REQUIRED",
+        "EXECUTED"
+      ]
+    },
+    "policy_decision_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "policy_bundle_hash": {
+      "$ref": "../common.schema.json#/$defs/sha256_ref"
+    },
+    "evidence_validation": {
+      "enum": [
+        "VALID",
+        "EVIDENCE_STALE",
+        "INSUFFICIENT_EVIDENCE",
+        "INVALID"
+      ]
+    },
+    "error_code": {
+      "enum": [
+        "PERMISSION_DENIED",
+        "POLICY_DENIED",
+        "REVIEW_REQUIRED",
+        "APPROVAL_EXPIRED",
+        "EVIDENCE_STALE",
+        "STATE_CONFLICT",
+        "IDEMPOTENCY_CONFLICT",
+        "DOMAIN_INVALID",
+        "INSUFFICIENT_EVIDENCE",
+        "RUN_HALTED",
+        "RETRYABLE_UNAVAILABLE"
+      ]
+    },
+    "approval_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "ledger_transaction_id": {
+      "$ref": "../common.schema.json#/$defs/uuid"
+    },
+    "previous_receipt_hash": {
+      "anyOf": [
+        {
+          "$ref": "../common.schema.json#/$defs/sha256_ref"
+        },
+        {
+          "const": "GENESIS"
+        }
+      ]
+    },
+    "receipt_hash": {
+      "$ref": "../common.schema.json#/$defs/sha256_ref"
+    },
+    "signature_key_id": {
+      "type": "string",
+      "maxLength": 64
+    },
+    "signature": {
+      "type": "string",
+      "maxLength": 512
+    },
+    "issued_at": {
+      "$ref": "../common.schema.json#/$defs/utc_timestamp"
+    }
+  },
+  "description": "Server-generated; signature profile is ADR-018 (U9)."
+}

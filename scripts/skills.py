@@ -42,7 +42,7 @@ LOCK = ROOT / "tooling/skills.lock.json"
 STAMP = ROOT / ".claude/.skills-ok.json"
 # Setup files stay editable while the gate is RED so Claude can help fix the setup itself.
 # Not .claude/ or tooling/: hooks, settings, skills, rules and the manifest are the guardrails themselves.
-EDIT_ALLOW = ("docs/setup/", "docs/team/SKILLS.md", "CLAUDE.local.md", "START_HERE.md")
+EDIT_ALLOW = ("docs/setup/", "docs/team/SKILLS.md", "CLAUDE.local.md", "docs/ai/README.md")
 ID_RE = re.compile(r"(OM|KG|SH)-\d{2}")
 # Each `&&`/`||`/`;`/`|` segment must match whole-word. Refused outright: substitution, expansion ($ other than
 # $CLAUDE_PROJECT_DIR, braces, backslashes), redirects other than 2>&1, background `&` and newlines.

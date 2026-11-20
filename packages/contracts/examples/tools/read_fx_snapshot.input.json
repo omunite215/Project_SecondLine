@@ -1,0 +1,7 @@
+{
+ "x-validates": "tools/read_fx_snapshot.input.schema.json",
+ "run_id": "3f2e1d0c-4b5a-4968-8776-655443322110",
+ "base": "EUR",
+ "quote": "USD",
+ "as_of_date": "2026-03-02"
+}

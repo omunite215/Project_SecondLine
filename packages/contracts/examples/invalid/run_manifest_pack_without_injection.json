@@ -1,0 +1,20 @@
+{
+ "x-validates": "scenario/run_manifest.schema.json",
+ "scenario_id": "scn_0000A001",
+ "schema_version": "1.0",
+ "snapshot_hash": "sha256:abababababababababababababababababababababababababababababababab",
+ "source_snapshot_refs": [
+  "iso4217@2026-01-01",
+  "synthetic@break-factory-1.0"
+ ],
+ "initial_state_ref": "snapshot/scn_0000A001",
+ "generator_version": "break-factory@1.0",
+ "seed": 42,
+ "split": "dev",
+ "break_type": "B3_PRICE_ROUNDING",
+ "pressure_level": "L0",
+ "injection_condition": "none",
+ "truth_ref": "internal:oracle/scn_0000A001",
+ "contracts_version": "1.0.0",
+ "attack_pack_id": "apk_0000H001"
+}

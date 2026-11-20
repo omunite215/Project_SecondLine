@@ -1,6 +1,7 @@
 """KG-01 §19 · NFR-06: `make codegen-py` is deterministic and maps money to Decimal (golden rule 3)."""
 
 import importlib.util
+import json
 import subprocess
 import sys
 from decimal import Decimal
@@ -48,6 +49,36 @@ def test_KG_01_codegen_money_is_decimal(tmp_path: Path) -> None:
     doc = model.model_validate({"amount": "10.10", "currency": "USD"})
     assert type(doc.amount) is Decimal and doc.amount == Decimal("10.10")
     assert doc.model_dump(mode="json")["amount"] == "10.10"  # strings in JSON, never float
+
+
+def test_KG_01_codegen_resolves_nested_relative_refs_offline(tmp_path: Path) -> None:
+    # Regression: root → actions/parameters/leaf → ../../common (the truth → escalate → common chain in contracts).
+    # Each schema has an https `$id`; refs must resolve as local files, never as remote URLs against the wrong base.
+    base = "https://secondline.invalid/contracts/1/"
+    docs: dict[str, dict[str, object]] = {
+        "common.schema.json": {"$defs": {"uuid": {"type": "string", "format": "uuid"}}},
+        "actions/parameters/leaf.schema.json": {
+            "type": "object",
+            "properties": {"queue_id": {"$ref": "../../common.schema.json#/$defs/uuid"}},
+        },
+        "scenario/root.schema.json": {
+            "type": "object",
+            "properties": {"queue_id": {"$ref": "../actions/parameters/leaf.schema.json#/properties/queue_id"}},
+        },
+    }
+    schemas = tmp_path / "schemas"
+    for rel, doc in docs.items():
+        p = schemas / rel
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(json.dumps({"$schema": "https://json-schema.org/draft/2020-12/schema", "$id": base + rel, **doc}))
+    script = str(ROOT / "scripts" / "codegen_py.py")
+    r = subprocess.run(
+        [sys.executable, script, "--schemas", str(schemas), "--out", str(tmp_path / "o")],
+        capture_output=True,
+        text=True,
+    )
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert (tmp_path / "o" / "scenario" / "root.py").is_file()
 
 
 def test_KG_01_committed_models_are_current(tmp_path: Path) -> None:

@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://secondline.invalid/contracts/1/scenario/run_manifest.schema.json",
+  "title": "RunManifest",
+  "description": "Runner/grader-only scenario manifest: the full §9 field set. Never mounted into agent, adapter, gateway, ledger, supervisor or console (ADR-015).",
+  "x-privileged": true,
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "scenario_id",
+    "schema_version",
+    "generator_version",
+    "seed",
+    "split",
+    "break_type",
+    "pressure_level",
+    "injection_condition",
+    "snapshot_hash",
+    "source_snapshot_refs",
+    "truth_ref",
+    "initial_state_ref"
+  ],
+  "properties": {
+    "scenario_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id"
+    },
+    "schema_version": {
+      "const": "1.0"
+    },
+    "generator_version": {
+      "type": "string",
+      "pattern": "^break-factory@[0-9]+\\.[0-9]+(\\.[0-9]+)?$"
+    },
+    "seed": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4294967295
+    },
+    "split": {
+      "enum": [
+        "dev",
+        "eval",
+        "blind"
+      ]
+    },
+    "break_type": {
+      "$ref": "../common.schema.json#/$defs/break_type"
+    },
+    "pressure_level": {
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3"
+      ],
+      "description": "§14 graded pressure."
+    },
+    "injection_condition": {
+      "enum": [
+        "none",
+        "present"
+      ],
+      "description": "§14 injection state no/yes."
+    },
+    "snapshot_hash": {
+      "$ref": "../common.schema.json#/$defs/sha256_ref"
+    },
+    "source_snapshot_refs": {
+      "$ref": "manifest.schema.json#/properties/source_snapshot_refs"
+    },
+    "truth_ref": {
+      "type": "string",
+      "pattern": "^internal:oracle/[a-z]{2,6}_[0-9A-Za-z]{8,32}$"
+    },
+    "initial_state_ref": {
+      "$ref": "manifest.schema.json#/properties/initial_state_ref"
+    },
+    "attack_pack_id": {
+      "$ref": "../common.schema.json#/$defs/opaque_id",
+      "description": "Required when injection_condition is present."
+    },
+    "contracts_version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Replay pins the contracts-vX tag (C7)."
+    }
+  },
+  "if": {
+    "properties": {
+      "injection_condition": {
+        "const": "present"
+      }
+    }
+  },
+  "then": {
+    "required": [
+      "attack_pack_id"
+    ]
+  },
+  "else": {
+    "not": {
+      "required": [
+        "attack_pack_id"
+      ]
+    }
+  }
+}

@@ -9,13 +9,14 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 ## M-0 Contracts & setup
 
 ### OM-01 · Monorepo bootstrap, Compose base, CI skeleton
-- meta: P0 | M-0 | 2d | mcs | deps: SH-01 | status: todo
+- meta: P0 | M-0 | 2d | mcs | deps: SH-01 | status: done
 - refs: §7 §19 §21 | NFR-11 NFR-06 | T-DOC-01 | ADR-009 ADR-010 | RSK-12
 - build: dirs from the CLAUDE.md repo map. Gradle Kotlin DSL multi-project (services/ledger, services/gateway, libs/contracts-java) + gradle/libs.versions.toml: Java 21, Spring Boot 3.5.x pinned (4.0.x only via ADR; default chosen for Jackson-2 library compatibility). infra/compose/docker-compose.yml profiles: core (postgres 17, redis 7, opa 1.x) · app (ledger, gateway, mcp-adapter) · events (kafka KRaft, supervisor) · obs (otel-collector, jaeger, prometheus, grafana) · ui (console) · chaos (toxiproxy); healthchecks; mem_limit per service sized for a 16 GB host; multi-stage Dockerfiles so the teammate needs no JDK; multi-arch base images (Kunal is arm64). infra/db/init/00-roles.sql: schemas ledger, audit, eval; roles ledger_app, grader_ro, operator. Replace Makefile TODO stubs: bootstrap up down ps logs reset db-shell lint test codegen. GitHub Actions: path-filtered java / python / policy / console jobs next to kit-checks; Testcontainers-ready. pre-commit: gitleaks, LF, EOF. No Kubernetes.
 - done: fresh clone on BOTH machines: `make bootstrap && make up PROFILES="core"` healthy in < 2 min; CI green; `make ctx` under budget; infra/CLAUDE.md lists the real commands.
+- evidence: merged #9 (2026-10-29); V1 fresh clone Om 8.4 s, V2 Kunal arm64 8.4 s + 11/11 DB-role tests, V3 docs-only PR #13 merged with java/stack skipped under the required checks; CI run 40812113039 green
 
 ### OM-25 · CI/CD ownership: rulesets, required checks, PR automation
-- meta: P0 | M-0 | 2d | mcs=1d | deps: SH-01 | status: todo
+- meta: P0 | M-0 | 2d | mcs=1d | deps: SH-01 | status: doing
 - refs: §19 §21 §23 | NFR-07 NFR-11 | T-DOC-01 | ADR-010 | RSK-01 RSK-14
 - build: on omunite215/Project_SecondLine per docs/setup/GITHUB.md: Kunal as collaborator (Write); squash-only merges + auto-delete branches; ruleset on main (PR + 1 approval + code-owner review + conversation resolution + required checks; no force-push/deletion; no bypass on `main` — Om's own PRs need Kunal's approval; ruleset `merge-gate` lets only Om merge; immutable `m*` gate tags; settings as code in .github/settings.json + `make gh-check`); `ai-review` label + .github/workflows/claude-review.yml with secret CLAUDE_CODE_OAUTH_TOKEN; required checks grow as services land (java, python, policy, console, leakage, contracts drift); CI caches (Gradle, uv, pnpm); Dependabot entries per ecosystem; tag each milestone gate (m0…m5); review every PR within 24 h with /review-pr.
 - done: a test PR from Kunal cannot merge until CI is green and Om approves; Om's own PR cannot merge without Kunal's approval + green CI and Kunal cannot merge any PR; claude-review posts on a labeled PR; GITHUB.md matches the real settings.
@@ -28,13 +29,21 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - done: one failing-first test per item under tests/security/ (OM_26_*): TAIL injection rejected; multi-edit truth wiring blocked; each bypass string rejected by the RED gate; gate-RED edits to settings/hooks/manifest blocked; `make kit-check` green.
 - evidence: merged via PR #2 → PR #1 (8e42126); tests/security/test_om_26_kit_hardening.py; make kit-check green on main 2026-10-28
 
+### OM-27 · Submission rubric check (code organization, docs, quality, completeness, deployment)
+- meta: P1 | M-0 | 0.5d | deps: SH-01 | status: done
+- refs: §19 §21 §23 | NFR-11 | T-DOC-01
+- build: scripts/submission_check.py + `make submission-check [DEPLOY=1 REF=<branch>]`: one or more executable checks per rubric criterion (organization 20 · technical documentation 20 · code quality 15 · completeness 20 · deployment & reproducibility 25), each PASS/FAIL with evidence; DEPLOY=1 clones REF into a temp dir and runs bootstrap → up core → tests → down. Report lists failing checks and an evidence-based band per criterion (an estimate, not a grade).
+- done: tests/kit/test_om_27_submission_check.py (stdlib, temp trees) green; report run on main and on the OM-01 branch, findings filed as follow-ups.
+- evidence: merged #18 (2026-10-29); make submission-check + DEPLOY=1 R2 PASS; README rewrite; docs/ai move with ctx_budget following @imports
+
 ## M-1 Truthful simulator (ledger side)
 
 ### OM-02 · Java contracts library (types, schema validation, JCS, digests)
-- meta: P0 | M-1 | 1d | mcs | deps: SH-02 | status: todo
+- meta: P0 | M-1 | 1d | mcs | deps: SH-02 | status: review
 - refs: §9 | ADR-005 ADR-011 | REQ-005
 - build: libs/contracts-java: types generated from packages/contracts (jsonschema2pojo task) or records + a generator check; networknt JSON-Schema validator with cached schemas; ErrorCode enum generated from errors.json; CanonicalJson (RFC 8785 / JCS) + Digests.sha256; ActionDigest(action, evidence versions, state_version) shared by approvals and idempotency.
 - done: every §9 example validates; JCS matches SH-08 vectors once they exist; `make codegen` deterministic (CI fails on diff).
+- evidence: PR (this); 36 JUnit OM_02_* in libs/contracts-java (every §9 example validates + every examples/invalid rejected, same x-validates as contracts_check); 10 kit test_OM_02_* (codegen deterministic + committed current; x-action-digest guard; golden action_digest vectors recomputed in Python); JCS vs SH-08 vectors: VERIFY when SH-08 lands; make contracts-check OK; make kit-check OK; ./gradlew test green
 
 ### OM-03 · Ledger core: schema, journal, positions, immutability
 - meta: P0 | M-1 | 4d | mcs | deps: OM-01, OM-02, SH-03 | status: todo
@@ -91,6 +100,7 @@ Owner key `om`. Claude reads this through `python3 scripts/board.py next` (print
 - skills: insecure-defaults
 - build: infra/opa/policies: default deny; decisions allow | deny | requires_review with reason codes; role/action matrix, per-break-type allowed actions, posting limits, permitted + suspense accounts, reference-data immutability, approval thresholds, toxic sequences (input carries the run's recent actions); bundle revision + hash returned in every decision; numbers come from SH-05, never invented.
 - done: `make test-policy` (opa test, ≥1 test per rule incl. default-deny) in CI; decisions carry the bundle hash; T-SEC-02 negative cases pass end-to-end through the gateway; hard legitimate cases still allowed (no block-everything).
+- notes: from OM-01 review (I5): in compose, OPA runs without --authentication/--authorization and Kafka is PLAINTEXT on the shared default network — any container can PUT /v1/policies or produce to outbox/receipt topics. Before OM-06 puts mcp-adapter/agent on that network: OPA token authz (or a policy-only network the agent can't reach) + separate compose networks; add a T-SEC test that the agent container can't reach OPA's write API.
 
 ### OM-11 · Maker-checker approvals bound to the action digest
 - meta: P0 | M-3 | 2d | mcs | learn | deps: OM-08 | status: todo

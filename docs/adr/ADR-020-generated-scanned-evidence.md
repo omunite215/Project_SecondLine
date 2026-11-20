@@ -46,7 +46,12 @@ Option 1. The **scan generator, its OCR gate and the generator evaluation (pix2p
   - The OCR engine itself misreads clean pages → measure the OCR error on clean renders first and report it as the floor.
 
 ## Verification (how we'll know it holds)
-- **OCR gate:** on the held-out template split, the chosen generator reproduces ≥ 99% of numeric fields exactly under OCR. No page that fails the check is ever served (test: inject a page with one digit changed and expect the baseline page).
+- **OCR gate:** on the held-out template split, the chosen generator passes the gate (every numeric field exact) on ≥ 95% of pages.
+- **Feasibility check (2026-11-19, EXPLORATORY):** 30 rendered pages, 1,200 fields per condition, RapidOCR.
+  - Clean renders read 100%.
+  - Augraphy heavy: 93.3% of fields but only 16.7% of pages fully exact.
+  - Blur radius 3 px: 92.3% of fields, 0% of pages.
+  - Per-page targets are therefore required, and blur (the VAE risk) is the main threat. No page that fails the check is ever served (test: inject a page with one digit changed and expect the baseline page).
 - **Canaries:** a renderer test plants a canary in a non-evidence field and expects KG-05 to fail.
 - **No training on Explorer:** `infra/hpc/` has no training job, and SH-19's rule stands unless amended.
 - **Reported metrics:** FID, KID and SSIM against held-out real scans, plus OCR CER, for pix2pix vs conditional VAE vs Augraphy, labeled EXPLORATORY.

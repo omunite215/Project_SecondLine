@@ -378,7 +378,8 @@ def reconcile(bundle: JSON, ids: IdMinter) -> list[JSON]:
             if qd
             else "CASH_DIFFERENCE"
         )
-        ccy = ccy_of[isin_refs[0]] if isin_refs else next(i["currency"] for i in bundle["instruments"] if i["isin"] == isin)
+        ins_ccy = {i["isin"]: i["currency"] for i in bundle["instruments"]}
+        ccy = ccy_of[isin_refs[0]] if isin_refs else ins_ccy[isin]
         evid = {e["record_id"] for r in isin_refs for e in ev_by_ref.get(r, {}).values()} | set(notices_by_isin[isin])
         if isin in custodian:
             evid.add(custodian[isin]["record_id"])

@@ -116,15 +116,22 @@ def _isin(rng: random.Random, used: set[str]) -> str:
             return isin
 
 
-def build_world(streams: Streams, ids: IdMinter, per_currency: int = 3) -> World:
+def build_world(
+    streams: Streams,
+    ids: IdMinter,
+    per_currency: int = 5,
+    names: tuple[tuple[str, ...], tuple[str, ...], tuple[str, ...]] | None = None,
+) -> World:
+    """`names` = (adjectives, nouns, brokers) of the split's universe (KG-04 K8); default: the dev pools."""
+    adj, noun, broker_pool = names or (_ADJ, _NOUN, _BROKERS)
     rng = streams.stream("world")
     used: set[str] = set()
     instruments = []
     for ccy in CURRENCIES:
         for _ in range(per_currency):
-            name = f"{rng.choice(_ADJ)} {rng.choice(_NOUN)} {_SUFFIX[ccy]} ord."
+            name = f"{rng.choice(adj)} {rng.choice(noun)} {_SUFFIX[ccy]} ord."
             instruments.append(Instrument(_isin(rng, used), ccy, name))
-    brokers = rng.sample(_BROKERS, 3)
+    brokers = rng.sample(broker_pool, 3)
     counterparties = tuple(Counterparty(ids.mint("cpty"), b) for b in brokers)
     return World("Second-Line Synthetic Bank", tuple(instruments), counterparties)
 

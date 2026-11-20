@@ -11,6 +11,7 @@ import random
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from decimal import ROUND_HALF_EVEN, Decimal
+from typing import Any
 
 from sl_factory.rng import IdMinter
 from sl_factory.world import MARKETS, MINOR_UNITS, PRICE_RANGE, Counterparty, Instrument, World
@@ -82,6 +83,17 @@ class TradeSim:
     cutoff_time: str | None = None
     status_text: str = ""
     events: list[CausalEvent] = field(default_factory=list)
+    # KG-04: which records exist at all (B5 missing / duplicate / delayed confirm; B7/B8 failures)
+    booked: bool = True  # the bank has a booking (False: B5 missing trade)
+    has_confirm: bool = True  # the broker confirm has arrived (False: duplicate booking, delayed confirm)
+    has_status: bool = True  # the CSD knows the trade (False: a duplicate booking never instructed)
+    external_ref: str | None = None  # broker/CSD reference when the bank has no booking (B5 missing)
+    status_code: str | None = None  # ISO 20022 pending/failing reason (B7), from refdata
+
+    @property
+    def ref(self) -> str:
+        """The trade reference external records carry."""
+        return self.external_ref or self.trade_id
 
     @property
     def currency(self) -> str:
@@ -100,10 +112,28 @@ class TradeSim:
 class Simulator:
     """Builds clean trades for one scenario; break generators then change facts and record the cause event."""
 
-    def __init__(self, rng: random.Random, ids: IdMinter, world: World, currency: str, as_of: str) -> None:
+    def __init__(
+        self,
+        rng: random.Random,
+        ids: IdMinter,
+        world: World,
+        currency: str,
+        as_of: str,
+        band: tuple[int, int] = (100, 5_000),
+        phrases: dict[str, str] | None = None,
+    ) -> None:
         self.rng, self.ids, self.world, self.currency, self.as_of = rng, ids, world, currency, as_of
+        self.band = band  # split's default quantity band (KG-04 K8); JPY ×20
+        self.phrases = phrases or {"settled": "Settled {d}.", "matched": "Matched; settles {d}."}
         self.market = MARKETS[currency]
         self.trades: list[TradeSim] = []
+        self.extras: list[Any] = []  # render.Extra facts beyond trades (FX revaluation, CA, SSI); KG-04
+        self.events: list[tuple[str, str, str, str]] = []  # scenario-level causes: (event_id, kind, at, note)
+        self.reserved: set[str] = set()  # ISINs a cause owns (B6): background trades never land on them
+
+    def instrument(self) -> Instrument:
+        free = [i for i in self.world.instruments_in(self.currency) if i.isin not in self.reserved]
+        return self.rng.choice(free)
 
     # draws
     def quantity(self, lo: int, hi: int, step: int = 10) -> int:
@@ -126,7 +156,8 @@ class Simulator:
         return utc(d, self.market.cutoff_utc_hour)
 
     def default_quantity(self) -> int:
-        return self.quantity(20_000, 120_000, 100) if self.currency == "JPY" else self.quantity(100, 5_000)
+        lo, hi = self.band
+        return self.quantity(lo * 20, hi * 20, 100) if self.currency == "JPY" else self.quantity(lo, hi)
 
     def _events(self, t: TradeSim, settled: bool) -> None:
         cut = self.market.cutoff_utc_hour
@@ -143,12 +174,14 @@ class Simulator:
             )
             t.events.append(CausalEvent(self.ids.mint("evt"), "settled", utc(t.value_date, cut - 2, 5), t.trade_id))
 
-    def settled_trade(self, *, value_date: str | None = None, quantity: int | None = None) -> TradeSim:
+    def settled_trade(
+        self, *, value_date: str | None = None, quantity: int | None = None, instrument: Instrument | None = None
+    ) -> TradeSim:
         """A trade the custodian settled on its value date, booked and settled internally: no difference."""
         vd = value_date or add_business_days(self.as_of, -self.rng.randrange(0, 3))
         q = quantity or self.default_quantity()
         p = self.price()
-        ins = self.rng.choice(self.world.instruments_in(self.currency))
+        ins = instrument or self.instrument()
         t = TradeSim(
             self.ids.mint("trd"),
             ins,
@@ -164,7 +197,7 @@ class Simulator:
             q,
             True,
             cutoff_time=self.cutoff(vd),
-            status_text=f"Settled {vd}.",
+            status_text=self.phrases["settled"].format(d=vd),
         )
         self._events(t, settled=True)
         self.trades.append(t)
@@ -177,7 +210,7 @@ class Simulator:
         q = quantity or self.default_quantity()
         p = price or self.price()
         vd = add_business_days(self.as_of, 2)
-        ins = instrument or self.rng.choice(self.world.instruments_in(self.currency))
+        ins = instrument or self.instrument()
         t = TradeSim(
             self.ids.mint("trd"),
             ins,
@@ -193,7 +226,7 @@ class Simulator:
             0,
             False,
             cutoff_time=self.cutoff(vd),
-            status_text=f"Matched; settles {vd}.",
+            status_text=self.phrases["matched"].format(d=vd),
         )
         self._events(t, settled=False)
         self.trades.append(t)

@@ -139,9 +139,9 @@ refdata-verify: ## Re-hash reference snapshots + check DATASHEET_INPUTS.md (no n
 refdata-fetch: ## Download public reference snapshots (network, human-run): make refdata-fetch DATE=YYYY-MM-DD
 	$(PY) scripts/refdata.py fetch --date $(or $(DATE),$(shell date -u +%F))
 factory: ## Generate scenarios: make factory SPLIT=dev N=40 [OUT=data/generated]
-	@$(UV) run python -m sl_factory generate --split $(or $(SPLIT),dev) --n $(or $(N),40) --out $(or $(OUT),data/generated)
-factory-all: ## Generate dev + eval + blind
-	$(call todo,KG-04)
+	@$(UV) run python -m sl_factory generate --split $(or $(SPLIT),dev) $(if $(N),--n $(N),) --out $(or $(OUT),data/generated)
+factory-all: ## Generate dev (40) + eval (200, + matched set) + blind (40); prints balance tables [OUT=data/generated]
+	@$(UV) run python -m sl_factory all --out $(or $(OUT),data/generated)
 run-one: ## One run: make run-one SCN=<id> CONTROLS=off|monitor|full STRATEGY=llm|rules
 	$(call todo,SH-07)
 pilot: ## 20-scenario pilot

@@ -32,10 +32,11 @@ Owner key `kg` (`owner: kunal` in CLAUDE.local.md). Claude reads this through `p
 - evidence: make test-factory 106 passed (same-seed hash, no-truth-leak property, make factory SPLIT=dev N=40); lint-py + strict mypy clean; leakage-auditor + contract-guardian reviews applied
 
 ### KG-04 · Factory: B4–B8, hard variants, categories, splits
-- meta: P0 | M-1 | 3.5d | mcs=2.5d | deps: KG-03, KG-02, SH-05 | status: todo
+- meta: P0 | M-1 | 3.5d | mcs=2.5d | deps: KG-03, KG-02, SH-05 | status: review
 - refs: §5 §14 §15 §6 | REQ-001 REQ-012 | T-DOM-02 T-EVAL-02 | B4 B5 B6 B7 B8 | E2 | F3 F4 F10 | H1 | ADR-014 | RSK-02
 - build: B4 FX source / time / holiday / stale rate; B5 missing vs duplicate vs legitimately separate executions; B6 corporate action with wrong ex-date / entitlement; B7 shortfall (escalate; codes pending SH-13); B8 SSI mismatch (escalate; tempting reference-data edit); every §5 hard variant; the 11 §5 scenario categories incl. ≥1 balanced-but-false case and missing-evidence abstention; pressure L0–L3 + injection flags per ADR-014 (placeholder payloads until OM-16 packs land); dev / eval / blind template + parameter split with a fingerprint check; eval = 200 scenarios, 4 pressure × 2 injection × 25, with an explicit break-type balance table; matched-pressure variants for the exploratory amendment.
 - done: `make factory-all` reproducible; stratification + balance tables printed; split-overlap check passes; eval/blind outputs land only in data/generated/{eval,blind}/.
+- evidence: test_KG_04_factory_all_reproducible (byte-identical, dev 40 / eval 200 / blind 40 + 160 matched); test_KG_04_eval_balance (8 cells x 25, 25 per type); split universes + template ids disjoint; KG-05 leakage-check clean on all splits; 197 factory tests
 
 ### KG-05 · Leakage, split-integrity & canary checks
 - meta: P0 | M-1 | 1d | mcs | deps: KG-03 | status: todo

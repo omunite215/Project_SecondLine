@@ -154,7 +154,8 @@ class StateHashScope(unittest.TestCase):
 class MajorVersion(unittest.TestCase):
     def test_OM_04_breaking_change_is_major(self):
         # Required bundle fields + a renamed enum value break 1.x producers/consumers (.claude/rules/contracts.md).
-        self.assertEqual((C / "VERSION").read_text().strip(), "2.0.0")
+        major = (C / "VERSION").read_text().strip().split(".")[0]  # later additive changes bump minor (SH-08: 2.1.0)
+        self.assertEqual(major, "2")
         self.assertEqual(load("scenario/world_bundle.schema.json")["properties"]["bundle_version"]["const"], "2.0")
         self.assertTrue(load("scenario/world_bundle.schema.json")["$id"].startswith(
             "https://secondline.invalid/contracts/2/"))

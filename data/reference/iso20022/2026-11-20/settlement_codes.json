@@ -1,0 +1,42 @@
+[
+ {
+  "citation": "https://www.ecb.europa.eu/paym/target/t2s/profuse/shared/pdf/insights_on_multiple_statuses_in_a_status_notification.pdf",
+  "code": "LACK",
+  "kind": "pending_reason",
+  "meaning": "Lack of securities: the delivering party lacks the securities",
+  "used_by": "B7 (sell leg)",
+  "verify": false
+ },
+ {
+  "citation": "https://www.ecb.europa.eu/paym/target/t2s/profuse/shared/pdf/insights_on_multiple_statuses_in_a_status_notification.pdf",
+  "code": "MONY",
+  "kind": "pending_reason",
+  "meaning": "Insufficient money: the paying party lacks the cash",
+  "used_by": "B7 (buy: our cash)",
+  "verify": false
+ },
+ {
+  "citation": "https://www.ecb.europa.eu/paym/target/t2s/profuse/shared/pdf/insights_on_multiple_statuses_in_a_status_notification.pdf",
+  "code": "CLAC",
+  "kind": "pending_reason",
+  "meaning": "Counterparty insufficient securities",
+  "used_by": "B7 (buy: counterparty can't deliver)",
+  "verify": false
+ },
+ {
+  "citation": "https://www.ecb.europa.eu/paym/target/t2s/profuse/shared/pdf/insights_on_multiple_statuses_in_a_status_notification.pdf",
+  "code": "CMON",
+  "kind": "pending_reason",
+  "meaning": "Counterparty insufficient money",
+  "used_by": "B7 (sell leg)",
+  "verify": false
+ },
+ {
+  "citation": "https://www.ecb.europa.eu/paym/target/t2s/profuse/shared/pdf/insights_on_multiple_statuses_in_a_status_notification.pdf",
+  "code": "LATE",
+  "kind": "pending_reason",
+  "meaning": "Market deadline missed",
+  "used_by": "B1",
+  "verify": false
+ }
+]

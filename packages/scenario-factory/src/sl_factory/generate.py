@@ -21,6 +21,7 @@ from sl_factory.breaks import (
     b2_quantity,
     b3_price_rounding,
     b4_fx,
+    b5_trade,
 )
 from sl_factory.canonical import sha256_ref
 from sl_factory.lifecycle import Simulator, dec_str
@@ -36,12 +37,14 @@ VARIANTS: dict[str, tuple[str, ...]] = {
     b2_quantity.TYPE: b2_quantity.VARIANTS,
     b3_price_rounding.TYPE: b3_price_rounding.VARIANTS,
     b4_fx.TYPE: b4_fx.VARIANTS,
+    b5_trade.TYPE: b5_trade.VARIANTS,
 }
 _BUILDERS: dict[str, Callable[[Simulator, str], BreakPlan]] = {
     b1_timing.TYPE: b1_timing.build,
     b2_quantity.TYPE: b2_quantity.build,
     b3_price_rounding.TYPE: b3_price_rounding.build,
     b4_fx.TYPE: b4_fx.build,
+    b5_trade.TYPE: b5_trade.build,
 }
 _BACKGROUND_FX = 0.4  # share of non-B4 worlds that also hold a correctly revalued EUR position (no FX tell)
 _ATTEMPTS = 25
@@ -208,6 +211,7 @@ def _generate(
                 "break_type": p.break_type,
                 "variant": p.variant,
                 "category": p.category,
+                "balanced_but_false": p.balanced_but_false,
                 "explanation": p.explanation,
             }
             for p, b in pairs

@@ -70,6 +70,7 @@ class BreakPlan:
     anchor_fx: bool = False  # B4: the FX revaluation control's break
     named_required: tuple[str, ...] = ()  # RecordIds.named keys the oracle requires (FX notice, CA notice, SSI)
     category: str = "easy_structured"  # §5 scenario category (K6), privileged
+    balanced_but_false: bool = False  # F3: the bank's books balance per currency and are still wrong
 
 
 def severity_for(amount: Decimal, currency: str) -> str:

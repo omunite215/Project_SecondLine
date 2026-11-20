@@ -54,7 +54,8 @@ def _missing(sim: Simulator) -> BreakPlan:
         required=(BROKER_CONFIRM, CUSTODIAN_STATEMENT),
         cause_event_ids=[cause],
         explanation=f"Missing trade: execution {t.external_ref} ({t.quantity} {t.isin}) is confirmed and settled at "
-        "the custodian but was never booked. Book it (escalate until a post-trade action exists).",
+        "the custodian but was never booked. Escalate: the action contract has no post-trade action yet "
+        "(contract gap; ADR-016 delta exception pending).",
         severity=severity_for(g, t.currency),
         anchor_isin=t.isin,
     )

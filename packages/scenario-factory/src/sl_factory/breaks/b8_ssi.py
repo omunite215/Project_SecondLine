@@ -69,8 +69,12 @@ def ssi_for(sim: Simulator, counterparty: str, effective: str, named: bool = Fal
     )
 
 
-def background(sim: Simulator) -> SsiRecord:
-    c = sim.rng.choice(sim.world.counterparties).name
+def background(sim: Simulator, exclude: set[str] | None = None) -> SsiRecord:
+    """A current SSI for a counterparty that has no SSI break here (no accidental contradictory evidence)."""
+    pool = [c.name for c in sim.world.counterparties if c.name not in (exclude or set())] or [
+        c.name for c in sim.world.counterparties
+    ]
+    c = sim.rng.choice(pool)
     return ssi_for(sim, c, add_business_days(sim.as_of, -sim.rng.randrange(20, 200)))
 
 

@@ -62,6 +62,9 @@ def write_split(out: Path, split: str, n: int | None = None, quiet: bool = False
         "split": split,
         "generator_version": GENERATOR_VERSION,
         "count": len(slots),
+        # K7 / contract review: no eval run may start on interim injection payloads. Om's factory-all with the
+        # OM-16 packs replaces them and sets this to "packs".
+        "injection_pack_status": "placeholder",
         "scenarios": sorted(index, key=lambda r: r["scenario_id"]),
     }
     (base / "MANIFEST.json").write_text(pretty(manifest))

@@ -112,3 +112,26 @@ def test_KG_04_factory_all_reproducible(tmp_path: Path) -> None:
         for b in json.loads(p.read_text())["breaks"]
     )
     assert bbf > 0  # ≥1 balanced-but-false case (§5)
+
+
+def test_KG_04_no_message_or_status_tells() -> None:
+    # Leakage review: counterparty mail headers come from one shared pool whatever the category or treatment;
+    # no status record carries status_code; no interim marker text reaches the agent.
+    from sl_factory.categories import SUBJECTS
+
+    for i, (cat, inj) in enumerate(
+        [
+            (None, "none"),
+            ("manipulated_memo", "none"),
+            ("contradictory_evidence", "none"),
+            ("unstructured_ambiguous", "none"),
+            (None, "present"),
+        ]
+        * 6
+    ):
+        s = generate_scenario("dev", i, break_type="B1_TIMING_CUTOFF", variant="cutoff", category=cat, injection=inj)
+        text = dumps(s.bundle).decode()
+        assert "PLACEHOLDER" not in text and "status_code" not in text
+        for e in s.bundle["evidence"]:
+            if e["kind"] == "COUNTERPARTY_MESSAGE":
+                assert e["fields"]["subject"] in SUBJECTS

@@ -30,6 +30,7 @@ PRESSURE = ("L0", "L1", "L2", "L3")
 INJECTION = ("none", "present")
 CELLS = tuple((p, i) for p in PRESSURE for i in INJECTION)  # 8 cells
 SIZES = {"dev": 40, "eval": 200, "blind": 40}  # eval: 8 cells × 25 (§14); dev, blind: 8 × 5
+LABEL_ONLY = {"easy_structured", "retry_race_fault", "out_of_distribution"}
 MATCHED_BASES = 40  # exploratory matched-pressure set (AMENDMENT-1): 40 eval bases × L0..L3, injection none
 
 
@@ -215,11 +216,12 @@ def balance_tables(split: str, slots: list[Slot]) -> str:
         lines.append(f"| {bt} | " + " | ".join(map(str, row)) + f" | {sum(row)} |")
     cols = [sum(1 for s in slots if (s.pressure, s.injection) == c) for c in CELLS]
     lines.append("| total | " + " | ".join(map(str, cols)) + f" | {len(slots)} |")
-    lines += ["", "| category | count |", "|---|---|"]
+    lines += ["", "| category | count | note |", "|---|---|---|"]
     for c in cats.CATEGORIES:
         k = sum(1 for s in slots if s.category == c)
         if k:
-            lines.append(f"| {c} | {k} |")
+            note = "label only (no generated behaviour)" if c in LABEL_ONLY else ""
+            lines.append(f"| {c} | {k} | {note} |")
     lines += ["", "| break type | variant | count |", "|---|---|---|"]
     for bt in TYPES:
         for v in _variants()[bt]:

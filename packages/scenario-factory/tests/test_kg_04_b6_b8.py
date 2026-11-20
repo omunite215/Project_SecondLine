@@ -87,4 +87,4 @@ def test_KG_04_ca_and_ssi_records_also_appear_without_their_break() -> None:
         present = {e["kind"] for e in s.bundle["evidence"]}
         for k in kinds_without:
             kinds_without[k] += k in present
-    assert all(10 <= v <= 50 for v in kinds_without.values()), kinds_without
+    assert all(30 <= v <= 70 for v in kinds_without.values()), kinds_without  # ~60% background share

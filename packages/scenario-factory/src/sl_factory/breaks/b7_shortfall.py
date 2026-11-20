@@ -2,9 +2,9 @@
 B7 row: no evidence required for escalation, should cite NOSTRO/SETTLEMENT_STATUS; DG-1, DG-3; KG-04 K4).
 
 The bank posted settlement on the contractual date; the CSD reports the delivery FAILED for a shortfall. Reason
-codes come from the curated ISO 20022 snapshot (KG-02, `verify: true` until SH-13); only half the failures carry
-a code so a code's presence doesn't mark the family. `cash` (MONY / CMON → TREASURY), `securities` (LACK /
-CLAC → OPERATIONS).
+codes come from the curated ISO 20022 snapshot (KG-02, `verify: true` until SH-13) and are described in the
+status text; the `status_code` field is left off so it can't mark the family. `cash` (MONY / CMON →
+TREASURY), `securities` (LACK / CLAC → OPERATIONS).
 """
 
 from __future__ import annotations
@@ -35,7 +35,8 @@ def build(sim: Simulator, variant: str) -> BreakPlan:
     code = sim.rng.choice(_CODES[variant])
     meaning = iso_codes()[code]
     t.ext_status, t.settled_quantity = "FAILED", 0
-    t.status_code = code if sim.rng.random() < 0.5 else None
+    # no status_code: only B7 would carry one (verified ISO codes for B8 failures don't exist yet), so the
+    # field's presence would mark the family; the meaning is in the status text (leakage review)
     t.status_text = f"Settlement failed: {meaning.split(':')[0].lower()}."
     cause = t.cause(sim.ids, "settlement_shortfall", utc(sim.as_of, sim.market.cutoff_utc_hour - 1), meaning)
     g = gross(t.quantity, t.confirm_price, t.currency)

@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * fetching is off, so validation never touches the network. Schemas are compiled once and cached.
  */
 public final class SchemaRegistry {
-    public static final String ID_BASE = "https://secondline.invalid/contracts/1/";
+    public static final String ID_BASE = "https://secondline.invalid/contracts/2/";
     private static final String CLASSPATH_BASE = "contracts/";
 
     private final com.networknt.schema.SchemaRegistry registry;

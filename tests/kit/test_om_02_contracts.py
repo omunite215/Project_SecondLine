@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SCHEMA = "https://json-schema.org/draft/2020-12/schema"
-BASE = "https://secondline.invalid/contracts/1/"
+BASE = "https://secondline.invalid/contracts/2/"
 CMD = ["uv", "run", "-q", "--with", "jsonschema==4.26.0", "--with", "pyyaml==6.0.3", "python",
        str(ROOT / "scripts/contracts_check.py")]
 

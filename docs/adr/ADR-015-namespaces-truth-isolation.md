@@ -13,3 +13,10 @@ Per-run Postgres schema or template-database clone (stronger isolation, slower r
 
 ## Consequences
 Parallel runs on one Postgres; cheap deterministic resets; isolation relies on (ns, id) keys + tests (+ RLS if enabled).
+
+## Amendment 1 — 2026-10-31 (OM-04, contracts 2.0.0) · om ☑ kunal ☐
+- **State-hash scope:** state hash = sha256(JCS(ns export **without "ns"**)). The export still carries `ns` for the reader.
+- **Why:** each load creates a fresh ns UUID, so a hash over it could never match across two loads or two machines, and T-EVAL-03 could not pass by construction. The hash names the state, not the run; the run manifest already binds run → ns.
+- **Also decided in OM-04:**
+  - An id that doesn't resolve in the caller's ns (unknown, retired, or another ns's) answers `PERMISSION_DENIED`, the same for every case, so no response reveals what exists elsewhere.
+  - Reset stays "new ns"; DELETE only retires an ns (rows kept, ADR-019).

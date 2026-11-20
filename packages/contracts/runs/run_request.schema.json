@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/runs/run_request.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/runs/run_request.schema.json",
   "title": "Create a run (harness only)",
   "type": "object",
   "additionalProperties": false,

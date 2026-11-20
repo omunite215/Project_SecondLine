@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/scenario/run_manifest.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/scenario/run_manifest.schema.json",
   "title": "RunManifest",
   "description": "Runner/grader-only scenario manifest: the full §9 field set. Never mounted into agent, adapter, gateway, ledger, supervisor or console (ADR-015).",
   "x-privileged": true,

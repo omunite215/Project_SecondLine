@@ -63,7 +63,7 @@ A target that prints `TODO(<TASK>)` is not built yet — that task builds it. Te
 ```text
 make help · make kit-check · make board-next · make trace · make skills-check|skills-list
 make up PROFILES="core app"      (profiles: core app events obs ui chaos) · make down · make logs SVC=x TAIL=50
-make codegen · make contracts-check
+make codegen · make codegen-py · make contracts-check · make lint-py
 make test-ledger|test-gateway|test-mcp|test-policy|test-py|test-agent|test-factory|test-eval|test-supervisor|test-console
 make test-int|test-sec|test-redteam|test-chaos|test-load|leakage-check
 make factory SPLIT=dev N=40 · make run-one SCN=<id> CONTROLS=off|monitor|full STRATEGY=llm|rules

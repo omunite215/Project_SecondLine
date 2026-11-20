@@ -41,4 +41,36 @@ updates:
         update-types: ["version-update:semver-major"]
       - dependency-name: "redis"                       # 7 pinned; 8 changed the license (AGPL/SSPL/RSAL)
         update-types: ["version-update:semver-major"]
-# KG-01 adds uv; OM-21 adds npm. tests/kit enforces coverage.
+# KG-01: one uv entry per pyproject.toml; OM-21 adds npm. tests/kit enforces coverage.
+  - package-ecosystem: uv
+    directory: "/"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/packages/contracts/py"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/packages/scenario-factory"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/packages/evaluation"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/packages/audit-verifier"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/services/agent"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/services/supervisor"
+    schedule:
+      interval: weekly
+  - package-ecosystem: uv
+    directory: "/services/mcp-adapter"
+    schedule:
+      interval: weekly

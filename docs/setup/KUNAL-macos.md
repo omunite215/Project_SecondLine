@@ -8,7 +8,8 @@ Record the exact chip and unified memory in docs/team/KUNAL.md and CLAUDE.local.
 - **Node 22 + pnpm:** only if you touch the console. pyright doesn't need it (see below).
 
 ## 2. Repo, Claude Code, skills gate
-1. Clone: `git clone https://github.com/omunite215/Project_SecondLine.git && cd Project_SecondLine`.
+1. Clone **outside iCloud Drive** (not `~/Desktop` or `~/Documents` when "Desktop & Documents Folders" sync is on; e.g. `mkdir -p ~/code && cd ~/code`), then `git clone https://github.com/omunite215/Project_SecondLine.git && cd Project_SecondLine`.
+   iCloud marks files in `.venv` hidden, and Python 3.12+ skips hidden `.pth` files, so workspace imports fail at random (KG-01). Stuck in a synced folder: `export UV_PROJECT_ENVIRONMENT=~/.venvs/secondline`.
 2. CLI: `curl -fsSL https://claude.ai/install.sh | bash`, then run `claude` once to log in.
 3. VS Code: start it from a terminal (`code .`) so Homebrew/uv paths reach Claude Code, and accept the recommended extensions.
 4. Personal files:
@@ -20,6 +21,7 @@ Record the exact chip and unified memory in docs/team/KUNAL.md and CLAUDE.local.
 5. `gh auth login` — in your terminal, never through Claude.
 6. `make skills-install BIN=1`. It installs pyright (`uv tool install pyright` if there's no npm), installs superpowers + pyright-lsp, and vendors the LangGraph skills into services/agent/.claude/skills.
 7. `make skills-check` must print GREEN. Restart the Claude session and confirm `[skills] GREEN`.
+8. Python workspace (KG-01): `uv sync`, then `make test-py`, `make lint-py` and `make codegen-py` (must leave `git status` clean).
 
 ## 3. Local LLM (agent dev loop)
 Install Ollama natively — it uses the Metal GPU, which Docker on macOS can't. Pick the model size by unified memory, at Q4:

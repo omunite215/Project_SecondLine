@@ -2,6 +2,8 @@
 # Recipes are TAB-indented. Works with GNU make 3.81 (macOS default) and 4.x (WSL/CI).
 SHELL := /bin/bash
 PY ?= python3
+UV ?= uv
+PY_TESTS ?= tests/workspace packages services
 GRADLE ?= ./gradlew --no-daemon -q
 PROFILES ?= core
 ENV_FILE ?= .env
@@ -15,7 +17,7 @@ endef
 
 .DEFAULT_GOAL := help
 .PHONY: help board-next board-check trace trace-check spec-check spec-split ctx kit-test kit-check gh-check gh-apply submission-check hpc-help \
- bootstrap up down ps logs reset db-shell lint test codegen codegen-java codegen-py contracts-check \
+ bootstrap up down ps logs reset db-shell lint test codegen codegen-java codegen-py lint-py contracts-check \
  test-ledger test-gateway test-mcp test-policy test-py test-agent test-factory test-eval test-supervisor test-console \
  test-int test-sec test-redteam test-chaos test-load leakage-check refdata-verify \
  factory factory-all run-one pilot campaign analyze replay verify-chain demo-up demo-seed demo-run demo-test
@@ -81,11 +83,11 @@ lint: ## All linters: pre-commit (gitleaks, EOF, LF) on every file
 test: ## All unit suites (quiet): Java + kit (Python suites: make test-py)
 	@$(GRADLE) test
 	@$(MAKE) --no-print-directory kit-test
-codegen: codegen-java ## Regenerate Java + Python (+ TS) types from packages/contracts
+codegen: codegen-java codegen-py ## Regenerate Java + Python (+ TS) types from packages/contracts
 codegen-java: ## Java enums (deterministic; committed; CI fails on diff)
 	@python3 scripts/codegen_java.py
-codegen-py: ## Python sl_contracts models
-	$(call todo,KG-01)
+codegen-py: ## Python sl_contracts models (deterministic; CI fails on diff)
+	@$(UV) run python scripts/codegen_py.py
 contracts-check: ## Validate schemas + examples (uv fetches pinned jsonschema/pyyaml; no install needed)
 	@uv run -q --with jsonschema==4.26.0 --with pyyaml==6.0.3 python scripts/contracts_check.py
 test-ledger: ## Ledger unit + property tests
@@ -117,7 +119,9 @@ demo-test: ## Demo smoke test
 
 # ---- intelligence / evidence (Kunal) ---------------------------------------------
 test-py: ## All Python suites (quiet)
-	$(call todo,KG-01)
+	@$(UV) run pytest $(PY_TESTS)
+lint-py: ## ruff + mypy over the Python workspace
+	@$(UV) run ruff check . && $(UV) run ruff format --check . && $(UV) run mypy
 test-agent: ## Agent tests
 	$(call todo,KG-08)
 test-factory: ## Factory tests

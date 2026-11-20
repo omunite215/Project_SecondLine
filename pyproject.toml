@@ -1,0 +1,90 @@
+# Second-Line 2.0 Python workspace (KG-01, §7 §19 §21). The root env installs every member for dev + CI;
+# isolation between members is enforced by each member's own dependencies (tests/workspace).
+[project]
+name = "secondline-workspace"
+version = "0.0.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "sl-contracts",
+    "sl-factory",
+    "sl-eval",
+    "sl-audit",
+    "sl-agent",
+    "sl-supervisor",
+    "sl-mcp",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "hypothesis>=6",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "datamodel-code-generator>=0.26",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+sl-contracts = { workspace = true }
+sl-factory = { workspace = true }
+sl-eval = { workspace = true }
+sl-audit = { workspace = true }
+sl-agent = { workspace = true }
+sl-supervisor = { workspace = true }
+sl-mcp = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "packages/contracts/py",
+    "packages/scenario-factory",
+    "packages/evaluation",
+    "packages/audit-verifier",
+    "services/agent",
+    "services/supervisor",
+    "services/mcp-adapter",
+]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers -q --import-mode=importlib"
+testpaths = ["tests/workspace"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+include = ["packages/**/*.py", "services/**/*.py", "tests/workspace/**/*.py", "scripts/codegen_py.py"]
+extend-exclude = ["packages/contracts/py/src/sl_contracts/_generated"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "S"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "S603"]   # asserts and subprocess are how tests work
+"scripts/codegen_py.py" = ["S603"]   # runs datamodel-codegen with fixed args, no shell
+
+[tool.mypy]
+python_version = "3.12"
+# src dirs on mypy_path so modules resolve as sl_* (the strict override below matches by module name)
+mypy_path = ["packages/contracts/py/src", "packages/scenario-factory/src", "packages/evaluation/src", "packages/audit-verifier/src", "services/agent/src", "services/supervisor/src", "services/mcp-adapter/src"]
+files = ["packages/contracts/py/src", "packages/scenario-factory/src", "packages/evaluation/src", "packages/audit-verifier/src", "services/agent/src", "services/supervisor/src", "services/mcp-adapter/src", "tests/workspace", "scripts/codegen_py.py"]
+exclude = ["sl_contracts/_generated/"]
+explicit_package_bases = true
+warn_unused_configs = true
+check_untyped_defs = true
+disallow_untyped_defs = true
+warn_return_any = true
+
+[[tool.mypy.overrides]]
+module = ["sl_factory", "sl_factory.*", "sl_eval", "sl_eval.*"]
+# privileged packages (hidden truth + grading): --strict's per-module flags. `strict = true` is global-only
+# in mypy and would silently apply to every member.
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_incomplete_defs = true
+disallow_untyped_decorators = true
+warn_unused_ignores = true
+no_implicit_reexport = true
+strict_equality = true
+extra_checks = true

@@ -15,7 +15,8 @@ def props(path: Path) -> dict[str, str]:
 class Gradle(unittest.TestCase):
     def test_OM_01_wrapper_pinned(self):
         p = props(ROOT / "gradle/wrapper/gradle-wrapper.properties")
-        self.assertIn("gradle-8.14.6-bin.zip", p["distributionUrl"])
+        # Exact x.y.z, 8.x only (Spring Boot 3.5's range; OM-01 D3). The version itself is Dependabot's to bump.
+        self.assertRegex(p["distributionUrl"], r"/gradle-8\.\d+\.\d+-bin\.zip$")
         self.assertRegex(p.get("distributionSha256Sum", ""), r"^[0-9a-f]{64}$")
 
     def test_OM_01_gradle_memory_limits(self):

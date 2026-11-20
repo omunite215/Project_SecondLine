@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/common.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/common.schema.json",
   "title": "Shared definitions (SH-02)",
   "description": "Money, quantity, price and FX are decimal strings (golden rule 3). Accounts and currencies per ADR-016 / docs/domain.md.",
   "$defs": {
@@ -159,6 +159,16 @@
         ]
       },
       "description": "Kind of a world-bundle evidence record, as read_evidence returns it (ADR-017): every kind but INTERNAL_BOOKING."
+    },
+    "break_symptom": {
+      "description": "What reconciliation sees, never a cause; one vocabulary for the bundle and the read tools (OM-04).",
+      "enum": [
+        "CASH_DIFFERENCE",
+        "POSITION_DIFFERENCE",
+        "UNMATCHED_TRADE",
+        "SETTLEMENT_FAILURE",
+        "REFERENCE_MISMATCH"
+      ]
     }
   }
 }

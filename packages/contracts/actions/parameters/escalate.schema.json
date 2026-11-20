@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/actions/parameters/escalate.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/actions/parameters/escalate.schema.json",
   "title": "ESCALATE parameters",
   "type": "object",
   "additionalProperties": false,

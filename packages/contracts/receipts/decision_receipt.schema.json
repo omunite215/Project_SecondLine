@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://secondline.invalid/contracts/1/receipts/decision_receipt.schema.json",
+  "$id": "https://secondline.invalid/contracts/2/receipts/decision_receipt.schema.json",
   "title": "DecisionReceipt (§9, C1/C2/C5/C9)",
   "type": "object",
   "additionalProperties": false,

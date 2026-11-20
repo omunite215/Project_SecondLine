@@ -1,5 +1,5 @@
 # Handoff: Om → Kunal · receipt canonicalization + chain vectors, part 1 (2026-10-30)
-Task: SH-08 (part 1; Om drives) · §9 §12 · REQ-009 · T-SEC-05 · SEC-09 · ADR-012 · contracts VERSION 1.0.0 → 1.1.0. #32 also bumps to 1.1.0. #32 merges first, and this PR re-bumps to 1.2.0 before it merges, so two different 1.1.0 contracts never exist.
+Task: SH-08 (part 1; Om drives) · §9 §12 · REQ-009 · T-SEC-05 · SEC-09 · ADR-012 · contracts VERSION 1.0.0 → 1.1.0. #32 also bumps to 1.1.0. #32 merges first, and this PR re-bumps to 1.2.0 before it merges, so two different 1.1.0 contracts never exist. **Update 2026-11-20:** #37 took main to 2.0.0 first, so this PR lands as an additive **2.1.0**.
 
 ## What changed
 - `receipts/decision_receipt.schema.json` gains `x-receipt-hash: {exclude: [receipt_hash, signature, signature_key_id]}`.

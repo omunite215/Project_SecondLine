@@ -49,7 +49,7 @@ Every spec ID below maps to ≥1 task; `make board-check` fails CI if any ID los
 | REQ-007 | SH-02 (Om+Kunal), SH-06 (Om+Kunal), KG-06 (Kunal), KG-09 (Kunal), KG-15 (Kunal), KG-16 (Kunal), KG-18 (Kunal), KG-19 (Kunal), SH-18 (Om+Kunal) |
 | REQ-008 | KG-11 (Kunal), OM-12 (Om), OM-13 (Om), SH-18 (Om+Kunal) |
 | REQ-009 | SH-08 (Om+Kunal), KG-12 (Kunal), OM-14 (Om), SH-18 (Om+Kunal) |
-| REQ-010 | SH-05 (Om+Kunal), OM-10 (Om), KG-15 (Kunal), KG-11 (Kunal), KG-18 (Kunal), SH-18 (Om+Kunal) |
+| REQ-010 | SH-05 (Om+Kunal), KG-15 (Kunal), OM-10 (Om), KG-11 (Kunal), KG-18 (Kunal), SH-18 (Om+Kunal) |
 | REQ-011 | OM-04 (Om), KG-20 (Kunal), SH-18 (Om+Kunal), KG-21 (Kunal), OM-22 (Om) |
 | REQ-012 | KG-04 (Kunal), OM-16 (Om), KG-14 (Kunal), SH-18 (Om+Kunal), OM-18 (Om) |
 | REQ-013 | OM-11 (Om), SH-18 (Om+Kunal), OM-23 (Om), OM-20 (Om), OM-21 (Om) |
@@ -95,7 +95,7 @@ Every spec ID below maps to ≥1 task; `make board-check` fails CI if any ID los
 | M-0 | SH-01 (Om+Kunal), SH-02 (Om+Kunal), SH-03 (Om+Kunal), SH-04 (Om+Kunal), SH-05 (Om+Kunal), SH-06 (Om+Kunal), OM-01 (Om), KG-01 (Kunal), OM-25 (Om), SH-14 (Om+Kunal), OM-26 (Om), OM-27 (Om) |
 | M-1 | KG-03 (Kunal), KG-04 (Kunal), KG-05 (Kunal), OM-02 (Om), KG-06 (Kunal), OM-03 (Om), KG-07 (Kunal), OM-04 (Om), KG-02 (Kunal) |
 | M-2 | SH-07 (Om+Kunal), KG-08 (Kunal), OM-05 (Om), KG-09 (Kunal), OM-06 (Om), KG-10 (Kunal), SH-19 (Om+Kunal) |
-| M-3 | OM-07 (Om), OM-08 (Om), OM-09 (Om), OM-10 (Om), KG-15 (Kunal), OM-11 (Om), OM-16 (Om), SH-08 (Om+Kunal), SH-09 (Om+Kunal), KG-11 (Kunal), KG-12 (Kunal), KG-13 (Kunal), OM-12 (Om), OM-13 (Om), OM-14 (Om), OM-15 (Om) |
+| M-3 | OM-07 (Om), OM-08 (Om), OM-09 (Om), KG-15 (Kunal), OM-10 (Om), OM-11 (Om), OM-16 (Om), SH-08 (Om+Kunal), SH-09 (Om+Kunal), KG-11 (Kunal), KG-12 (Kunal), KG-13 (Kunal), OM-12 (Om), OM-13 (Om), OM-14 (Om), OM-15 (Om) |
 | M-4 | KG-16 (Kunal), KG-17 (Kunal), KG-18 (Kunal), KG-19 (Kunal), SH-10 (Om+Kunal), SH-11 (Om+Kunal), KG-14 (Kunal), KG-20 (Kunal) |
 | M-5 | SH-15 (Om+Kunal), SH-16 (Om+Kunal), SH-18 (Om+Kunal), OM-23 (Om), SH-12 (Om+Kunal), SH-13 (Om+Kunal), SH-17 (Om+Kunal), OM-17 (Om), KG-22 (Kunal), OM-18 (Om), OM-19 (Om), OM-20 (Om), OM-21 (Om), OM-24 (Om), KG-21 (Kunal), OM-22 (Om) |
 

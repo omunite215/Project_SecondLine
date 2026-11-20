@@ -1,6 +1,6 @@
 {
  "x-validates": "scenario/world_bundle.schema.json",
- "bundle_version": "1.0",
+ "bundle_version": "2.0",
  "scenario_id": "scn_0000A001",
  "as_of": "2026-03-02",
  "reference_snapshots": [
@@ -10,6 +10,18 @@
    "retrieved_at": "2026-01-01T00:00:00Z",
    "license": "CC0 SLCANARY-00000000000000aa",
    "sha256": "sha256:cdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcdcd"
+  }
+ ],
+ "institutions": [
+  {
+   "institution_id": "ins_0000G001",
+   "name": "Fictional Broker AG"
+  }
+ ],
+ "counterparties": [
+  {
+   "counterparty_id": "cpt_0000H001",
+   "institution_id": "ins_0000G001"
   }
  ],
  "instruments": [
@@ -46,6 +58,7 @@
   {
    "trade_id": "trd_0000B001",
    "version": 1,
+   "counterparty_id": "cpt_0000H001",
    "isin": "XS0000000012",
    "side": "BUY",
    "quantity": "300",
@@ -59,6 +72,8 @@
  "journal_entries": [
   {
    "entry_id": "jnl_0000C001",
+   "entry_type": "SETTLEMENT",
+   "effective_date": "2026-02-27",
    "booked_at": "2026-02-27T15:00:00Z",
    "trade_id": "trd_0000B001",
    "lines": [
@@ -80,6 +95,9 @@
  "securities_movements": [
   {
    "movement_id": "mov_0000D001",
+   "entry_id": "sec_0000D001",
+   "entry_type": "SETTLEMENT",
+   "effective_date": "2026-02-27",
    "booked_at": "2026-02-27T15:00:00Z",
    "trade_id": "trd_0000B001",
    "account": "S100-XS0000000012",
@@ -89,6 +107,9 @@
   },
   {
    "movement_id": "mov_0000D002",
+   "entry_id": "sec_0000D001",
+   "entry_type": "SETTLEMENT",
+   "effective_date": "2026-02-27",
    "booked_at": "2026-02-27T15:00:00Z",
    "trade_id": "trd_0000B001",
    "account": "S900-XS0000000012",

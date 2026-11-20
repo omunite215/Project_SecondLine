@@ -36,7 +36,7 @@ services:
       retries: 30
 
   opa:
-    image: openpolicyagent/opa:1.21.4-static
+    image: openpolicyagent/opa:1.22.3-static
     profiles: [core]
     command: ["run", "--server", "--addr", "0.0.0.0:8181", "--log-level", "error"]
     ports: ["127.0.0.1:8181:8181"]
@@ -108,7 +108,7 @@ services:
 
   # ---- obs: OTel collector → Jaeger + Prometheus → Grafana (OM-17 extends).
   otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.164.0
+    image: otel/opentelemetry-collector-contrib:0.165.0
     profiles: [obs]
     command: ["--config", "/etc/otelcol/config.yaml"]
     volumes: ["../observability/otel-collector.yaml:/etc/otelcol/config.yaml:ro"]
@@ -133,7 +133,7 @@ services:
       retries: 20
 
   prometheus:
-    image: prom/prometheus:v3.15.1
+    image: prom/prometheus:v3.16.0
     profiles: [obs]
     volumes: ["../observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro"]
     ports: ["127.0.0.1:9090:9090"]
@@ -145,14 +145,14 @@ services:
       retries: 20
 
   grafana:
-    image: grafana/grafana:13.2.4
+    image: grafana/grafana:13.3.0
     profiles: [obs]
     environment:
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?run make bootstrap}
       GF_AUTH_ANONYMOUS_ENABLED: "false"
       GF_ANALYTICS_REPORTING_ENABLED: "false"
     ports: ["127.0.0.1:3000:3000"]
-    mem_limit: 256m
+    mem_limit: 512m  # 13.x settles at ~278 MiB anon; 256m was OOM-killed in CI
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:3000/api/health"]
       interval: 5s

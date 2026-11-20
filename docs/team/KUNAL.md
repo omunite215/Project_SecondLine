@@ -37,10 +37,11 @@ Owner key `kg` (`owner: kunal` in CLAUDE.local.md). Claude reads this through `p
 - done: `make factory-all` reproducible; stratification + balance tables printed; split-overlap check passes; eval/blind outputs land only in data/generated/{eval,blind}/.
 
 ### KG-05 · Leakage, split-integrity & canary checks
-- meta: P0 | M-1 | 1d | mcs | deps: KG-03 | status: todo
+- meta: P0 | M-1 | 1d | mcs | deps: KG-03 | status: review
 - refs: §5 §6 §15 | REQ-006 | T-DOM-03 T-SEC-06 | F10 | SEC-11 | RSK-11
 - build: scripts/leakage + `make leakage-check` + CI job: scan prompts, MCP tool descriptions, recorded tool responses, traces/logs and the console bundle for canaries and truth field names; template-fingerprint overlap dev vs eval/blind; assert visible ids are opaque.
 - done: a planted canary in a test trace fails CI; the clean tree passes.
+- evidence: tests/kit/test_kg_05_leakage.py 11 passed (planted canary in a trace fails; clean tree passes); make leakage-check clean; CI job leakage
 
 ### KG-06 · Independent oracle grader & metric primitives
 - meta: P0 | M-1 | 3.5d | mcs | learn | deps: KG-03, SH-04, SH-06 | status: todo

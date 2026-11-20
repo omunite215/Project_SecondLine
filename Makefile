@@ -132,8 +132,8 @@ test-supervisor: ## Monitor tests
 	$(call todo,KG-11)
 test-redteam: ## Platform red-team suite by family
 	$(call todo,KG-14)
-leakage-check: ## Canary + truth-field scan
-	$(call todo,KG-05)
+leakage-check: ## Canary, truth-field, import, opaque-id and split-overlap scan (KG-05; prints paths, never content)
+	@$(PY) scripts/leakage.py
 refdata-verify: ## Re-hash reference snapshots
 	$(call todo,KG-02)
 factory: ## Generate scenarios: make factory SPLIT=dev N=40 [OUT=data/generated]

@@ -122,7 +122,7 @@ services:
       retries: 20
 
   jaeger:
-    image: jaegertracing/jaeger:2.22.0
+    image: jaegertracing/jaeger:2.23.0
     profiles: [obs]
     ports: ["127.0.0.1:16686:16686"]
     mem_limit: 256m

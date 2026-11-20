@@ -112,8 +112,19 @@ class TradeSim:
 class Simulator:
     """Builds clean trades for one scenario; break generators then change facts and record the cause event."""
 
-    def __init__(self, rng: random.Random, ids: IdMinter, world: World, currency: str, as_of: str) -> None:
+    def __init__(
+        self,
+        rng: random.Random,
+        ids: IdMinter,
+        world: World,
+        currency: str,
+        as_of: str,
+        band: tuple[int, int] = (100, 5_000),
+        phrases: dict[str, str] | None = None,
+    ) -> None:
         self.rng, self.ids, self.world, self.currency, self.as_of = rng, ids, world, currency, as_of
+        self.band = band  # split's default quantity band (KG-04 K8); JPY ×20
+        self.phrases = phrases or {"settled": "Settled {d}.", "matched": "Matched; settles {d}."}
         self.market = MARKETS[currency]
         self.trades: list[TradeSim] = []
         self.extras: list[Any] = []  # render.Extra facts beyond trades (FX revaluation, CA, SSI); KG-04
@@ -145,7 +156,8 @@ class Simulator:
         return utc(d, self.market.cutoff_utc_hour)
 
     def default_quantity(self) -> int:
-        return self.quantity(20_000, 120_000, 100) if self.currency == "JPY" else self.quantity(100, 5_000)
+        lo, hi = self.band
+        return self.quantity(lo * 20, hi * 20, 100) if self.currency == "JPY" else self.quantity(lo, hi)
 
     def _events(self, t: TradeSim, settled: bool) -> None:
         cut = self.market.cutoff_utc_hour
@@ -185,7 +197,7 @@ class Simulator:
             q,
             True,
             cutoff_time=self.cutoff(vd),
-            status_text=f"Settled {vd}.",
+            status_text=self.phrases["settled"].format(d=vd),
         )
         self._events(t, settled=True)
         self.trades.append(t)
@@ -214,7 +226,7 @@ class Simulator:
             0,
             False,
             cutoff_time=self.cutoff(vd),
-            status_text=f"Matched; settles {vd}.",
+            status_text=self.phrases["matched"].format(d=vd),
         )
         self._events(t, settled=False)
         self.trades.append(t)

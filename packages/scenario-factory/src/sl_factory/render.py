@@ -82,7 +82,12 @@ def evidence(ids: IdMinter, kind: str, source: str, at: str, fields: dict[str, s
     }
 
 
-def _render_trade(t: TradeSim, ids: IdMinter, rec: RecordIds, as_of: str, out: Records, trades: list[JSON]) -> None:
+_DEFAULT_PHRASES = {"holding": "Holding {q} {isin} as of {d}.", "debit": "Debit {a} {ccy}, ref {ref}."}
+
+
+def _render_trade(
+    t: TradeSim, ids: IdMinter, rec: RecordIds, as_of: str, out: Records, trades: list[JSON], ph: dict[str, str]
+) -> None:
     ccy = t.currency
     if t.booked:
         booked_gross = gross(t.booked_quantity, t.booked_price, ccy)
@@ -185,20 +190,26 @@ def _render_trade(t: TradeSim, ids: IdMinter, rec: RecordIds, as_of: str, out: R
                 "value_date": t.status_settle_date,
                 "trade_ref": t.ref,
             },
-            f"Debit {dec_str(paid)} {ccy}, ref {t.ref}.",
+            ph["debit"].format(a=dec_str(paid), ccy=ccy, ref=t.ref),
         )
         rec.nostro[t.trade_id] = e["record_id"]
         out.evidence.append(e)
 
 
 def render(
-    trades: list[TradeSim], ids: IdMinter, scenario_id: str, as_of: str, extras: list[Extra] | None = None
+    trades: list[TradeSim],
+    ids: IdMinter,
+    scenario_id: str,
+    as_of: str,
+    extras: list[Extra] | None = None,
+    phrases: dict[str, str] | None = None,
 ) -> tuple[JSON, RecordIds]:
     rec = RecordIds()
     out = Records()
     out_trades: list[JSON] = []
+    ph = {**_DEFAULT_PHRASES, **(phrases or {})}
     for t in trades:
-        _render_trade(t, ids, rec, as_of, out, out_trades)
+        _render_trade(t, ids, rec, as_of, out, out_trades, ph)
     held: dict[str, int] = defaultdict(int)
     for t in trades:
         held[t.isin] += t.settled_quantity
@@ -219,7 +230,7 @@ def render(
             "custody_sim",
             utc(as_of, 23, 10),
             {"account": f"S100-{isin}", "isin": isin, "quantity": str(held[isin]), "as_of": as_of},
-            f"Holding {held[isin]} {isin} as of {as_of}.",
+            ph["holding"].format(q=held[isin], isin=isin, d=as_of),
         )
         rec.custodian[isin] = e["record_id"]
         out.evidence.append(e)

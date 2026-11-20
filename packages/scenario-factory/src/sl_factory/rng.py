@@ -23,8 +23,8 @@ def _int(label: str) -> int:
 
 
 def derive_seed(split: str, index: int) -> int:
-    """Scenario seed from split + index + generator version (plan D5)."""
-    return _int(f"{split}:{index}:{GENERATOR_VERSION}")
+    """Scenario seed from split + index + generator version (plan D5); 32-bit (run_manifest `seed` contract)."""
+    return _int(f"{split}:{index}:{GENERATOR_VERSION}") >> 32
 
 
 class Streams:

@@ -2,7 +2,7 @@
 java = "21"
 spring-boot = "3.5.16"
 # 3.x needs Jackson 3; Boot 3.5 is on Jackson 2 (OM-02).
-networknt-json-schema = "2.0.8"
+networknt-json-schema = "3.0.9"
 
 [libraries]
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
